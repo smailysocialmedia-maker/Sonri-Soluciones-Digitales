@@ -48,12 +48,31 @@ function initAppConfig() {
   try {
     const savedCustom = localStorage.getItem('sonri_custom_config');
     if (savedCustom) {
-      AppState.config = JSON.parse(savedCustom);
+      const parsed = JSON.parse(savedCustom);
+      if (parsed && parsed.products && parsed.products.length > 0) {
+        AppState.config = parsed;
+      } else {
+        AppState.config = JSON.parse(JSON.stringify(baseConfig));
+      }
     } else {
       AppState.config = JSON.parse(JSON.stringify(baseConfig));
     }
   } catch (e) {
     AppState.config = JSON.parse(JSON.stringify(baseConfig));
+  }
+
+  // Respaldo de seguridad para asegurar catálogo siempre poblado
+  if (!AppState.config.products || AppState.config.products.length === 0) {
+    AppState.config.products = (baseConfig.products || []).slice();
+  }
+  if (!AppState.config.categories || AppState.config.categories.length === 0) {
+    AppState.config.categories = (baseConfig.categories || []).slice();
+  }
+  if (!AppState.config.smmData) {
+    AppState.config.smmData = baseConfig.smmData || {};
+  }
+  if (!AppState.config.comboPlatforms) {
+    AppState.config.comboPlatforms = baseConfig.comboPlatforms || [];
   }
 
   syncContactElements();
