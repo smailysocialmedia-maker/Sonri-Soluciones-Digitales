@@ -28,6 +28,12 @@ const CATALOG_CONFIG = {
   instagramUser: "@sonrisas182",
   instagramUrl: "https://instagram.com/sonrisas182",
 
+  // ----------------------------------------------------------------------------
+  // CONEXIÓN EN LA NUBE (SUPABASE) PARA SINCRONIZACIÓN EN TIEMPO REAL
+  // ----------------------------------------------------------------------------
+  supabaseUrl: "https://yeuswjpjlujvtcjauddz.supabase.co",
+  supabaseAnonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlldXN3anBqbHVqdnRjamF1ZGR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIyNTEzNzcsImV4cCI6MjEwNzgyNzM3N30.rgjO8-tFFZSv9f1oCsd65NKzrDD30FNAyX9qP48zLak",
+
   // Clave PIN para ingresar al Panel de Administrador (Oculto)
   adminPin: "1234",
 

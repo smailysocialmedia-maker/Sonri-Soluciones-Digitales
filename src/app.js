@@ -78,12 +78,130 @@ function initAppConfig() {
   syncContactElements();
 }
 
+let supabaseClient = null;
+
+function initSupabaseClient() {
+  const url = AppState.config.supabaseUrl || (window.CATALOG_CONFIG && window.CATALOG_CONFIG.supabaseUrl);
+  const key = AppState.config.supabaseAnonKey || (window.CATALOG_CONFIG && window.CATALOG_CONFIG.supabaseAnonKey);
+  if (url && key && window.supabase) {
+    try {
+      supabaseClient = window.supabase.createClient(url, key);
+    } catch (e) {
+      console.warn('Error inicializando cliente de Supabase:', e);
+    }
+  }
+}
+
+async function fetchCloudConfig() {
+  if (!supabaseClient) {
+    updateCloudStatusBadge('local');
+    return;
+  }
+
+  updateCloudStatusBadge('syncing');
+  try {
+    const { data, error } = await supabaseClient
+      .from('app_config')
+      .select('data')
+      .eq('id', 'active_catalog')
+      .maybeSingle();
+
+    if (error) {
+      console.warn('Supabase fetch error:', error);
+      updateCloudStatusBadge('error');
+      return;
+    }
+
+    if (data && data.data) {
+      const cloudConfig = data.data;
+      if (cloudConfig.products && cloudConfig.products.length > 0) {
+        AppState.config = cloudConfig;
+        localStorage.setItem('sonri_custom_config', JSON.stringify(cloudConfig));
+        syncContactElements();
+        renderCategories();
+        renderProducts();
+        if (AppState.isAdminLoggedIn) {
+          renderAdminProductsTable();
+          renderAdminSmmTable();
+        }
+        updateCloudStatusBadge('connected');
+        return;
+      }
+    }
+
+    // Si la tabla está creada pero vacía, subimos la configuración actual como inicial
+    updateCloudStatusBadge('connected');
+    saveConfigToCloud(false);
+  } catch (err) {
+    console.warn('Excepción al conectar con Supabase:', err);
+    updateCloudStatusBadge('error');
+  }
+}
+
+let cloudSaveTimer = null;
+function saveConfigToCloud(notify = true) {
+  if (!supabaseClient) return;
+
+  clearTimeout(cloudSaveTimer);
+  cloudSaveTimer = setTimeout(async () => {
+    updateCloudStatusBadge('saving');
+    try {
+      const payload = {
+        id: 'active_catalog',
+        data: AppState.config,
+        updated_at: new Date().toISOString()
+      };
+
+      const { error } = await supabaseClient
+        .from('app_config')
+        .upsert(payload);
+
+      if (error) {
+        console.error('Error al guardar en Supabase:', error);
+        updateCloudStatusBadge('error');
+      } else {
+        updateCloudStatusBadge('connected');
+        if (notify) {
+          showToast('☁️ ¡Guardado en la nube! Se actualizó para todos los celulares y PC.');
+        }
+      }
+    } catch (err) {
+      console.error('Error guardando en la nube:', err);
+      updateCloudStatusBadge('error');
+    }
+  }, 400);
+}
+
+function updateCloudStatusBadge(status) {
+  const badge = document.getElementById('adminCloudBadge');
+  const text = document.getElementById('adminCloudBadgeText');
+  if (!badge || !text) return;
+
+  if (status === 'connected') {
+    badge.className = 'px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1';
+    text.textContent = 'Nube Activa (Sincronizado) ☁️';
+  } else if (status === 'saving') {
+    badge.className = 'px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 flex items-center gap-1';
+    text.textContent = 'Guardando en la nube... ⏳';
+  } else if (status === 'syncing') {
+    badge.className = 'px-2 py-0.5 rounded text-[10px] font-bold bg-purple-500/20 text-purple-300 border border-purple-500/40 flex items-center gap-1';
+    text.textContent = 'Conectando a la nube... 🔄';
+  } else if (status === 'error') {
+    badge.className = 'px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 flex items-center gap-1';
+    text.textContent = 'Modo Local (Nube pendiente de SQL) ⚠️';
+  } else {
+    badge.className = 'px-2 py-0.5 rounded text-[10px] font-bold bg-slate-700/40 text-slate-400 border border-slate-700 flex items-center gap-1';
+    text.textContent = 'Modo Local 💻';
+  }
+}
+
 function saveConfigToStorage() {
   try {
     localStorage.setItem('sonri_custom_config', JSON.stringify(AppState.config));
   } catch (e) {
     console.warn('Error al guardar configuración', e);
   }
+  saveConfigToCloud(true);
 }
 
 function resetToFactoryConfig() {
@@ -1607,6 +1725,7 @@ function getIconSvg(iconName, classes = 'w-5 h-5') {
 
 document.addEventListener('DOMContentLoaded', () => {
   initAppConfig();
+  initSupabaseClient();
   loadCartFromStorage();
   updateCartBadge();
   renderCategories();
@@ -1614,6 +1733,9 @@ document.addEventListener('DOMContentLoaded', () => {
   renderFaqs();
   setupSearchListener();
   checkUrlHashForAdmin();
+
+  // Consulta en segundo plano para actualizar precios desde la nube
+  fetchCloudConfig();
 
   window.addEventListener('hashchange', checkUrlHashForAdmin);
 
