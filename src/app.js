@@ -21,15 +21,18 @@ const AppState = {
   logoClickCount: 0,
   logoClickTimer: null,
   
-  // Estado para el modal de Combos de Streaming
+  // Estado para el modal de Combos Dinámicos
   comboState: {
-    selectedTier: 2,
-    selectedPlatforms: ['netflix', 'disney']
+    selectedProductIds: ['netflix-premium', 'disney-plus-premium'],
+    filterCategory: 'all'
   },
 
   // Estado para el modal de Crecimiento en Redes (SMM)
   smmState: {
     activeNetwork: 'instagram',
+    mode: 'custom', // 'custom' (armá a medida) o 'presets' (paquetes rápidos)
+    customQuantities: {}, // serviceId -> number (min 100)
+    customEnabled: {}, // serviceId -> boolean
     activeServiceId: 'ig-vistas',
     selectedOptionId: 'ig-vis-5000',
     targetAccountOrLink: ''
@@ -864,7 +867,8 @@ function sendWhatsAppOrder() {
 }
 
 // ==============================================================================
-// 6. MODAL INTERACTIVO: CONSTRUCTOR DE COMBOS DE STREAMING
+// ==============================================================================
+// 6. MODAL INTERACTIVO: CONSTRUCTOR DINÁMICO DE COMBOS (STREAMING, IA & IPTV)
 // ==============================================================================
 
 function openComboModal() {
@@ -879,132 +883,213 @@ function closeComboModal() {
   if (modal) modal.classList.add('hidden');
 }
 
-function setComboTier(tierCount) {
-  AppState.comboState.selectedTier = tierCount;
-  if (AppState.comboState.selectedPlatforms.length > tierCount) {
-    AppState.comboState.selectedPlatforms = AppState.comboState.selectedPlatforms.slice(0, tierCount);
+function setComboCategoryFilter(catId) {
+  AppState.comboState.filterCategory = catId;
+  renderComboModalContent();
+}
+
+function toggleComboProduct(productId) {
+  const idx = AppState.comboState.selectedProductIds.indexOf(productId);
+  if (idx > -1) {
+    AppState.comboState.selectedProductIds.splice(idx, 1);
+  } else {
+    AppState.comboState.selectedProductIds.push(productId);
   }
   renderComboModalContent();
 }
 
-function toggleComboPlatform(platformId) {
-  const idx = AppState.comboState.selectedPlatforms.indexOf(platformId);
-  if (idx > -1) {
-    AppState.comboState.selectedPlatforms.splice(idx, 1);
-  } else {
-    if (AppState.comboState.selectedPlatforms.length < AppState.comboState.selectedTier) {
-      AppState.comboState.selectedPlatforms.push(platformId);
-    } else {
-      showToast(`Ya seleccionaste ${AppState.comboState.selectedTier} plataformas. Deseleccioná una para cambiarla.`);
-    }
+function calculateComboPricing() {
+  const allProds = AppState.config.products || [];
+  const selectedProducts = allProds.filter(p => AppState.comboState.selectedProductIds.includes(p.id));
+  
+  const regularSubtotal = selectedProducts.reduce((sum, p) => sum + (Number(p.price) || 0), 0);
+  const count = selectedProducts.length;
+
+  // Escala de descuentos por volumen de combo:
+  // 2 cuentas: 15% OFF | 3 cuentas: 20% OFF | 4+ cuentas: 25% OFF
+  let discountPct = 0;
+  if (count === 2) discountPct = 15;
+  else if (count === 3) discountPct = 20;
+  else if (count >= 4) discountPct = 25;
+
+  let finalPrice = regularSubtotal;
+  let totalSavings = 0;
+
+  if (count >= 2 && regularSubtotal > 0) {
+    const rawDiscounted = regularSubtotal * (1 - discountPct / 100);
+    finalPrice = Math.round(rawDiscounted / 50) * 50;
+    totalSavings = regularSubtotal - finalPrice;
   }
-  renderComboModalContent();
+
+  return {
+    selectedProducts,
+    count,
+    regularSubtotal,
+    discountPct,
+    finalPrice,
+    totalSavings
+  };
 }
 
 function renderComboModalContent() {
-  const tierContainer = document.getElementById('comboTierButtons');
-  const gridContainer = document.getElementById('comboPlatformsGrid');
-  const summaryEl = document.getElementById('comboSummaryText');
-  const priceEl = document.getElementById('comboPriceBadge');
+  const catFilterContainer = document.getElementById('comboCategoryFilterTabs');
+  const productsGrid = document.getElementById('comboProductsGrid');
+  const pricingCard = document.getElementById('comboPricingCard');
   const addBtn = document.getElementById('comboAddToCartBtn');
 
-  if (!tierContainer || !gridContainer) return;
+  if (!catFilterContainer || !productsGrid || !pricingCard) return;
 
-  const currentTierInfo = (AppState.config.comboTiers || []).find(t => t.count === AppState.comboState.selectedTier) || {
-    price: 16000,
-    label: 'Combo Dúo'
-  };
+  // 1. Pestañas de categorías disponibles para combo
+  const comboCats = [
+    { id: 'all', label: 'Todos los Servicios' },
+    { id: 'streaming', label: 'Streaming & Cine' },
+    { id: 'creadores-ia', label: 'Herramientas & IA' },
+    { id: 'iptv', label: 'Televisión & IPTV' }
+  ];
 
-  tierContainer.innerHTML = (AppState.config.comboTiers || []).map(tier => {
-    const isSelected = AppState.comboState.selectedTier === tier.count;
+  catFilterContainer.innerHTML = comboCats.map(cat => {
+    const isActive = AppState.comboState.filterCategory === cat.id;
     return `
       <button 
-        onclick="setComboTier(${tier.count})"
-        class="flex-1 py-2.5 px-3 rounded-xl text-xs font-bold border transition-all ${
-          isSelected 
-            ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white border-transparent shadow-lg neon-glow-cyan' 
-            : 'bg-[#121424] border-[#1E2238] text-slate-300 hover:text-white'
+        type="button"
+        onclick="setComboCategoryFilter('${cat.id}')"
+        class="px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+          isActive 
+            ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400/50 shadow-sm' 
+            : 'bg-[#121424] text-slate-400 hover:text-white border border-[#1E2238]'
         }"
       >
-        <div>${tier.count} Plataformas</div>
-        <div class="text-[10px] opacity-80">${tier.tag}</div>
+        ${cat.label}
       </button>
     `;
   }).join('');
 
-  gridContainer.innerHTML = (AppState.config.comboPlatforms || []).map(plat => {
-    const isSelected = AppState.comboState.selectedPlatforms.includes(plat.id);
+  // 2. Filtrar productos aptos para combo (excluyendo tarjetas comodín especiales)
+  let eligibleProducts = (AppState.config.products || []).filter(p => !p.isSpecialCombo && !p.isSpecialSMM);
+
+  if (AppState.comboState.filterCategory !== 'all') {
+    eligibleProducts = eligibleProducts.filter(p => p.category === AppState.comboState.filterCategory);
+  }
+
+  // 3. Renderizar grilla de productos seleccionables
+  productsGrid.innerHTML = eligibleProducts.map(p => {
+    const isSelected = AppState.comboState.selectedProductIds.includes(p.id);
     return `
-      <button 
-        onclick="toggleComboPlatform('${plat.id}')"
-        class="p-3 rounded-xl border text-left flex items-center gap-3 transition-all ${
+      <div 
+        onclick="toggleComboProduct('${p.id}')"
+        class="p-3 rounded-xl border flex items-center justify-between gap-3 cursor-pointer transition-all select-none ${
           isSelected 
-            ? 'bg-cyan-500/20 border-cyan-400 text-white shadow-md' 
-            : 'bg-[#0B0C14] border-[#1E2238] text-slate-400 hover:border-slate-600 hover:text-slate-200'
+            ? 'bg-cyan-500/15 border-cyan-400/80 shadow-md neon-glow-cyan' 
+            : 'bg-[#08090F] border-[#1E2238] hover:border-slate-600'
         }"
       >
-        <div class="w-8 h-8 rounded-lg ${isSelected ? 'bg-cyan-400 text-black' : 'bg-[#121424] text-cyan-400'} flex items-center justify-center font-bold text-xs shrink-0">
-          ${isSelected ? '✓' : getIconSvg(plat.icon || 'Film', 'w-4 h-4')}
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="w-8 h-8 rounded-lg ${isSelected ? 'bg-cyan-400 text-black' : 'bg-[#121424] text-cyan-400'} flex items-center justify-center font-bold text-xs shrink-0">
+            ${isSelected ? '✓' : getIconSvg(p.icon || 'Film', 'w-4 h-4')}
+          </div>
+          <div class="min-w-0">
+            <h4 class="text-xs font-bold text-white truncate ${isSelected ? 'text-cyan-200' : ''}">${p.name}</h4>
+            <p class="text-[10px] text-slate-400 truncate">${p.period || '30 días'}</p>
+          </div>
         </div>
-        <span class="text-xs font-semibold leading-tight">${plat.name}</span>
-      </button>
+
+        <div class="text-right shrink-0">
+          <span class="text-xs font-black text-white ${isSelected ? 'text-cyan-300' : ''}">
+            ${formatCurrency(p.price)}
+          </span>
+          <span class="block text-[9px] uppercase font-bold text-slate-500">Precio individual</span>
+        </div>
+      </div>
     `;
   }).join('');
 
-  const selectedCount = AppState.comboState.selectedPlatforms.length;
-  const targetCount = AppState.comboState.selectedTier;
+  // 4. Calcular precios dinámicos y descuentos
+  const pricing = calculateComboPricing();
 
-  if (summaryEl) summaryEl.textContent = `Seleccionadas: ${selectedCount} de ${targetCount} plataformas`;
-  if (priceEl) priceEl.textContent = formatCurrency(currentTierInfo.price);
+  if (pricing.count < 2) {
+    pricingCard.innerHTML = `
+      <div>
+        <span class="text-xs font-bold text-amber-300 flex items-center gap-1.5">
+          <span>⚠️</span>
+          <span>Seleccioná al menos 2 servicios</span>
+        </span>
+        <span class="text-[11px] text-slate-400 block mt-0.5">
+          Actualmente tenés ${pricing.count} servicio(s) marcado(s). Sumá otro para activar el 15% de descuento.
+        </span>
+      </div>
+      <div class="text-right">
+        <span class="text-[10px] text-slate-500 block uppercase font-bold">Subtotal actual:</span>
+        <span class="text-base font-black text-slate-400">${formatCurrency(pricing.regularSubtotal)}</span>
+      </div>
+    `;
 
-  if (addBtn) {
-    const isComplete = selectedCount === targetCount;
-    addBtn.disabled = !isComplete;
-    if (isComplete) {
-      addBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-      addBtn.classList.add('gradient-btn-neon');
-      addBtn.textContent = 'Agregar Combo al Carrito';
-    } else {
-      addBtn.classList.add('opacity-50', 'cursor-not-allowed');
-      addBtn.classList.remove('gradient-btn-neon');
-      addBtn.textContent = `Elegí ${targetCount - selectedCount} plataforma(s) más`;
+    if (addBtn) {
+      addBtn.disabled = true;
+      addBtn.className = 'w-full py-3.5 px-4 rounded-xl font-bold text-xs uppercase tracking-wider text-slate-500 bg-[#121424] border border-[#1E2238] cursor-not-allowed transition-all';
+      addBtn.textContent = 'Elegí al menos 2 servicios para armar tu combo';
+    }
+  } else {
+    pricingCard.innerHTML = `
+      <div>
+        <div class="flex items-center gap-2 mb-1">
+          <span class="text-xs font-bold text-emerald-400 flex items-center gap-1">
+            <span>🔥</span>
+            <span>Combo Pack (${pricing.count} servicios)</span>
+          </span>
+          <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-cyan-500/20 text-cyan-300 border border-cyan-400/40">
+            ${pricing.discountPct}% OFF APLICADO
+          </span>
+        </div>
+        <div class="flex items-center gap-2 text-xs">
+          <span class="text-slate-500 line-through">${formatCurrency(pricing.regularSubtotal)}</span>
+          <span class="text-emerald-400 font-bold">¡Ahorrás ${formatCurrency(pricing.totalSavings)}!</span>
+        </div>
+      </div>
+
+      <div class="text-right">
+        <span class="text-[10px] text-cyan-400 block uppercase font-bold tracking-wider">Precio Final Combo:</span>
+        <span class="text-2xl font-black text-white">${formatCurrency(pricing.finalPrice)}</span>
+      </div>
+    `;
+
+    if (addBtn) {
+      addBtn.disabled = false;
+      addBtn.className = 'w-full py-3.5 px-4 rounded-xl font-extrabold text-xs uppercase tracking-wider text-white gradient-btn-neon shadow-xl cursor-pointer transition-all hover:scale-[1.01]';
+      addBtn.textContent = `Agregar Combo al Pedido (${formatCurrency(pricing.finalPrice)}) 🛒`;
     }
   }
 }
 
 function submitCustomComboToCart() {
-  const targetCount = AppState.comboState.selectedTier;
-  if (AppState.comboState.selectedPlatforms.length !== targetCount) {
-    showToast(`Por favor completá las ${targetCount} plataformas`);
+  const pricing = calculateComboPricing();
+  if (pricing.count < 2) {
+    showToast('Seleccioná al menos 2 servicios para armar tu combo', 'warning');
     return;
   }
 
-  const currentTierInfo = (AppState.config.comboTiers || []).find(t => t.count === targetCount) || { price: 16000 };
-  const platformNames = AppState.comboState.selectedPlatforms.map(id => {
-    const p = (AppState.config.comboPlatforms || []).find(item => item.id === id);
-    return p ? p.name : id;
-  }).join(' + ');
+  const names = pricing.selectedProducts.map(p => p.name).join(' + ');
 
   addToCart({
-    productId: 'combo-streaming-personalizado',
-    name: `Combo Entretenimiento (${targetCount} Plataformas)`,
-    variantName: platformNames,
-    price: currentTierInfo.price,
+    productId: 'combo-personalizado',
+    name: `Combo Pack (${pricing.count} Servicios)`,
+    variantName: `${names} · Descuento ${pricing.discountPct}% OFF`,
+    price: pricing.finalPrice,
     quantity: 1
   });
 
   closeComboModal();
-  showToast('¡Combo agregado al pedido!');
+  showToast(`¡Combo de ${pricing.count} servicios agregado al pedido!`);
 }
 
 // ==============================================================================
-// 7. MODAL INTERACTIVO: CONFIGURADOR SMM
+// 7. MODAL INTERACTIVO: CONFIGURADOR SMM A MEDIDA Y PRESETS
 // ==============================================================================
 
 function openSmmModal() {
   const modal = document.getElementById('smmModal');
   if (!modal) return;
   modal.classList.remove('hidden');
+  initSmmDefaultsIfNeeded();
   renderSmmModalContent();
 }
 
@@ -1013,16 +1098,357 @@ function closeSmmModal() {
   if (modal) modal.classList.add('hidden');
 }
 
+function setSmmMode(mode) {
+  AppState.smmState.mode = mode;
+  renderSmmModalContent();
+}
+
 function setSmmNetwork(netKey) {
   AppState.smmState.activeNetwork = netKey;
-  const netData = AppState.config.smmData[netKey];
-  if (netData && netData.services && netData.services.length > 0) {
+  initSmmDefaultsIfNeeded();
+  renderSmmModalContent();
+}
+
+function initSmmDefaultsIfNeeded() {
+  const netKey = AppState.smmState.activeNetwork || 'instagram';
+  const netData = AppState.config.smmData && AppState.config.smmData[netKey];
+  if (!netData || !netData.services) return;
+
+  netData.services.forEach((s, idx) => {
+    if (AppState.smmState.customEnabled[s.id] === undefined) {
+      AppState.smmState.customEnabled[s.id] = (idx === 0);
+    }
+    if (!AppState.smmState.customQuantities[s.id]) {
+      const isComment = s.id.includes('comentario');
+      AppState.smmState.customQuantities[s.id] = isComment ? 25 : 200;
+    }
+  });
+
+  if (!AppState.smmState.activeServiceId && netData.services[0]) {
     AppState.smmState.activeServiceId = netData.services[0].id;
-    if (netData.services[0].options && netData.services[0].options.length > 0) {
-      AppState.smmState.selectedOptionId = netData.services[0].options[0].id;
+  }
+}
+
+function getSmmServiceMinAndStep(serviceId) {
+  if (serviceId.includes('comentario')) {
+    return { min: 10, step: 10, default: 25 };
+  }
+  return { min: 100, step: 100, default: 200 };
+}
+
+function toggleSmmCustomItem(serviceId) {
+  AppState.smmState.customEnabled[serviceId] = !AppState.smmState.customEnabled[serviceId];
+  renderSmmModalContent();
+}
+
+function updateSmmCustomQty(serviceId, deltaOrValue) {
+  const { min, step } = getSmmServiceMinAndStep(serviceId);
+  let current = Number(AppState.smmState.customQuantities[serviceId]) || min;
+
+  if (typeof deltaOrValue === 'number' && (deltaOrValue === step || deltaOrValue === -step)) {
+    current += deltaOrValue;
+  } else {
+    current = Number(deltaOrValue) || min;
+  }
+
+  if (current < min) current = min;
+  AppState.smmState.customQuantities[serviceId] = current;
+  AppState.smmState.customEnabled[serviceId] = true;
+  renderSmmModalContent();
+}
+
+function calculateSmmCustomPricing() {
+  const netKey = AppState.smmState.activeNetwork || 'instagram';
+  const netData = (AppState.config.smmData && AppState.config.smmData[netKey]) || { services: [] };
+
+  const enabledItems = [];
+  let totalCost = 0;
+  let regularSubtotal = 0;
+  let totalUnits = 0;
+
+  (netData.services || []).forEach(service => {
+    if (AppState.smmState.customEnabled[service.id]) {
+      const qty = AppState.smmState.customQuantities[service.id] || getSmmServiceMinAndStep(service.id).min;
+      const costPer1000 = service.costPer1000 || 1000;
+      const margin = service.margin !== undefined ? service.margin : 50;
+
+      const itemCost = (costPer1000 / 1000) * qty;
+      const itemPrice = calcSalePrice(itemCost, margin);
+
+      totalCost += itemCost;
+      regularSubtotal += itemPrice;
+      totalUnits += qty;
+
+      enabledItems.push({
+        service,
+        qty,
+        itemCost,
+        itemPrice
+      });
+    }
+  });
+
+  const count = enabledItems.length;
+
+  // Descuento progresivo por armar pack personalizado de redes:
+  let discountPct = 0;
+  if (count === 2) discountPct = 10;
+  else if (count >= 3) discountPct = 15;
+
+  if (totalUnits >= 1500) discountPct += 5;
+
+  let finalPrice = regularSubtotal;
+  let totalSavings = 0;
+
+  if (count > 0 && regularSubtotal > 0) {
+    const rawDiscounted = regularSubtotal * (1 - discountPct / 100);
+    const candidatePrice = Math.round(rawDiscounted / 50) * 50;
+
+    // PISO DE SEGURIDAD ABSOLUTO (CERO PÉRDIDA GARANTIZADA):
+    const safetyFloor = Math.round((totalCost * 1.30) / 50) * 50;
+
+    finalPrice = Math.max(candidatePrice, safetyFloor);
+    totalSavings = Math.max(0, regularSubtotal - finalPrice);
+  }
+
+  return {
+    netData,
+    enabledItems,
+    count,
+    totalUnits,
+    regularSubtotal,
+    discountPct,
+    finalPrice,
+    totalSavings
+  };
+}
+
+function renderSmmModalContent() {
+  const mode = AppState.smmState.mode || 'custom';
+  const customBtn = document.getElementById('smmModeBtn-custom');
+  const presetsBtn = document.getElementById('smmModeBtn-presets');
+  const customView = document.getElementById('smmCustomPackView');
+  const presetsView = document.getElementById('smmPresetsView');
+  const networkTabs = document.getElementById('smmNetworkTabs');
+
+  if (!customBtn || !presetsBtn || !customView || !presetsView || !networkTabs) return;
+
+  if (mode === 'custom') {
+    customBtn.className = 'py-2.5 px-3 rounded-xl text-xs font-bold border transition-all text-center bg-purple-600/25 border-purple-400 text-purple-200 shadow-sm cursor-pointer';
+    presetsBtn.className = 'py-2.5 px-3 rounded-xl text-xs font-bold border transition-all text-center bg-[#121424] border-[#1E2238] text-slate-400 hover:text-white cursor-pointer';
+    customView.classList.remove('hidden');
+    presetsView.classList.add('hidden');
+  } else {
+    presetsBtn.className = 'py-2.5 px-3 rounded-xl text-xs font-bold border transition-all text-center bg-purple-600/25 border-purple-400 text-purple-200 shadow-sm cursor-pointer';
+    customBtn.className = 'py-2.5 px-3 rounded-xl text-xs font-bold border transition-all text-center bg-[#121424] border-[#1E2238] text-slate-400 hover:text-white cursor-pointer';
+    customView.classList.add('hidden');
+    presetsView.classList.remove('hidden');
+  }
+
+  const networks = Object.keys(AppState.config.smmData || {});
+  networkTabs.innerHTML = networks.map(key => {
+    const net = AppState.config.smmData[key];
+    const isSelected = AppState.smmState.activeNetwork === key;
+    return `
+      <button 
+        type="button"
+        onclick="setSmmNetwork('${key}')"
+        class="flex-1 py-1.5 px-3 rounded-xl text-xs font-bold border transition-all flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer ${
+          isSelected 
+            ? 'bg-gradient-to-r ' + net.color + ' text-white border-transparent shadow-md' 
+            : 'bg-[#121424] border-[#1E2238] text-slate-400 hover:text-white'
+        }"
+      >
+        <span>${net.name}</span>
+      </button>
+    `;
+  }).join('');
+
+  if (mode === 'custom') {
+    renderSmmCustomView();
+  } else {
+    renderSmmPresetsView();
+  }
+}
+
+function renderSmmCustomView() {
+  const container = document.getElementById('smmCustomPackView');
+  const summaryBox = document.getElementById('smmSummaryBox');
+  const addBtn = document.getElementById('smmAddToCartBtn');
+  if (!container || !summaryBox) return;
+
+  const netKey = AppState.smmState.activeNetwork || 'instagram';
+  const netData = (AppState.config.smmData && AppState.config.smmData[netKey]) || { services: [] };
+
+  container.innerHTML = (netData.services || []).map(service => {
+    const isEnabled = !!AppState.smmState.customEnabled[service.id];
+    const { min, step } = getSmmServiceMinAndStep(service.id);
+    const qty = AppState.smmState.customQuantities[service.id] || min;
+
+    const unitCost = (service.costPer1000 / 1000) * qty;
+    const unitPrice = calcSalePrice(unitCost, service.margin !== undefined ? service.margin : 50);
+
+    return `
+      <div class="p-3 rounded-xl border transition-all ${
+        isEnabled 
+          ? 'bg-purple-600/15 border-purple-500/60 shadow-sm' 
+          : 'bg-[#08090F] border-[#1E2238] opacity-75'
+      }">
+        <div class="flex items-center justify-between gap-3 mb-2">
+          <label class="flex items-center gap-2.5 cursor-pointer select-none">
+            <input 
+              type="checkbox" 
+              ${isEnabled ? 'checked' : ''} 
+              onchange="toggleSmmCustomItem('${service.id}')"
+              class="w-4 h-4 rounded text-purple-600 focus:ring-0 bg-[#121424] border-slate-700 cursor-pointer"
+            >
+            <div>
+              <span class="text-xs font-bold text-white block ${isEnabled ? 'text-purple-200' : ''}">${service.name}</span>
+              <span class="text-[10px] text-slate-400 leading-tight block">${service.description}</span>
+            </div>
+          </label>
+
+          <span class="text-xs font-black text-cyan-300 shrink-0">
+            ${formatCurrency(unitPrice)}
+          </span>
+        </div>
+
+        <div class="flex items-center justify-between pt-2 border-t border-[#1E2238]/60">
+          <span class="text-[10px] text-slate-400">
+            Cantidad (Mínimo: ${min.toLocaleString('es-AR')}):
+          </span>
+
+          <div class="flex items-center gap-1.5 bg-[#121424] px-1.5 py-0.5 rounded-lg border border-[#1E2238]">
+            <button 
+              type="button" 
+              onclick="updateSmmCustomQty('${service.id}', -${step})"
+              class="w-6 h-6 rounded bg-[#08090F] text-slate-300 hover:text-white flex items-center justify-center font-bold text-xs cursor-pointer"
+            >-</button>
+            <input 
+              type="number" 
+              value="${qty}" 
+              min="${min}" 
+              step="${step}"
+              onchange="updateSmmCustomQty('${service.id}', this.value)"
+              class="w-16 text-center text-xs font-mono font-bold bg-transparent text-white focus:outline-none"
+            >
+            <button 
+              type="button" 
+              onclick="updateSmmCustomQty('${service.id}', ${step})"
+              class="w-6 h-6 rounded bg-[#08090F] text-slate-300 hover:text-white flex items-center justify-center font-bold text-xs cursor-pointer"
+            >+</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  const pricing = calculateSmmCustomPricing();
+
+  if (pricing.count === 0) {
+    summaryBox.innerHTML = `
+      <span class="text-xs text-amber-300 block font-semibold">Marcá al menos un servicio</span>
+      <span class="text-[10px] text-slate-500">Mínimo 100 unidades por ítem</span>
+    `;
+    if (addBtn) {
+      addBtn.disabled = true;
+      addBtn.classList.add('opacity-50', 'cursor-not-allowed');
+    }
+  } else {
+    summaryBox.innerHTML = `
+      <div class="flex items-baseline gap-2">
+        <span class="text-xs text-slate-400 block uppercase font-bold">Total Pack:</span>
+        <span class="text-xl font-black text-cyan-300">${formatCurrency(pricing.finalPrice)}</span>
+      </div>
+      <div class="flex items-center gap-2 text-[10px]">
+        ${pricing.totalSavings > 0 ? `
+          <span class="text-slate-500 line-through">${formatCurrency(pricing.regularSubtotal)}</span>
+          <span class="text-emerald-400 font-bold">¡Ahorrás ${formatCurrency(pricing.totalSavings)}! (${pricing.discountPct}% OFF)</span>
+        ` : `
+          <span class="text-slate-400">${pricing.count} servicio(s) · ${pricing.totalUnits.toLocaleString('es-AR')} unidades</span>
+        `}
+      </div>
+    `;
+    if (addBtn) {
+      addBtn.disabled = false;
+      addBtn.classList.remove('opacity-50', 'cursor-not-allowed');
     }
   }
-  renderSmmModalContent();
+}
+
+function renderSmmPresetsView() {
+  const serviceTabs = document.getElementById('smmServiceTabs');
+  const optionsGrid = document.getElementById('smmOptionsGrid');
+  const serviceDesc = document.getElementById('smmServiceDescription');
+  const summaryBox = document.getElementById('smmSummaryBox');
+  const addBtn = document.getElementById('smmAddToCartBtn');
+
+  if (!serviceTabs || !optionsGrid) return;
+
+  const netKey = AppState.smmState.activeNetwork || 'instagram';
+  const currentNetData = AppState.config.smmData[netKey];
+  if (!currentNetData || !currentNetData.services) return;
+
+  const activeService = currentNetData.services.find(s => s.id === AppState.smmState.activeServiceId) || currentNetData.services[0];
+
+  serviceTabs.innerHTML = currentNetData.services.map(s => {
+    const isSelected = activeService.id === s.id;
+    return `
+      <button 
+        type="button"
+        onclick="setSmmService('${s.id}')"
+        class="px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
+          isSelected 
+            ? 'bg-purple-600/25 border-purple-400 text-purple-200' 
+            : 'bg-[#0B0C14] border-[#1E2238] text-slate-400 hover:text-white'
+        }"
+      >
+        ${s.name}
+      </button>
+    `;
+  }).join('');
+
+  if (serviceDesc) serviceDesc.textContent = activeService.description;
+
+  optionsGrid.innerHTML = (activeService.options || []).map(opt => {
+    const isSelected = AppState.smmState.selectedOptionId === opt.id;
+    return `
+      <button 
+        type="button"
+        onclick="setSmmOption('${opt.id}')"
+        class="p-3 rounded-xl border text-left flex items-center justify-between transition-all w-full cursor-pointer ${
+          isSelected 
+            ? 'bg-purple-600/20 border-purple-400 text-white shadow-md' 
+            : 'bg-[#0B0C14] border-[#1E2238] text-slate-300 hover:border-slate-600'
+        }"
+      >
+        <div>
+          <div class="text-xs font-bold">${opt.label}</div>
+          ${opt.popular ? '<span class="text-[10px] text-amber-400 font-semibold">★ Más Elegido</span>' : ''}
+        </div>
+        <div class="text-xs font-black text-cyan-300">
+          ${formatCurrency(opt.price)}
+        </div>
+      </button>
+    `;
+  }).join('');
+
+  const currentOption = (activeService.options || []).find(o => o.id === AppState.smmState.selectedOptionId) || activeService.options[0];
+
+  if (summaryBox && currentOption) {
+    summaryBox.innerHTML = `
+      <div class="flex items-baseline gap-2">
+        <span class="text-xs text-slate-400 block uppercase font-bold">Total:</span>
+        <span class="text-xl font-black text-cyan-300">${formatCurrency(currentOption.price)}</span>
+      </div>
+      <span class="text-[10px] text-slate-400">${currentOption.label}</span>
+    `;
+  }
+
+  if (addBtn) {
+    addBtn.disabled = false;
+    addBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+  }
 }
 
 function setSmmService(serviceId) {
@@ -1040,111 +1466,54 @@ function setSmmOption(optionId) {
   renderSmmModalContent();
 }
 
-function renderSmmModalContent() {
-  const networkTabs = document.getElementById('smmNetworkTabs');
-  const serviceTabs = document.getElementById('smmServiceTabs');
-  const optionsGrid = document.getElementById('smmOptionsGrid');
-  const serviceDesc = document.getElementById('smmServiceDescription');
-  const priceBadge = document.getElementById('smmPriceBadge');
-
-  if (!networkTabs || !serviceTabs || !optionsGrid) return;
-
-  const networks = Object.keys(AppState.config.smmData || {});
-  const currentNetData = AppState.config.smmData[AppState.smmState.activeNetwork];
-
-  networkTabs.innerHTML = networks.map(key => {
-    const net = AppState.config.smmData[key];
-    const isSelected = AppState.smmState.activeNetwork === key;
-    return `
-      <button 
-        onclick="setSmmNetwork('${key}')"
-        class="flex-1 py-2 px-3 rounded-xl text-xs font-bold border transition-all flex items-center justify-center gap-2 whitespace-nowrap ${
-          isSelected 
-            ? 'bg-gradient-to-r ' + net.color + ' text-white border-transparent shadow-lg' 
-            : 'bg-[#121424] border-[#1E2238] text-slate-400 hover:text-white'
-        }"
-      >
-        <span>${net.name}</span>
-      </button>
-    `;
-  }).join('');
-
-  if (!currentNetData) return;
-
-  const activeService = currentNetData.services.find(s => s.id === AppState.smmState.activeServiceId) || currentNetData.services[0];
-
-  serviceTabs.innerHTML = currentNetData.services.map(s => {
-    const isSelected = activeService.id === s.id;
-    return `
-      <button 
-        onclick="setSmmService('${s.id}')"
-        class="px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
-          isSelected 
-            ? 'bg-cyan-500/20 border-cyan-400 text-cyan-300' 
-            : 'bg-[#0B0C14] border-[#1E2238] text-slate-400 hover:text-white'
-        }"
-      >
-        ${s.name}
-      </button>
-    `;
-  }).join('');
-
-  if (serviceDesc) serviceDesc.textContent = activeService.description;
-
-  optionsGrid.innerHTML = (activeService.options || []).map(opt => {
-    const isSelected = AppState.smmState.selectedOptionId === opt.id;
-    return `
-      <button 
-        onclick="setSmmOption('${opt.id}')"
-        class="p-3.5 rounded-xl border text-left flex items-center justify-between transition-all ${
-          isSelected 
-            ? 'bg-purple-600/20 border-purple-400 text-white shadow-lg' 
-            : 'bg-[#0B0C14] border-[#1E2238] text-slate-300 hover:border-slate-600'
-        }"
-      >
-        <div>
-          <div class="text-xs font-bold">${opt.label}</div>
-          ${opt.popular ? '<span class="text-[10px] text-amber-400 font-semibold">★ Más Elegido</span>' : ''}
-        </div>
-        <div class="text-xs font-black text-cyan-300">
-          ${formatCurrency(opt.price)}
-        </div>
-      </button>
-    `;
-  }).join('');
-
-  const currentOption = (activeService.options || []).find(o => o.id === AppState.smmState.selectedOptionId) || activeService.options[0];
-  if (priceBadge && currentOption) {
-    priceBadge.textContent = formatCurrency(currentOption.price);
-  }
-}
-
 function submitSmmToCart() {
-  const currentNetData = AppState.config.smmData[AppState.smmState.activeNetwork];
-  if (!currentNetData) return;
-
-  const activeService = currentNetData.services.find(s => s.id === AppState.smmState.activeServiceId);
-  if (!activeService) return;
-
-  const currentOption = activeService.options.find(o => o.id === AppState.smmState.selectedOptionId);
-  if (!currentOption) return;
-
+  const mode = AppState.smmState.mode || 'custom';
   const targetInput = document.getElementById('smmTargetInput');
   const targetVal = targetInput ? targetInput.value.trim() : '';
 
-  let details = `${currentNetData.name} - ${currentOption.label}`;
-  if (targetVal) details += ` (${targetVal})`;
+  if (mode === 'custom') {
+    const pricing = calculateSmmCustomPricing();
+    if (pricing.count === 0) {
+      showToast('Seleccioná al menos un servicio para armar tu pack SMM', 'warning');
+      return;
+    }
 
-  addToCart({
-    productId: 'smm-crecimiento-redes',
-    name: `SMM: ${currentNetData.name} ${activeService.name}`,
-    variantName: details,
-    price: currentOption.price,
-    quantity: 1
-  });
+    const detailsList = pricing.enabledItems.map(item => `${item.qty.toLocaleString('es-AR')} ${item.service.name}`).join(' + ');
 
-  closeSmmModal();
-  showToast('¡Servicio SMM agregado al pedido!');
+    addToCart({
+      productId: 'smm-pack-medida',
+      name: `Pack SMM a Medida (${pricing.netData.name})`,
+      variantName: `${detailsList}${targetVal ? ' · ' + targetVal : ''}${pricing.discountPct > 0 ? ` (${pricing.discountPct}% OFF)` : ''}`,
+      price: pricing.finalPrice,
+      quantity: 1
+    });
+
+    closeSmmModal();
+    showToast(`¡Pack SMM a medida (${pricing.count} servicios) agregado al pedido!`);
+  } else {
+    const currentNetData = AppState.config.smmData[AppState.smmState.activeNetwork];
+    if (!currentNetData) return;
+
+    const activeService = currentNetData.services.find(s => s.id === AppState.smmState.activeServiceId);
+    if (!activeService) return;
+
+    const currentOption = (activeService.options || []).find(o => o.id === AppState.smmState.selectedOptionId) || activeService.options[0];
+    if (!currentOption) return;
+
+    let details = `${currentNetData.name} - ${currentOption.label}`;
+    if (targetVal) details += ` (${targetVal})`;
+
+    addToCart({
+      productId: 'smm-crecimiento-redes',
+      name: `SMM: ${currentNetData.name} ${activeService.name}`,
+      variantName: details,
+      price: currentOption.price,
+      quantity: 1
+    });
+
+    closeSmmModal();
+    showToast('¡Servicio SMM agregado al pedido!');
+  }
 }
 
 // ==============================================================================

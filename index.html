@@ -608,118 +608,152 @@
   </div>
 
   <!-- ========================================================================= -->
-  <!-- 10. MODAL: CONSTRUCTOR DE COMBOS DE STREAMING                             -->
+  <!-- 10. MODAL: CONSTRUCTOR DINÁMICO DE COMBOS (STREAMING, IA & IPTV)          -->
   <!-- ========================================================================= -->
-  <div id="comboModal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-    <div class="glass-panel-deep w-full max-w-lg rounded-3xl border border-cyan-500/40 p-6 md:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+  <div id="comboModal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-3 sm:p-4">
+    <div class="glass-panel-deep w-full max-w-2xl rounded-3xl border border-cyan-500/40 p-5 sm:p-7 shadow-2xl relative max-h-[92vh] flex flex-col justify-between overflow-hidden">
       
-      <div class="flex items-center justify-between mb-4">
+      <!-- Header -->
+      <div class="flex items-center justify-between pb-3 border-b border-[#1E2238] shrink-0">
         <div>
-          <span class="text-[10px] font-bold text-cyan-400 uppercase tracking-wider block">Constructor Interactivo</span>
-          <h3 class="text-xl font-black text-white">Armá tu Combo de Streaming</h3>
+          <span class="text-[10px] font-bold text-cyan-400 uppercase tracking-wider block">Constructor Dinámico de Combos</span>
+          <h3 class="text-xl font-black text-white flex items-center gap-2">
+            <span>Armá tu Combo Personalizado</span>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-400/40">Hasta 25% OFF 🔥</span>
+          </h3>
         </div>
-        <button onclick="closeComboModal()" class="text-slate-400 hover:text-white p-2">✕</button>
+        <button onclick="closeComboModal()" class="w-8 h-8 rounded-lg bg-[#121424] text-slate-400 hover:text-white flex items-center justify-center text-sm font-bold">✕</button>
       </div>
 
-      <p class="text-xs text-slate-300 mb-5 leading-relaxed">
-        Elegí cuántas plataformas querés sumar y marcá tus favoritas para armar tu pack exclusivo con descuento:
-      </p>
-
-      <div id="comboTierButtons" class="flex gap-2 mb-6">
-        <!-- Generado por app.js -->
-      </div>
-
-      <div class="p-4 rounded-xl bg-[#08090F] border border-[#1E2238] flex items-center justify-between mb-5">
-        <div>
-          <span id="comboSummaryText" class="text-xs font-bold text-white block">Seleccionadas: 0 de 2</span>
-          <span class="text-[10px] text-slate-400">Podés cambiarlas en cualquier momento</span>
+      <!-- Filtros de Categoría para el Combo -->
+      <div class="pt-3 pb-2 shrink-0">
+        <p class="text-xs text-slate-300 mb-2.5">
+          Elegí 2 o más servicios a tu gusto (Streaming, CapCut, Canva, IPTV...). El precio toma el valor real de cada cuenta y le aplica un descuento especial automático:
+        </p>
+        <div id="comboCategoryFilterTabs" class="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+          <!-- Inyectado por app.js -->
         </div>
-        <span id="comboPriceBadge" class="text-lg font-black text-cyan-300">
-          $0
-        </span>
       </div>
 
-      <div id="comboPlatformsGrid" class="grid grid-cols-2 gap-2.5 mb-6">
-        <!-- Generado por app.js -->
+      <!-- Grilla de Servicios Seleccionables -->
+      <div id="comboProductsGrid" class="flex-1 overflow-y-auto pr-1 space-y-2 max-h-[42vh] my-2">
+        <!-- Inyectado por app.js -->
       </div>
 
-      <button 
-        id="comboAddToCartBtn"
-        type="button" 
-        onclick="submitCustomComboToCart()" 
-        class="w-full py-3.5 px-4 rounded-xl font-bold text-xs uppercase tracking-wider text-white shadow-xl transition-all"
-      >
-        Agregar Combo al Carrito
-      </button>
+      <!-- Resumen de Precios y Descuento Progresivo -->
+      <div class="pt-3 border-t border-[#1E2238] shrink-0 space-y-3">
+        <div id="comboPricingCard" class="p-3.5 rounded-2xl bg-[#08090F] border border-cyan-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <!-- Inyectado por app.js -->
+        </div>
+
+        <button 
+          id="comboAddToCartBtn"
+          type="button" 
+          onclick="submitCustomComboToCart()" 
+          class="w-full py-3.5 px-4 rounded-xl font-bold text-xs uppercase tracking-wider text-white shadow-xl transition-all cursor-pointer"
+        >
+          Agregar Combo al Carrito
+        </button>
+      </div>
 
     </div>
   </div>
 
   <!-- ========================================================================= -->
-  <!-- 11. MODAL: CONFIGURADOR DE CRECIMIENTO EN REDES (SMM)                     -->
+  <!-- 11. MODAL: CONFIGURADOR DE CRECIMIENTO EN REDES (SMM) A MEDIDA           -->
   <!-- ========================================================================= -->
-  <div id="smmModal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-    <div class="glass-panel-deep w-full max-w-lg rounded-3xl border border-purple-500/40 p-6 md:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+  <div id="smmModal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-3 sm:p-4">
+    <div class="glass-panel-deep w-full max-w-2xl rounded-3xl border border-purple-500/40 p-5 sm:p-7 shadow-2xl relative max-h-[92vh] flex flex-col justify-between overflow-hidden">
       
-      <div class="flex items-center justify-between mb-4">
+      <!-- Header -->
+      <div class="flex items-center justify-between pb-3 border-b border-[#1E2238] shrink-0">
         <div>
-          <span class="text-[10px] font-bold text-purple-400 uppercase tracking-wider block">Servicios de Redes Sociales</span>
-          <h3 class="text-xl font-black text-white">Impulso y Crecimiento (SMM)</h3>
+          <span class="text-[10px] font-bold text-purple-400 uppercase tracking-wider block">Servicios de Redes Sociales (SMM)</span>
+          <h3 class="text-xl font-black text-white flex items-center gap-2">
+            <span>Packs & Crecimiento en Redes</span>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-400/40">100% Seguro</span>
+          </h3>
         </div>
-        <button onclick="closeSmmModal()" class="text-slate-400 hover:text-white p-2">✕</button>
+        <button onclick="closeSmmModal()" class="w-8 h-8 rounded-lg bg-[#121424] text-slate-400 hover:text-white flex items-center justify-center text-sm font-bold">✕</button>
       </div>
 
-      <div id="smmNetworkTabs" class="flex gap-1.5 overflow-x-auto pb-2 scrollbar-none mb-5">
-        <!-- Generado por app.js -->
-      </div>
+      <!-- Selector de Modo: Pack a Medida vs Paquetes Rápidos -->
+      <div class="pt-3 pb-2 shrink-0">
+        <div class="grid grid-cols-2 gap-2 mb-3">
+          <button 
+            id="smmModeBtn-custom"
+            type="button"
+            onclick="setSmmMode('custom')"
+            class="py-2.5 px-3 rounded-xl text-xs font-bold border transition-all text-center"
+          >
+            🛠️ Armá tu Pack a Medida (Mín. 100)
+          </button>
+          <button 
+            id="smmModeBtn-presets"
+            type="button"
+            onclick="setSmmMode('presets')"
+            class="py-2.5 px-3 rounded-xl text-xs font-bold border transition-all text-center"
+          >
+            ⚡ Paquetes Rápidos Prearmados
+          </button>
+        </div>
 
-      <div class="mb-3">
-        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">
-          Tipo de Servicio:
-        </label>
-        <div id="smmServiceTabs" class="flex flex-wrap gap-1.5">
+        <!-- Pestañas de Redes Sociales (Instagram, TikTok, etc.) -->
+        <div id="smmNetworkTabs" class="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
           <!-- Generado por app.js -->
         </div>
       </div>
 
-      <p id="smmServiceDescription" class="text-xs text-slate-400 mb-4 italic"></p>
-
-      <div class="mb-5">
-        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">
-          Elegir Paquete:
-        </label>
-        <div id="smmOptionsGrid" class="space-y-2 max-h-48 overflow-y-auto pr-1">
-          <!-- Generado por app.js -->
+      <!-- Contenido según el modo: Pack a Medida o Presets -->
+      <div class="flex-1 overflow-y-auto pr-1 max-h-[42vh] my-2">
+        
+        <!-- VISTA 1: ARMÁ TU PACK A MEDIDA (Inputs por cantidad personalizada) -->
+        <div id="smmCustomPackView" class="space-y-2.5">
+          <!-- Generado dinámicamente por app.js con inputs de cantidad mín 100 -->
         </div>
+
+        <!-- VISTA 2: PAQUETES RÁPIDOS PREARMADOS -->
+        <div id="smmPresetsView" class="hidden space-y-3">
+          <div class="mb-2">
+            <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Tipo de Servicio:</label>
+            <div id="smmServiceTabs" class="flex flex-wrap gap-1.5"></div>
+          </div>
+          <p id="smmServiceDescription" class="text-xs text-slate-400 italic mb-2"></p>
+          <div>
+            <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Elegir Paquete:</label>
+            <div id="smmOptionsGrid" class="space-y-2"></div>
+          </div>
+        </div>
+
       </div>
 
-      <div class="mb-5">
-        <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1.5">
-          🔗 Tu @usuario o enlace público (Opcional):
-        </label>
-        <input 
-          type="text" 
-          id="smmTargetInput" 
-          placeholder="Ej: @tu_marca o link de tu Reel/Video" 
-          class="w-full px-3.5 py-2.5 rounded-xl bg-[#08090F] border border-[#1E2238] text-white text-xs placeholder-slate-500 focus:outline-none focus:border-purple-400"
-        >
-        <p class="text-[10px] text-cyan-400 mt-1 flex items-center gap-1">
-          <span>✓</span> Jamás te pediremos contraseñas
-        </p>
-      </div>
-
-      <div class="flex items-center justify-between pt-4 border-t border-[#1E2238]">
+      <!-- Footer con enlace público y botón -->
+      <div class="pt-3 border-t border-[#1E2238] shrink-0 space-y-3">
         <div>
-          <span class="text-[10px] uppercase font-bold text-slate-400 block">Total Paquete:</span>
-          <span id="smmPriceBadge" class="text-xl font-black text-cyan-300">$0</span>
+          <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1">
+            🔗 Tu @usuario o enlace público del post / video:
+          </label>
+          <input 
+            type="text" 
+            id="smmTargetInput" 
+            placeholder="Ej: @tu_usuario o link de publicación / reel" 
+            class="w-full px-3 py-2 rounded-xl bg-[#08090F] border border-[#1E2238] text-white text-xs placeholder-slate-500 focus:outline-none focus:border-purple-400"
+          >
         </div>
-        <button 
-          type="button" 
-          onclick="submitSmmToCart()" 
-          class="py-3 px-6 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold text-xs uppercase tracking-wider shadow-lg transition"
-        >
-          Agregar al Pedido
-        </button>
+
+        <div class="flex items-center justify-between gap-4">
+          <div id="smmSummaryBox">
+            <!-- Inyectado por app.js -->
+          </div>
+          <button 
+            id="smmAddToCartBtn"
+            type="button" 
+            onclick="submitSmmToCart()" 
+            class="py-3 px-6 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold text-xs uppercase tracking-wider shadow-lg transition shrink-0 cursor-pointer"
+          >
+            Agregar al Pedido
+          </button>
+        </div>
       </div>
 
     </div>
