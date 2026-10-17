@@ -687,8 +687,8 @@ const CATALOG_CONFIG = {
       benefits: [
         "NUNCA solicitamos tu contraseña: solo tu @usuario o link de publicación",
         "Servidores de alta calidad con entrega gradual y natural",
-        "Servicios para Instagram, Facebook, YouTube, TikTok y WhatsApp",
-        "Mejora tu prueba social, credibilidad y alcance orgánico"
+        "Servicios segmentados para Instagram, Facebook, YouTube y WhatsApp",
+        "Elegí tu audiencia: Argentinos 🇦🇷, Latinos 🌎, Femeninos 👩 o Globales 🌐"
       ]
     }
   ],
@@ -701,10 +701,136 @@ const CATALOG_CONFIG = {
       name: "Instagram",
       icon: "Instagram",
       color: "from-pink-500 to-purple-600",
+      audienceFilters: [
+        { id: "all", label: "🌟 Todos" },
+        { id: "argentinos", label: "🇦🇷 Argentinos" },
+        { id: "latam", label: "🌎 América Latina" },
+        { id: "femeninos", label: "👩 Femenino" },
+        { id: "global", label: "🌐 Global" }
+      ],
       services: [
+        {
+          id: "ig-seg-arg",
+          name: "Seguidores Argentinos 🇦🇷",
+          audience: "argentinos",
+          badge: "🇦🇷 Argentinos",
+          description: "Perfiles 100% de Argentina reales y activos para potenciar tu presencia y algoritmo local.",
+          costPer1000: 9500,
+          margin: 45,
+          options: [
+            { id: "ig-sarg-500", count: 500, label: "500 Seguidores Argentinos 🇦🇷", costPrice: 4750, margin: 45, price: calcSalePrice(4750, 45) },
+            { id: "ig-sarg-1000", count: 1000, label: "1.000 Seguidores Argentinos 🇦🇷", costPrice: 9500, margin: 45, price: calcSalePrice(9500, 45), popular: true },
+            { id: "ig-sarg-2500", count: 2500, label: "2.500 Seguidores Argentinos 🇦🇷", costPrice: 23750, margin: 45, price: calcSalePrice(23750, 45) },
+            { id: "ig-sarg-5000", count: 5000, label: "5.000 Seguidores Argentinos 🇦🇷", costPrice: 47500, margin: 45, price: calcSalePrice(47500, 45) }
+          ]
+        },
+        {
+          id: "ig-seg-latam",
+          name: "Seguidores América Latina 🌎",
+          audience: "latam",
+          badge: "🌎 América Latina",
+          description: "Crecimiento con público de habla hispana en toda Latinoamérica.",
+          costPer1000: 4200,
+          margin: 50,
+          options: [
+            { id: "ig-slat-500", count: 500, label: "500 Seguidores Latinos", costPrice: 2100, margin: 50, price: calcSalePrice(2100, 50) },
+            { id: "ig-slat-1000", count: 1000, label: "1.000 Seguidores Latinos", costPrice: 4200, margin: 50, price: calcSalePrice(4200, 50), popular: true },
+            { id: "ig-slat-2500", count: 2500, label: "2.500 Seguidores Latinos", costPrice: 10500, margin: 50, price: calcSalePrice(10500, 50) },
+            { id: "ig-slat-5000", count: 5000, label: "5.000 Seguidores Latinos", costPrice: 21000, margin: 50, price: calcSalePrice(21000, 50) }
+          ]
+        },
+        {
+          id: "ig-seg-fem",
+          name: "Seguidores Femeninos 👩",
+          audience: "femeninos",
+          badge: "👩 Audiencia Femenina",
+          description: "Perfiles de mujeres reales, ideal para estética, moda, belleza y creadoras de contenido.",
+          costPer1000: 3800,
+          margin: 50,
+          options: [
+            { id: "ig-sfem-500", count: 500, label: "500 Seguidores Femeninos", costPrice: 1900, margin: 50, price: calcSalePrice(1900, 50) },
+            { id: "ig-sfem-1000", count: 1000, label: "1.000 Seguidores Femeninos", costPrice: 3800, margin: 50, price: calcSalePrice(3800, 50), popular: true },
+            { id: "ig-sfem-2500", count: 2500, label: "2.500 Seguidores Femeninos", costPrice: 9500, margin: 50, price: calcSalePrice(9500, 50) },
+            { id: "ig-sfem-5000", count: 5000, label: "5.000 Seguidores Femeninos", costPrice: 19000, margin: 50, price: calcSalePrice(19000, 50) }
+          ]
+        },
+        {
+          id: "ig-seg-global",
+          name: "Seguidores Globales 🌐",
+          audience: "global",
+          badge: "🌐 Global",
+          description: "Crecimiento rápido en volumen para superar los 1k/10k y potenciar la prueba social.",
+          costPer1000: 1600,
+          margin: 60,
+          options: [
+            { id: "ig-sglob-1000", count: 1000, label: "1.000 Seguidores Globales", costPrice: 1600, margin: 60, price: calcSalePrice(1600, 60), popular: true },
+            { id: "ig-sglob-2500", count: 2500, label: "2.500 Seguidores Globales", costPrice: 4000, margin: 60, price: calcSalePrice(4000, 60) },
+            { id: "ig-sglob-5000", count: 5000, label: "5.000 Seguidores Globales", costPrice: 8000, margin: 60, price: calcSalePrice(8000, 60) },
+            { id: "ig-sglob-10000", count: 10000, label: "10.000 Seguidores Globales", costPrice: 16000, margin: 60, price: calcSalePrice(16000, 60) }
+          ]
+        },
+        {
+          id: "ig-like-arg",
+          name: "Me Gusta / Likes Argentinos 🇦🇷",
+          audience: "argentinos",
+          badge: "🇦🇷 Argentinos",
+          description: "Likes de usuarios de Argentina para posicionar tus publicaciones en el feed local.",
+          costPer1000: 8256,
+          margin: 40,
+          options: [
+            { id: "ig-larg-250", count: 250, label: "250 Likes Argentinos 🇦🇷", costPrice: 2064, margin: 40, price: calcSalePrice(2064, 40) },
+            { id: "ig-larg-500", count: 500, label: "500 Likes Argentinos 🇦🇷", costPrice: 4128, margin: 40, price: calcSalePrice(4128, 40) },
+            { id: "ig-larg-1000", count: 1000, label: "1.000 Likes Argentinos 🇦🇷", costPrice: 8256, margin: 40, price: calcSalePrice(8256, 40), popular: true }
+          ]
+        },
+        {
+          id: "ig-like-latam",
+          name: "Me Gusta / Likes América Latina 🌎",
+          audience: "latam",
+          badge: "🌎 América Latina",
+          description: "Me Gusta de cuentas hispanohablantes de diversos países de Latinoamérica.",
+          costPer1000: 2383,
+          margin: 50,
+          options: [
+            { id: "ig-llat-500", count: 500, label: "500 Likes Latinos", costPrice: 1192, margin: 50, price: calcSalePrice(1192, 50) },
+            { id: "ig-llat-1000", count: 1000, label: "1.000 Likes Latinos", costPrice: 2383, margin: 50, price: calcSalePrice(2383, 50), popular: true },
+            { id: "ig-llat-2500", count: 2500, label: "2.500 Likes Latinos", costPrice: 5958, margin: 50, price: calcSalePrice(5958, 50) }
+          ]
+        },
+        {
+          id: "ig-like-fem",
+          name: "Me Gusta / Likes Femeninos 👩",
+          audience: "femeninos",
+          badge: "👩 Audiencia Femenina",
+          description: "Me Gusta provenientes de perfiles de mujeres para estética, moda y estilo de vida.",
+          costPer1000: 1970,
+          margin: 50,
+          options: [
+            { id: "ig-lfem-500", count: 500, label: "500 Likes Femeninos", costPrice: 985, margin: 50, price: calcSalePrice(985, 50) },
+            { id: "ig-lfem-1000", count: 1000, label: "1.000 Likes Femeninos", costPrice: 1970, margin: 50, price: calcSalePrice(1970, 50), popular: true },
+            { id: "ig-lfem-2500", count: 2500, label: "2.500 Likes Femeninos", costPrice: 4925, margin: 50, price: calcSalePrice(4925, 50) }
+          ]
+        },
+        {
+          id: "ig-likes",
+          name: "Me Gusta / Likes Globales 🌐",
+          audience: "global",
+          badge: "🌐 Global",
+          description: "Impulso instantáneo y económico para cualquier publicación, foto o carrusel.",
+          costPer1000: 760,
+          margin: 60,
+          options: [
+            { id: "ig-like-500", count: 500, label: "500 Likes Globales", costPrice: 380, margin: 80, price: calcSalePrice(380, 80) },
+            { id: "ig-like-1000", count: 1000, label: "1.000 Likes Globales", costPrice: 760, margin: 60, price: calcSalePrice(760, 60), popular: true },
+            { id: "ig-like-2500", count: 2500, label: "2.500 Likes Globales", costPrice: 1900, margin: 60, price: calcSalePrice(1900, 60) },
+            { id: "ig-like-5000", count: 5000, label: "5.000 Likes Globales", costPrice: 3800, margin: 60, price: calcSalePrice(3800, 60) }
+          ]
+        },
         {
           id: "ig-vistas",
           name: "Vistas Reels / Vídeo / IGTV",
+          audience: "global",
+          badge: "⚡ Alta Velocidad",
           description: "Multiplicá las reproducciones para posicionar tus videos en la sección 'Explorar'.",
           costPer1000: 151,
           margin: 100,
@@ -716,24 +842,31 @@ const CATALOG_CONFIG = {
           ]
         },
         {
-          id: "ig-likes",
-          name: "Me Gusta / Likes",
-          description: "Impulso instantáneo para tus publicaciones, fotos y carruseles.",
-          costPer1000: 760,
-          margin: 60,
+          id: "ig-com-fem",
+          name: "Comentarios Personalizados Femeninos 👩",
+          audience: "femeninos",
+          badge: "👩 Audiencia Femenina",
+          description: "Comentarios 100% redactados por vos pero publicados desde perfiles femeninos creíbles.",
+          costPer1000: 63141,
+          margin: 45,
+          minQty: 10,
+          stepQty: 10,
           options: [
-            { id: "ig-like-500", count: 500, label: "500 Likes Globales", costPrice: 380, margin: 80, price: calcSalePrice(380, 80) },
-            { id: "ig-like-1000", count: 1000, label: "1.000 Likes Globales", costPrice: 760, margin: 60, price: calcSalePrice(760, 60), popular: true },
-            { id: "ig-like-latam-1000", count: 1000, label: "1.000 Likes América Latina", costPrice: 2383, margin: 50, price: calcSalePrice(2383, 50) },
-            { id: "ig-like-arg-1000", count: 1000, label: "1.000 Likes Argentinos 🇦🇷", costPrice: 8256, margin: 40, price: calcSalePrice(8256, 40) }
+            { id: "ig-comf-10", count: 10, label: "10 Comentarios Femeninos", costPrice: 631, margin: 50, price: calcSalePrice(631, 50) },
+            { id: "ig-comf-25", count: 25, label: "25 Comentarios Femeninos", costPrice: 1579, margin: 45, price: calcSalePrice(1579, 45), popular: true },
+            { id: "ig-comf-50", count: 50, label: "50 Comentarios Femeninos", costPrice: 3157, margin: 45, price: calcSalePrice(3157, 45) }
           ]
         },
         {
           id: "ig-comentarios",
-          name: "Comentarios Personalizados",
-          description: "Comentarios 100% redactados por vos para generar interacción real en tus posts.",
+          name: "Comentarios Personalizados en Español 💬",
+          audience: "latam",
+          badge: "🌎 Habla Hispana",
+          description: "Comentarios redactados por vos para generar interacción real, ventas y debate en tus posts.",
           costPer1000: 60480,
           margin: 45,
+          minQty: 10,
+          stepQty: 10,
           options: [
             { id: "ig-com-10", count: 10, label: "10 Comentarios Personalizados", costPrice: 605, margin: 60, price: calcSalePrice(605, 60) },
             { id: "ig-com-25", count: 25, label: "25 Comentarios Personalizados", costPrice: 1512, margin: 55, price: calcSalePrice(1512, 55), popular: true },
@@ -741,27 +874,44 @@ const CATALOG_CONFIG = {
           ]
         },
         {
-          id: "ig-vivos",
-          name: "Espectadores para Transmisión en Vivo",
-          description: "Mantené tu transmisión con audiencia activa para atraer más personas orgánicas.",
-          costPer1000: 25402,
-          margin: 45,
+          id: "ig-vis-historias",
+          name: "Vistas de Historias (Stories) 👁️",
+          audience: "global",
+          badge: "👁️ Stories",
+          description: "Vistas e impresiones para todas tus historias activas para reflejar alto engagement.",
+          costPer1000: 1153,
+          margin: 60,
           options: [
-            { id: "ig-vivo-15m-100", count: 100, label: "100 Espectadores (15 Minutos)", costPrice: 2540, margin: 50, price: calcSalePrice(2540, 50) },
-            { id: "ig-vivo-60m-100", count: 100, label: "100 Espectadores (60 Minutos)", costPrice: 8090, margin: 45, price: calcSalePrice(8090, 45), popular: true },
-            { id: "ig-vivo-120m-100", count: 100, label: "100 Espectadores (120 Minutos)", costPrice: 11970, margin: 40, price: calcSalePrice(11970, 40) },
-            { id: "ig-vivo-360m-100", count: 100, label: "100 Espectadores (360 Minutos)", costPrice: 23115, margin: 40, price: calcSalePrice(23115, 40) }
+            { id: "ig-sto-500", count: 500, label: "500 Vistas Stories", costPrice: 577, margin: 60, price: calcSalePrice(577, 60) },
+            { id: "ig-sto-1000", count: 1000, label: "1.000 Vistas Stories", costPrice: 1153, margin: 60, price: calcSalePrice(1153, 60), popular: true },
+            { id: "ig-sto-2500", count: 2500, label: "2.500 Vistas Stories", costPrice: 2883, margin: 60, price: calcSalePrice(2883, 60) }
           ]
         },
         {
           id: "ig-miembros-canal",
-          name: "Miembros de Canal de Instagram",
+          name: "Miembros de Canal de Instagram 📢",
+          audience: "global",
+          badge: "📢 Canal Difusión",
           description: "Sumá miembros a tu canal de difusión para que luzca activo y masivo.",
           costPer1000: 8078,
           margin: 45,
           options: [
             { id: "ig-chan-500", count: 500, label: "500 Miembros de Canal", costPrice: 4039, margin: 50, price: calcSalePrice(4039, 50) },
             { id: "ig-chan-1000", count: 1000, label: "1.000 Miembros de Canal", costPrice: 8078, margin: 45, price: calcSalePrice(8078, 45), popular: true }
+          ]
+        },
+        {
+          id: "ig-vivos",
+          name: "Espectadores para Transmisión en Vivo 🔴",
+          audience: "global",
+          badge: "🔴 En Vivo",
+          description: "Mantené tu transmisión con audiencia activa para atraer más personas orgánicas.",
+          costPer1000: 25402,
+          margin: 45,
+          options: [
+            { id: "ig-vivo-15m-100", count: 100, label: "100 Espectadores (15 Minutos)", costPrice: 2540, margin: 50, price: calcSalePrice(2540, 50) },
+            { id: "ig-vivo-60m-100", count: 100, label: "100 Espectadores (60 Minutos)", costPrice: 8090, margin: 45, price: calcSalePrice(8090, 45), popular: true },
+            { id: "ig-vivo-120m-100", count: 100, label: "100 Espectadores (120 Minutos)", costPrice: 11970, margin: 40, price: calcSalePrice(11970, 40) }
           ]
         }
       ]
@@ -770,50 +920,171 @@ const CATALOG_CONFIG = {
       name: "Facebook",
       icon: "Facebook",
       color: "from-blue-600 to-indigo-800",
+      audienceFilters: [
+        { id: "all", label: "🌟 Todos" },
+        { id: "argentinos", label: "🇦🇷 Argentinos" },
+        { id: "latam", label: "🌎 América Latina" },
+        { id: "femeninos", label: "👩 Femenino" },
+        { id: "global", label: "🌐 Global" }
+      ],
       services: [
         {
-          id: "fb-seguidores",
-          name: "Seguidores de Página / Perfil",
-          description: "Hacé crecer tu fan page de negocio o tu perfil público.",
-          costPer1000: 1008,
-          margin: 60,
+          id: "fb-seg-latam",
+          name: "Seguidores Latinos de Página / Perfil 🌎",
+          audience: "latam",
+          badge: "🌎 América Latina",
+          description: "Seguidores reales de habla hispana para fanpages comerciales o creadores de contenido.",
+          costPer1000: 35664,
+          margin: 40,
           options: [
+            { id: "fb-slat-250", count: 250, label: "250 Seguidores Latinos", costPrice: 8916, margin: 40, price: calcSalePrice(8916, 40) },
+            { id: "fb-slat-500", count: 500, label: "500 Seguidores Latinos", costPrice: 17832, margin: 40, price: calcSalePrice(17832, 40) },
+            { id: "fb-slat-1000", count: 1000, label: "1.000 Seguidores Latinos", costPrice: 35664, margin: 40, price: calcSalePrice(35664, 40), popular: true }
+          ]
+        },
+        {
+          id: "fb-seguidores",
+          name: "Seguidores Globales de Fanpage / Perfil 🌐",
+          audience: "global",
+          badge: "🌐 Global",
+          description: "Crecimiento rápido en volumen para fanpages y perfiles públicos de negocio.",
+          costPer1000: 1008,
+          margin: 65,
+          options: [
+            { id: "fb-seg-500", count: 500, label: "500 Seguidores Globales", costPrice: 504, margin: 70, price: calcSalePrice(504, 70) },
             { id: "fb-seg-1000", count: 1000, label: "1.000 Seguidores Globales", costPrice: 1008, margin: 70, price: calcSalePrice(1008, 70), popular: true },
-            { id: "fb-seg-5000", count: 5000, label: "5.000 Seguidores Globales", costPrice: 5040, margin: 60, price: calcSalePrice(5040, 60) },
-            { id: "fb-seg-latam-1000", count: 1000, label: "1.000 Seguidores Latinos", costPrice: 35664, margin: 40, price: calcSalePrice(35664, 40) }
+            { id: "fb-seg-2500", count: 2500, label: "2.500 Seguidores Globales", costPrice: 2520, margin: 65, price: calcSalePrice(2520, 65) },
+            { id: "fb-seg-5000", count: 5000, label: "5.000 Seguidores Globales", costPrice: 5040, margin: 60, price: calcSalePrice(5040, 60) }
+          ]
+        },
+        {
+          id: "fb-like-latam",
+          name: "Likes Latinos en Publicaciones 🌎",
+          audience: "latam",
+          badge: "🌎 América Latina",
+          description: "Me Gusta de usuarios latinoamericanos en fotos, publicaciones y enlaces.",
+          costPer1000: 29528,
+          margin: 40,
+          options: [
+            { id: "fb-llat-250", count: 250, label: "250 Likes Latinos", costPrice: 7382, margin: 40, price: calcSalePrice(7382, 40) },
+            { id: "fb-llat-500", count: 500, label: "500 Likes Latinos", costPrice: 14764, margin: 40, price: calcSalePrice(14764, 40) },
+            { id: "fb-llat-1000", count: 1000, label: "1.000 Likes Latinos", costPrice: 29528, margin: 40, price: calcSalePrice(29528, 40), popular: true }
           ]
         },
         {
           id: "fb-likes",
-          name: "Likes en Publicaciones",
-          description: "Me gusta para fotos, videos y estados en Facebook.",
+          name: "Likes Globales en Publicaciones 🌐",
+          audience: "global",
+          badge: "🌐 Global",
+          description: "Me Gusta instantáneos para fotos, videos y estados en Facebook.",
           costPer1000: 1066,
-          margin: 60,
+          margin: 65,
           options: [
+            { id: "fb-like-500", count: 500, label: "500 Likes Globales", costPrice: 533, margin: 70, price: calcSalePrice(533, 70) },
             { id: "fb-like-1000", count: 1000, label: "1.000 Likes Globales", costPrice: 1066, margin: 70, price: calcSalePrice(1066, 70), popular: true },
-            { id: "fb-like-latam-1000", count: 1000, label: "1.000 Likes Latinos", costPrice: 29528, margin: 40, price: calcSalePrice(29528, 40) }
+            { id: "fb-like-2500", count: 2500, label: "2.500 Likes Globales", costPrice: 2665, margin: 65, price: calcSalePrice(2665, 65) }
+          ]
+        },
+        {
+          id: "fb-reacciones",
+          name: "Reacciones con Emojis (❤️, 😮, 😂, 🥰) 🔥",
+          audience: "global",
+          badge: "🔥 Reacciones",
+          description: "Reacciones auténticas: Me Encanta ❤️, Me Asombra 😮, Me Divierte 😂 o Me Importa 🥰.",
+          costPer1000: 517,
+          margin: 70,
+          options: [
+            { id: "fb-reac-500", count: 500, label: "500 Reacciones con Emojis", costPrice: 259, margin: 70, price: calcSalePrice(259, 70) },
+            { id: "fb-reac-1000", count: 1000, label: "1.000 Reacciones con Emojis", costPrice: 517, margin: 70, price: calcSalePrice(517, 70), popular: true },
+            { id: "fb-reac-2500", count: 2500, label: "2.500 Reacciones con Emojis", costPrice: 1293, margin: 70, price: calcSalePrice(1293, 70) }
           ]
         },
         {
           id: "fb-vistas-reels",
-          name: "Vistas de Video / Reels",
-          description: "Multiplicá las reproducciones de tus reels y transmisiones.",
+          name: "Vistas de Video / Facebook Reels ⚡",
+          audience: "global",
+          badge: "⚡ Reels / Video",
+          description: "Multiplicá las reproducciones para posicionar tus videos y Reels en Facebook Watch.",
           costPer1000: 480,
-          margin: 100,
+          margin: 80,
           options: [
             { id: "fb-vis-1000", count: 1000, label: "1.000 Vistas de Reels", costPrice: 480, margin: 120, price: calcSalePrice(480, 120) },
-            { id: "fb-vis-5000", count: 5000, label: "5.000 Vistas de Reels", costPrice: 2400, margin: 80, price: calcSalePrice(2400, 80), popular: true }
+            { id: "fb-vis-5000", count: 5000, label: "5.000 Vistas de Reels", costPrice: 2400, margin: 80, price: calcSalePrice(2400, 80), popular: true },
+            { id: "fb-vis-10000", count: 10000, label: "10.000 Vistas de Reels", costPrice: 4800, margin: 80, price: calcSalePrice(4800, 80) }
+          ]
+        },
+        {
+          id: "fb-miembros-grupo-arg",
+          name: "Miembros de Grupo Argentina 🇦🇷",
+          audience: "argentinos",
+          badge: "🇦🇷 Argentinos",
+          description: "Miembros 100% de Argentina para grupos de compra/venta, comunidades y empresas.",
+          costPer1000: 42995,
+          margin: 40,
+          options: [
+            { id: "fb-grup-arg-250", count: 250, label: "250 Miembros Argentina 🇦🇷", costPrice: 10749, margin: 40, price: calcSalePrice(10749, 40) },
+            { id: "fb-grup-arg-500", count: 500, label: "500 Miembros Argentina 🇦🇷", costPrice: 21498, margin: 40, price: calcSalePrice(21498, 40) },
+            { id: "fb-grup-arg-1000", count: 1000, label: "1.000 Miembros Argentina 🇦🇷", costPrice: 42995, margin: 40, price: calcSalePrice(42995, 40), popular: true }
           ]
         },
         {
           id: "fb-miembros-grupo",
-          name: "Miembros de Grupo",
-          description: "Comunidades activas con miembros reales.",
+          name: "Miembros de Grupo Globales 🌐",
+          audience: "global",
+          badge: "🌐 Global",
+          description: "Sumá miembros a tu grupo de Facebook para que luzca activo y confiable.",
           costPer1000: 3953,
           margin: 50,
           options: [
-            { id: "fb-grup-1000", count: 1000, label: "1.000 Miembros para Grupo", costPrice: 3953, margin: 50, price: calcSalePrice(3953, 50), popular: true },
-            { id: "fb-grup-arg-1000", count: 1000, label: "1.000 Miembros de Grupo Argentina 🇦🇷", costPrice: 42995, margin: 40, price: calcSalePrice(42995, 40) }
+            { id: "fb-grup-500", count: 500, label: "500 Miembros de Grupo", costPrice: 1977, margin: 50, price: calcSalePrice(1977, 50) },
+            { id: "fb-grup-1000", count: 1000, label: "1.000 Miembros de Grupo", costPrice: 3953, margin: 50, price: calcSalePrice(3953, 50), popular: true },
+            { id: "fb-grup-2500", count: 2500, label: "2.500 Miembros de Grupo", costPrice: 9883, margin: 50, price: calcSalePrice(9883, 50) }
+          ]
+        },
+        {
+          id: "fb-res-fem",
+          name: "Recomendaciones SI + Reseña Femenina 👩",
+          audience: "femeninos",
+          badge: "👩 Audiencia Femenina",
+          description: "Reseñas positivas en tu página de Facebook redactadas por vos desde perfiles de mujeres.",
+          costPer1000: 232502,
+          margin: 40,
+          minQty: 5,
+          stepQty: 5,
+          options: [
+            { id: "fb-rfem-5", count: 5, label: "5 Reseñas Femeninas", costPrice: 1163, margin: 45, price: calcSalePrice(1163, 45) },
+            { id: "fb-rfem-10", count: 10, label: "10 Reseñas Femeninas", costPrice: 2325, margin: 40, price: calcSalePrice(2325, 40), popular: true },
+            { id: "fb-rfem-25", count: 25, label: "25 Reseñas Femeninas", costPrice: 5813, margin: 40, price: calcSalePrice(5813, 40) }
+          ]
+        },
+        {
+          id: "fb-res-latam",
+          name: "Recomendaciones SI + Reseña LATAM 🌎",
+          audience: "latam",
+          badge: "🌎 América Latina",
+          description: "Opiniones y calificaciones de 5 estrellas en español para generar máxima confianza comercial.",
+          costPer1000: 103680,
+          margin: 45,
+          minQty: 10,
+          stepQty: 10,
+          options: [
+            { id: "fb-rlat-10", count: 10, label: "10 Reseñas Latinas", costPrice: 1037, margin: 45, price: calcSalePrice(1037, 45) },
+            { id: "fb-rlat-25", count: 25, label: "25 Reseñas Latinas", costPrice: 2592, margin: 45, price: calcSalePrice(2592, 45), popular: true },
+            { id: "fb-rlat-50", count: 50, label: "50 Reseñas Latinas", costPrice: 5184, margin: 45, price: calcSalePrice(5184, 45) }
+          ]
+        },
+        {
+          id: "fb-vivo",
+          name: "Espectadores de Transmisión en Vivo 🔴",
+          audience: "global",
+          badge: "🔴 En Vivo",
+          description: "Espectadores en tiempo real para transmisiones de ventas, lanzamientos o gaming.",
+          costPer1000: 5240,
+          margin: 50,
+          options: [
+            { id: "fb-vivo-15m-100", count: 100, label: "100 Espectadores (15 Minutos)", costPrice: 524, margin: 55, price: calcSalePrice(524, 55) },
+            { id: "fb-vivo-60m-100", count: 100, label: "100 Espectadores (60 Minutos)", costPrice: 2096, margin: 50, price: calcSalePrice(2096, 50), popular: true },
+            { id: "fb-vivo-120m-100", count: 100, label: "100 Espectadores (120 Minutos)", costPrice: 4191, margin: 50, price: calcSalePrice(4191, 50) }
           ]
         }
       ]
@@ -822,81 +1093,128 @@ const CATALOG_CONFIG = {
       name: "YouTube",
       icon: "Youtube",
       color: "from-red-600 to-rose-700",
+      audienceFilters: [
+        { id: "all", label: "🌟 Todos" },
+        { id: "monetizacion", label: "🎯 Monetización" },
+        { id: "latam", label: "🌎 América Latina" },
+        { id: "global", label: "🌐 Global" }
+      ],
       services: [
         {
           id: "yt-suscriptores",
-          name: "Suscriptores Premium",
-          description: "Suscriptores de alta calidad para cumplir los requisitos del programa de socios.",
+          name: "Suscriptores Premium (Meta Monetización) 🎯",
+          audience: "monetizacion",
+          badge: "🎯 Meta Monetización",
+          description: "Suscriptores de alta calidad y estabilidad para cumplir el requisito de 1.000 subs de YouTube Partner.",
           costPer1000: 119105,
+          margin: 38,
+          options: [
+            { id: "yt-sub-100", count: 100, label: "100 Suscriptores Premium", costPrice: 11911, margin: 40, price: calcSalePrice(11911, 40) },
+            { id: "yt-sub-250", count: 250, label: "250 Suscriptores Premium", costPrice: 29776, margin: 40, price: calcSalePrice(29776, 40) },
+            { id: "yt-sub-500", count: 500, label: "500 Suscriptores Premium", costPrice: 59553, margin: 38, price: calcSalePrice(59553, 38) },
+            { id: "yt-sub-1000", count: 1000, label: "1.000 Suscriptores (Monetización)", costPrice: 119105, margin: 38, price: calcSalePrice(119105, 38), popular: true }
+          ]
+        },
+        {
+          id: "yt-vis-latam",
+          name: "Vistas Latinas con Alta Retención 🌎",
+          audience: "latam",
+          badge: "🌎 América Latina",
+          description: "Reproducciones hispanohablantes con retención orgánica para posicionar en el buscador de YouTube.",
+          costPer1000: 18912,
           margin: 40,
           options: [
-            { id: "yt-sub-250", count: 250, label: "250 Suscriptores Premium", costPrice: 29776, margin: 45, price: calcSalePrice(29776, 45) },
-            { id: "yt-sub-500", count: 500, label: "500 Suscriptores Premium", costPrice: 59552, margin: 40, price: calcSalePrice(59552, 40), popular: true },
-            { id: "yt-sub-1000", count: 1000, label: "1.000 Suscriptores (Meta Monetización)", costPrice: 119105, margin: 38, price: calcSalePrice(119105, 38) }
+            { id: "yt-vlat-500", count: 500, label: "500 Vistas Latinas", costPrice: 9456, margin: 40, price: calcSalePrice(9456, 40) },
+            { id: "yt-vlat-1000", count: 1000, label: "1.000 Vistas Latinas", costPrice: 18912, margin: 40, price: calcSalePrice(18912, 40), popular: true },
+            { id: "yt-vlat-2500", count: 2500, label: "2.500 Vistas Latinas", costPrice: 47280, margin: 40, price: calcSalePrice(47280, 40) }
+          ]
+        },
+        {
+          id: "yt-vis-rapidas",
+          name: "Vistas Rápidas para Videos y Shorts ⚡",
+          audience: "global",
+          badge: "⚡ Alta Calidad",
+          description: "Reproducciones rápidas para impulsar videos recién subidos y YouTube Shorts.",
+          costPer1000: 4692,
+          margin: 50,
+          options: [
+            { id: "yt-vrap-1000", count: 1000, label: "1.000 Vistas Rápidas", costPrice: 4692, margin: 50, price: calcSalePrice(4692, 50) },
+            { id: "yt-vrap-2500", count: 2500, label: "2.500 Vistas Rápidas", costPrice: 11730, margin: 50, price: calcSalePrice(11730, 50), popular: true },
+            { id: "yt-vrap-5000", count: 5000, label: "5.000 Vistas Rápidas", costPrice: 23460, margin: 50, price: calcSalePrice(23460, 50) }
           ]
         },
         {
           id: "yt-vistas",
-          name: "Vistas de Videos",
-          description: "Vistas orgánicas y retención de reproducción.",
+          name: "Vistas Globales para Videos 🌐",
+          audience: "global",
+          badge: "🌐 Global",
+          description: "Volumen económico de vistas para aumentar el contador de reproducciones.",
           costPer1000: 3010,
           margin: 50,
           options: [
             { id: "yt-vis-1000", count: 1000, label: "1.000 Vistas Globales", costPrice: 3010, margin: 60, price: calcSalePrice(3010, 60) },
             { id: "yt-vis-5000", count: 5000, label: "5.000 Vistas Globales", costPrice: 15050, margin: 50, price: calcSalePrice(15050, 50), popular: true },
-            { id: "yt-vis-latam-1000", count: 1000, label: "1.000 Vistas Latinas", costPrice: 18912, margin: 40, price: calcSalePrice(18912, 40) }
+            { id: "yt-vis-10000", count: 10000, label: "10.000 Vistas Globales", costPrice: 30100, margin: 50, price: calcSalePrice(30100, 50) }
+          ]
+        },
+        {
+          id: "yt-horas-monetizar",
+          name: "Horas de Reproducción Monetizar (+60 Min) ⏱️",
+          audience: "monetizacion",
+          badge: "⏱️ 4.000 Horas",
+          description: "El requisito más difícil de YouTube: alcanzá las 4.000 horas de visualización para activar la monetización (requiere video de +60 min).",
+          costPer1000: 829591,
+          margin: 30,
+          options: [
+            { id: "yt-hm-100", count: 100, label: "100 Horas de Reproducción", costPrice: 82959, margin: 30, price: calcSalePrice(82959, 30) },
+            { id: "yt-hm-250", count: 250, label: "250 Horas de Reproducción", costPrice: 207398, margin: 30, price: calcSalePrice(207398, 30) },
+            { id: "yt-hm-500", count: 500, label: "500 Horas de Reproducción", costPrice: 414796, margin: 30, price: calcSalePrice(414796, 30), popular: true },
+            { id: "yt-hm-1000", count: 1000, label: "1.000 Horas de Reproducción", costPrice: 829591, margin: 30, price: calcSalePrice(829591, 30) }
           ]
         },
         {
           id: "yt-likes",
-          name: "Likes para Videos",
-          description: "Engagement positivo que mejora el alcance en recomendaciones.",
+          name: "Likes para Videos y Shorts 👍",
+          audience: "global",
+          badge: "👍 Likes",
+          description: "Engagement positivo para que el algoritmo recomiende tu video a nuevos espectadores.",
           costPer1000: 3669,
           margin: 50,
           options: [
-            { id: "yt-like-500", count: 500, label: "500 Likes en Video", costPrice: 1834, margin: 60, price: calcSalePrice(1834, 60) },
-            { id: "yt-like-1000", count: 1000, label: "1.000 Likes en Video", costPrice: 3669, margin: 50, price: calcSalePrice(3669, 50), popular: true }
-          ]
-        }
-      ]
-    },
-    tiktok: {
-      name: "TikTok",
-      icon: "Music2",
-      color: "from-slate-800 to-zinc-950",
-      services: [
-        {
-          id: "tt-seguidores",
-          name: "Seguidores de Perfil",
-          description: "Alcanzá los 1.000 seguidores para habilitar transmisiones en vivo y enlaces.",
-          costPer1000: 9502,
-          margin: 45,
-          options: [
-            { id: "tt-seg-500", count: 500, label: "500 Seguidores Globales", costPrice: 4751, margin: 50, price: calcSalePrice(4751, 50) },
-            { id: "tt-seg-1000", count: 1000, label: "1.000 Seguidores (Habilitar LIVE)", costPrice: 9502, margin: 45, price: calcSalePrice(9502, 45), popular: true },
-            { id: "tt-seg-hq-1000", count: 1000, label: "1.000 Seguidores Alta Calidad", costPrice: 18393, margin: 40, price: calcSalePrice(18393, 40) }
+            { id: "yt-like-250", count: 250, label: "250 Likes en Video", costPrice: 917, margin: 55, price: calcSalePrice(917, 55) },
+            { id: "yt-like-500", count: 500, label: "500 Likes en Video", costPrice: 1834, margin: 50, price: calcSalePrice(1834, 50) },
+            { id: "yt-like-1000", count: 1000, label: "1.000 Likes en Video", costPrice: 3669, margin: 50, price: calcSalePrice(3669, 50), popular: true },
+            { id: "yt-like-2500", count: 2500, label: "2.500 Likes en Video", costPrice: 9173, margin: 50, price: calcSalePrice(9173, 50) }
           ]
         },
         {
-          id: "tt-likes",
-          name: "Likes para Videos",
-          description: "Impulso inicial para que el algoritmo viralice tus clips.",
-          costPer1000: 3283,
+          id: "yt-comentarios",
+          name: "Comentarios Personalizados Videos / Shorts 💬",
+          audience: "latam",
+          badge: "💬 Comentarios",
+          description: "Comentarios 100% redactados por vos para generar interacción y debate positivo.",
+          costPer1000: 69854,
+          margin: 40,
+          minQty: 10,
+          stepQty: 10,
+          options: [
+            { id: "yt-com-10", count: 10, label: "10 Comentarios Personalizados", costPrice: 699, margin: 45, price: calcSalePrice(699, 45) },
+            { id: "yt-com-25", count: 25, label: "25 Comentarios Personalizados", costPrice: 1746, margin: 40, price: calcSalePrice(1746, 40), popular: true },
+            { id: "yt-com-50", count: 50, label: "50 Comentarios Personalizados", costPrice: 3493, margin: 40, price: calcSalePrice(3493, 40) }
+          ]
+        },
+        {
+          id: "yt-compartidos",
+          name: "Compartidos de Video en Redes Sociales 🚀",
+          audience: "global",
+          badge: "🚀 Viralización",
+          description: "Compartidos externos en plataformas sociales para disparar las métricas de tráfico.",
+          costPer1000: 3810,
           margin: 50,
           options: [
-            { id: "tt-like-1000", count: 1000, label: "1.000 Likes", costPrice: 3283, margin: 55, price: calcSalePrice(3283, 55), popular: true },
-            { id: "tt-like-2500", count: 2500, label: "2.500 Likes", costPrice: 8207, margin: 45, price: calcSalePrice(8207, 45) }
-          ]
-        },
-        {
-          id: "tt-vistas",
-          name: "Vistas para Videos",
-          description: "Aumentá las visualizaciones de tus tiktoks al instante.",
-          costPer1000: 2464,
-          margin: 60,
-          options: [
-            { id: "tt-vis-1000", count: 1000, label: "1.000 Vistas", costPrice: 2464, margin: 60, price: calcSalePrice(2464, 60) },
-            { id: "tt-vis-5000", count: 5000, label: "5.000 Vistas", costPrice: 12320, margin: 45, price: calcSalePrice(12320, 45), popular: true }
+            { id: "yt-comp-500", count: 500, label: "500 Compartidos", costPrice: 1905, margin: 50, price: calcSalePrice(1905, 50) },
+            { id: "yt-comp-1000", count: 1000, label: "1.000 Compartidos", costPrice: 3810, margin: 50, price: calcSalePrice(3810, 50), popular: true },
+            { id: "yt-comp-2500", count: 2500, label: "2.500 Compartidos", costPrice: 9525, margin: 50, price: calcSalePrice(9525, 50) }
           ]
         }
       ]
@@ -905,27 +1223,52 @@ const CATALOG_CONFIG = {
       name: "WhatsApp",
       icon: "MessageCircle",
       color: "from-emerald-600 to-green-700",
+      audienceFilters: [
+        { id: "all", label: "🌟 Todos" },
+        { id: "canales", label: "📢 Canales" },
+        { id: "reacciones", label: "🔥 Reacciones" }
+      ],
       services: [
         {
           id: "wa-canales",
-          name: "Miembros para Canales de Difusión",
-          description: "Potenciá tu canal de WhatsApp con miembros para que luzca multitudinario.",
+          name: "Miembros para Canales de Difusión 👥",
+          audience: "canales",
+          badge: "📢 Canales Oficiales",
+          description: "Multiplicá la cantidad de miembros en tu canal de WhatsApp para inspirar credibilidad y confianza masiva.",
           costPer1000: 32888,
           margin: 40,
           options: [
-            { id: "wa-can-500", count: 500, label: "500 Miembros para Canal", costPrice: 16444, margin: 45, price: calcSalePrice(16444, 45) },
+            { id: "wa-can-250", count: 250, label: "250 Miembros para Canal", costPrice: 8222, margin: 40, price: calcSalePrice(8222, 40) },
+            { id: "wa-can-500", count: 500, label: "500 Miembros para Canal", costPrice: 16444, margin: 40, price: calcSalePrice(16444, 40) },
             { id: "wa-can-1000", count: 1000, label: "1.000 Miembros para Canal", costPrice: 32888, margin: 40, price: calcSalePrice(32888, 40), popular: true }
           ]
         },
         {
           id: "wa-reacciones",
-          name: "Reacciones con Emojis en Publicaciones",
-          description: "Reacciones (❤️, 🔥, 👍, 👏) automáticas en tus mensajes.",
+          name: "Reacciones con Emojis en Publicaciones de Canal 🔥",
+          audience: "reacciones",
+          badge: "🔥 Emojis Específicos",
+          description: "Reacciones automáticas con emojis a elección (❤️ Corazón, 🔥 Fuego, 👍 Pulgar arriba, 👏 Aplauso) en tus mensajes del canal.",
           costPer1000: 6100,
           margin: 50,
           options: [
-            { id: "wa-reac-500", count: 500, label: "500 Reacciones con Emojis", costPrice: 3050, margin: 60, price: calcSalePrice(3050, 60) },
+            { id: "wa-reac-250", count: 250, label: "250 Reacciones con Emojis", costPrice: 1525, margin: 55, price: calcSalePrice(1525, 55) },
+            { id: "wa-reac-500", count: 500, label: "500 Reacciones con Emojis", costPrice: 3050, margin: 50, price: calcSalePrice(3050, 50) },
             { id: "wa-reac-1000", count: 1000, label: "1.000 Reacciones con Emojis", costPrice: 6100, margin: 50, price: calcSalePrice(6100, 50), popular: true }
+          ]
+        },
+        {
+          id: "wa-reacciones-mix",
+          name: "Pack Reacciones Variadas Mix en Publicaciones ✨",
+          audience: "reacciones",
+          badge: "✨ Mix Emojis",
+          description: "Distribución variada y natural de reacciones con múltiples emojis en tus mensajes del canal.",
+          costPer1000: 13608,
+          margin: 45,
+          options: [
+            { id: "wa-rmix-250", count: 250, label: "250 Reacciones Mix", costPrice: 3402, margin: 50, price: calcSalePrice(3402, 50) },
+            { id: "wa-rmix-500", count: 500, label: "500 Reacciones Mix", costPrice: 6804, margin: 45, price: calcSalePrice(6804, 45) },
+            { id: "wa-rmix-1000", count: 1000, label: "1.000 Reacciones Mix", costPrice: 13608, margin: 45, price: calcSalePrice(13608, 45), popular: true }
           ]
         }
       ]

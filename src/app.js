@@ -31,10 +31,11 @@ const AppState = {
   smmState: {
     activeNetwork: 'instagram',
     mode: 'custom', // 'custom' (armá a medida) o 'presets' (paquetes rápidos)
+    audienceFilter: 'all', // 'all', 'argentinos', 'latam', 'femeninos', 'global', etc.
     customQuantities: {}, // serviceId -> number (min 100)
     customEnabled: {}, // serviceId -> boolean
-    activeServiceId: 'ig-vistas',
-    selectedOptionId: 'ig-vis-5000',
+    activeServiceId: 'ig-seg-arg',
+    selectedOptionId: 'ig-sarg-1000',
     targetAccountOrLink: ''
   },
 
@@ -71,11 +72,17 @@ function initAppConfig() {
   if (!AppState.config.categories || AppState.config.categories.length === 0) {
     AppState.config.categories = (baseConfig.categories || []).slice();
   }
-  if (!AppState.config.smmData) {
-    AppState.config.smmData = baseConfig.smmData || {};
+  // Si la estructura SMM no tiene los filtros de audiencia nuevos, actualizar desde baseConfig
+  const cloudSmm = AppState.config.smmData;
+  if (!cloudSmm || !cloudSmm.instagram || !cloudSmm.instagram.audienceFilters || (baseConfig.smmData && baseConfig.smmData.instagram && baseConfig.smmData.instagram.services.length > (cloudSmm.instagram.services || []).length)) {
+    AppState.config.smmData = JSON.parse(JSON.stringify(baseConfig.smmData || {}));
   }
   if (!AppState.config.comboPlatforms) {
     AppState.config.comboPlatforms = baseConfig.comboPlatforms || [];
+  }
+  if (baseConfig.paymentAlias) {
+    AppState.config.paymentAlias = baseConfig.paymentAlias;
+    AppState.config.paymentAccountHolder = baseConfig.paymentAccountHolder;
   }
 
   syncContactElements();
@@ -119,7 +126,28 @@ async function fetchCloudConfig() {
       const cloudConfig = data.data;
       if (cloudConfig.products && cloudConfig.products.length > 0) {
         AppState.config = cloudConfig;
-        localStorage.setItem('sonri_custom_config', JSON.stringify(cloudConfig));
+        
+        // Verificar si la base local tiene la nueva estructura segmentada de SMM
+        const baseConfig = window.CATALOG_CONFIG || {};
+        const baseSmm = baseConfig.smmData || {};
+        const cloudSmm = cloudConfig.smmData || {};
+
+        let needsCloudResync = false;
+        if (!cloudSmm.instagram || !cloudSmm.instagram.audienceFilters || (baseSmm.instagram && baseSmm.instagram.services.length > (cloudSmm.instagram.services || []).length)) {
+          AppState.config.smmData = JSON.parse(JSON.stringify(baseSmm));
+          needsCloudResync = true;
+        }
+        if (baseConfig.paymentAlias && AppState.config.paymentAlias !== baseConfig.paymentAlias) {
+          AppState.config.paymentAlias = baseConfig.paymentAlias;
+          AppState.config.paymentAccountHolder = baseConfig.paymentAccountHolder;
+          needsCloudResync = true;
+        }
+
+        if (needsCloudResync) {
+          saveConfigToCloud(false);
+        }
+
+        localStorage.setItem('sonri_custom_config', JSON.stringify(AppState.config));
         syncContactElements();
         renderCategories();
         renderProducts();
@@ -1098,6 +1126,31 @@ function closeSmmModal() {
   if (modal) modal.classList.add('hidden');
 }
 
+function getAudienceBadgeHtml(badge) {
+  if (!badge) return '';
+  let badgeStyle = 'bg-slate-700/40 text-slate-300 border-slate-600/40';
+  
+  if (badge.includes('Argentino') || badge.includes('🇦🇷')) {
+    badgeStyle = 'bg-sky-500/20 text-sky-300 border-sky-400/50 shadow-[0_0_10px_rgba(56,189,248,0.25)]';
+  } else if (badge.includes('Latina') || badge.includes('Latino') || badge.includes('🌎') || badge.includes('Hispana')) {
+    badgeStyle = 'bg-emerald-500/20 text-emerald-300 border-emerald-400/50 shadow-[0_0_10px_rgba(52,211,153,0.25)]';
+  } else if (badge.includes('Femenin') || badge.includes('👩')) {
+    badgeStyle = 'bg-pink-500/20 text-pink-300 border-pink-400/50 shadow-[0_0_10px_rgba(244,114,182,0.25)]';
+  } else if (badge.includes('Monetiz') || badge.includes('🎯') || badge.includes('⏱️') || badge.includes('Horas')) {
+    badgeStyle = 'bg-amber-500/20 text-amber-300 border-amber-400/50 shadow-[0_0_10px_rgba(251,191,36,0.25)]';
+  } else if (badge.includes('Canal') || badge.includes('📢')) {
+    badgeStyle = 'bg-emerald-500/20 text-emerald-300 border-emerald-400/50 shadow-[0_0_10px_rgba(74,222,128,0.25)]';
+  } else if (badge.includes('Reacci') || badge.includes('🔥') || badge.includes('Likes') || badge.includes('👍')) {
+    badgeStyle = 'bg-rose-500/20 text-rose-300 border-rose-400/50 shadow-[0_0_10px_rgba(251,113,133,0.25)]';
+  } else if (badge.includes('Velocidad') || badge.includes('⚡') || badge.includes('Viral') || badge.includes('🚀')) {
+    badgeStyle = 'bg-cyan-500/20 text-cyan-300 border-cyan-400/50 shadow-[0_0_10px_rgba(6,182,212,0.25)]';
+  } else if (badge.includes('Stories') || badge.includes('👁️')) {
+    badgeStyle = 'bg-purple-500/20 text-purple-300 border-purple-400/50 shadow-[0_0_10px_rgba(168,85,247,0.25)]';
+  }
+  
+  return `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold border inline-flex items-center gap-1 shrink-0 ${badgeStyle}">${badge}</span>`;
+}
+
 function setSmmMode(mode) {
   AppState.smmState.mode = mode;
   renderSmmModalContent();
@@ -1105,7 +1158,28 @@ function setSmmMode(mode) {
 
 function setSmmNetwork(netKey) {
   AppState.smmState.activeNetwork = netKey;
+  AppState.smmState.audienceFilter = 'all';
   initSmmDefaultsIfNeeded();
+  renderSmmModalContent();
+}
+
+function setSmmAudienceFilter(audienceKey) {
+  AppState.smmState.audienceFilter = audienceKey;
+  const netKey = AppState.smmState.activeNetwork || 'instagram';
+  const netData = (AppState.config.smmData && AppState.config.smmData[netKey]) || { services: [] };
+  
+  const filteredServices = (netData.services || []).filter(s => {
+    if (audienceKey === 'all') return true;
+    return s.audience === audienceKey;
+  });
+
+  if (filteredServices.length > 0) {
+    const isCurrentStillVisible = filteredServices.some(s => s.id === AppState.smmState.activeServiceId);
+    if (!isCurrentStillVisible) {
+      setSmmService(filteredServices[0].id);
+      return;
+    }
+  }
   renderSmmModalContent();
 }
 
@@ -1119,21 +1193,30 @@ function initSmmDefaultsIfNeeded() {
       AppState.smmState.customEnabled[s.id] = (idx === 0);
     }
     if (!AppState.smmState.customQuantities[s.id]) {
-      const isComment = s.id.includes('comentario');
-      AppState.smmState.customQuantities[s.id] = isComment ? 25 : 200;
+      const { default: defaultQty } = getSmmServiceMinAndStep(s.id, s);
+      AppState.smmState.customQuantities[s.id] = defaultQty;
     }
   });
 
-  if (!AppState.smmState.activeServiceId && netData.services[0]) {
-    AppState.smmState.activeServiceId = netData.services[0].id;
+  if (netData.services[0]) {
+    const isCurrentValid = netData.services.some(s => s.id === AppState.smmState.activeServiceId);
+    if (!isCurrentValid) {
+      AppState.smmState.activeServiceId = netData.services[0].id;
+      if (netData.services[0].options && netData.services[0].options[0]) {
+        AppState.smmState.selectedOptionId = netData.services[0].options[0].id;
+      }
+    }
   }
 }
 
-function getSmmServiceMinAndStep(serviceId) {
-  if (serviceId.includes('comentario')) {
+function getSmmServiceMinAndStep(serviceId, serviceObj = null) {
+  if (serviceObj && serviceObj.minQty) {
+    return { min: serviceObj.minQty, step: serviceObj.stepQty || serviceObj.minQty, default: serviceObj.minQty };
+  }
+  if (serviceId.includes('comentario') || serviceId.includes('res-') || serviceId.includes('reseña')) {
     return { min: 10, step: 10, default: 25 };
   }
-  return { min: 100, step: 100, default: 200 };
+  return { min: 100, step: 100, default: 500 };
 }
 
 function toggleSmmCustomItem(serviceId) {
@@ -1142,7 +1225,11 @@ function toggleSmmCustomItem(serviceId) {
 }
 
 function updateSmmCustomQty(serviceId, deltaOrValue) {
-  const { min, step } = getSmmServiceMinAndStep(serviceId);
+  const netKey = AppState.smmState.activeNetwork || 'instagram';
+  const netData = (AppState.config.smmData && AppState.config.smmData[netKey]) || { services: [] };
+  const serviceObj = (netData.services || []).find(s => s.id === serviceId);
+
+  const { min, step } = getSmmServiceMinAndStep(serviceId, serviceObj);
   let current = Number(AppState.smmState.customQuantities[serviceId]) || min;
 
   if (typeof deltaOrValue === 'number' && (deltaOrValue === step || deltaOrValue === -step)) {
@@ -1168,7 +1255,8 @@ function calculateSmmCustomPricing() {
 
   (netData.services || []).forEach(service => {
     if (AppState.smmState.customEnabled[service.id]) {
-      const qty = AppState.smmState.customQuantities[service.id] || getSmmServiceMinAndStep(service.id).min;
+      const { min } = getSmmServiceMinAndStep(service.id, service);
+      const qty = AppState.smmState.customQuantities[service.id] || min;
       const costPer1000 = service.costPer1000 || 1000;
       const margin = service.margin !== undefined ? service.margin : 50;
 
@@ -1204,7 +1292,7 @@ function calculateSmmCustomPricing() {
     const rawDiscounted = regularSubtotal * (1 - discountPct / 100);
     const candidatePrice = Math.round(rawDiscounted / 50) * 50;
 
-    // PISO DE SEGURIDAD ABSOLUTO (CERO PÉRDIDA GARANTIZADA):
+    // PISO DE SEGURIDAD ABSOLUTO (CERO PÉRDIDA GARANTIZADA: MÍNIMO COSTO + 30%):
     const safetyFloor = Math.round((totalCost * 1.30) / 50) * 50;
 
     finalPrice = Math.max(candidatePrice, safetyFloor);
@@ -1230,6 +1318,7 @@ function renderSmmModalContent() {
   const customView = document.getElementById('smmCustomPackView');
   const presetsView = document.getElementById('smmPresetsView');
   const networkTabs = document.getElementById('smmNetworkTabs');
+  const audienceTabs = document.getElementById('smmAudienceTabs');
 
   if (!customBtn || !presetsBtn || !customView || !presetsView || !networkTabs) return;
 
@@ -1264,6 +1353,32 @@ function renderSmmModalContent() {
     `;
   }).join('');
 
+  const netKey = AppState.smmState.activeNetwork || 'instagram';
+  const currentNetData = (AppState.config.smmData && AppState.config.smmData[netKey]) || { services: [] };
+
+  if (audienceTabs) {
+    const currentAudience = AppState.smmState.audienceFilter || 'all';
+    const filters = currentNetData.audienceFilters || [
+      { id: 'all', label: '🌟 Todos' }
+    ];
+    audienceTabs.innerHTML = filters.map(f => {
+      const isSelected = currentAudience === f.id;
+      return `
+        <button 
+          type="button" 
+          onclick="setSmmAudienceFilter('${f.id}')"
+          class="px-2.5 py-1 rounded-lg text-[11px] font-bold border transition-all whitespace-nowrap cursor-pointer ${
+            isSelected 
+              ? 'bg-purple-600/30 border-purple-400 text-purple-200 shadow-sm' 
+              : 'bg-[#121424] border-[#1E2238] text-slate-400 hover:text-white'
+          }"
+        >
+          ${f.label}
+        </button>
+      `;
+    }).join('');
+  }
+
   if (mode === 'custom') {
     renderSmmCustomView();
   } else {
@@ -1279,10 +1394,25 @@ function renderSmmCustomView() {
 
   const netKey = AppState.smmState.activeNetwork || 'instagram';
   const netData = (AppState.config.smmData && AppState.config.smmData[netKey]) || { services: [] };
+  const currentAudience = AppState.smmState.audienceFilter || 'all';
 
-  container.innerHTML = (netData.services || []).map(service => {
+  const visibleServices = (netData.services || []).filter(service => {
+    if (currentAudience === 'all') return true;
+    return service.audience === currentAudience;
+  });
+
+  if (visibleServices.length === 0) {
+    container.innerHTML = `
+      <div class="text-center py-8 text-slate-400 text-xs">
+        No hay servicios disponibles en este filtro de audiencia.
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = visibleServices.map(service => {
     const isEnabled = !!AppState.smmState.customEnabled[service.id];
-    const { min, step } = getSmmServiceMinAndStep(service.id);
+    const { min, step } = getSmmServiceMinAndStep(service.id, service);
     const qty = AppState.smmState.customQuantities[service.id] || min;
 
     const unitCost = (service.costPer1000 / 1000) * qty;
@@ -1292,23 +1422,26 @@ function renderSmmCustomView() {
       <div class="p-3 rounded-xl border transition-all ${
         isEnabled 
           ? 'bg-purple-600/15 border-purple-500/60 shadow-sm' 
-          : 'bg-[#08090F] border-[#1E2238] opacity-75'
+          : 'bg-[#08090F] border-[#1E2238] opacity-80 hover:opacity-100'
       }">
-        <div class="flex items-center justify-between gap-3 mb-2">
-          <label class="flex items-center gap-2.5 cursor-pointer select-none">
+        <div class="flex items-start justify-between gap-3 mb-2">
+          <label class="flex items-start gap-2.5 cursor-pointer select-none flex-1">
             <input 
               type="checkbox" 
               ${isEnabled ? 'checked' : ''} 
               onchange="toggleSmmCustomItem('${service.id}')"
-              class="w-4 h-4 rounded text-purple-600 focus:ring-0 bg-[#121424] border-slate-700 cursor-pointer"
+              class="w-4 h-4 mt-0.5 rounded text-purple-600 focus:ring-0 bg-[#121424] border-slate-700 cursor-pointer shrink-0"
             >
-            <div>
-              <span class="text-xs font-bold text-white block ${isEnabled ? 'text-purple-200' : ''}">${service.name}</span>
+            <div class="space-y-1">
+              <div class="flex flex-wrap items-center gap-1.5">
+                <span class="text-xs font-bold text-white ${isEnabled ? 'text-purple-200' : ''}">${service.name}</span>
+                ${getAudienceBadgeHtml(service.badge)}
+              </div>
               <span class="text-[10px] text-slate-400 leading-tight block">${service.description}</span>
             </div>
           </label>
 
-          <span class="text-xs font-black text-cyan-300 shrink-0">
+          <span class="text-xs font-black text-cyan-300 shrink-0 mt-0.5">
             ${formatCurrency(unitPrice)}
           </span>
         </div>
@@ -1389,26 +1522,45 @@ function renderSmmPresetsView() {
   const currentNetData = AppState.config.smmData[netKey];
   if (!currentNetData || !currentNetData.services) return;
 
-  const activeService = currentNetData.services.find(s => s.id === AppState.smmState.activeServiceId) || currentNetData.services[0];
+  const currentAudience = AppState.smmState.audienceFilter || 'all';
+  const visibleServices = (currentNetData.services || []).filter(s => {
+    if (currentAudience === 'all') return true;
+    return s.audience === currentAudience;
+  });
 
-  serviceTabs.innerHTML = currentNetData.services.map(s => {
+  const activeService = visibleServices.find(s => s.id === AppState.smmState.activeServiceId) || visibleServices[0] || currentNetData.services[0];
+  if (!activeService) {
+    serviceTabs.innerHTML = '';
+    optionsGrid.innerHTML = '<p class="text-xs text-slate-400">No hay servicios en esta audiencia.</p>';
+    return;
+  }
+
+  serviceTabs.innerHTML = visibleServices.map(s => {
     const isSelected = activeService.id === s.id;
     return `
       <button 
         type="button"
         onclick="setSmmService('${s.id}')"
-        class="px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
+        class="px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer flex items-center gap-1.5 ${
           isSelected 
             ? 'bg-purple-600/25 border-purple-400 text-purple-200' 
             : 'bg-[#0B0C14] border-[#1E2238] text-slate-400 hover:text-white'
         }"
       >
-        ${s.name}
+        <span>${s.name}</span>
       </button>
     `;
   }).join('');
 
-  if (serviceDesc) serviceDesc.textContent = activeService.description;
+  if (serviceDesc) {
+    serviceDesc.innerHTML = `
+      <div class="flex items-center gap-2 mb-1">
+        ${getAudienceBadgeHtml(activeService.badge)}
+        <span class="text-xs text-slate-300 font-semibold">${activeService.name}</span>
+      </div>
+      <p class="text-xs text-slate-400 italic">${activeService.description}</p>
+    `;
+  }
 
   optionsGrid.innerHTML = (activeService.options || []).map(opt => {
     const isSelected = AppState.smmState.selectedOptionId === opt.id;
@@ -1454,6 +1606,7 @@ function renderSmmPresetsView() {
 function setSmmService(serviceId) {
   AppState.smmState.activeServiceId = serviceId;
   const netData = AppState.config.smmData[AppState.smmState.activeNetwork];
+  if (!netData) return;
   const service = netData.services.find(s => s.id === serviceId);
   if (service && service.options && service.options.length > 0) {
     AppState.smmState.selectedOptionId = service.options[0].id;
@@ -1500,12 +1653,12 @@ function submitSmmToCart() {
     const currentOption = (activeService.options || []).find(o => o.id === AppState.smmState.selectedOptionId) || activeService.options[0];
     if (!currentOption) return;
 
-    let details = `${currentNetData.name} - ${currentOption.label}`;
+    let details = `${activeService.badge ? '[' + activeService.badge + '] ' : ''}${currentNetData.name} - ${currentOption.label}`;
     if (targetVal) details += ` (${targetVal})`;
 
     addToCart({
       productId: 'smm-crecimiento-redes',
-      name: `SMM: ${currentNetData.name} ${activeService.name}`,
+      name: `SMM: ${currentNetData.name} - ${activeService.name}`,
       variantName: details,
       price: currentOption.price,
       quantity: 1
