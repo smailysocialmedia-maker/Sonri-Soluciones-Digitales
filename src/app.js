@@ -245,7 +245,7 @@ function syncContactElements() {
     footerIgLink.href = igUrl;
   }
   if (floatingWa) {
-    const defaultMsg = `¡Hola ${c.brandName || 'Sonri Soluciones Digitales'}! 👋 Quiero hacerles una consulta sobre sus servicios.`;
+    const defaultMsg = `¡Hola ${c.brandName || 'Sonri Soluciones Digitales'}! Quiero hacerles una consulta sobre sus servicios.`;
     floatingWa.href = `https://wa.me/${waNum}?text=${encodeURIComponent(defaultMsg)}`;
   }
 }
@@ -616,7 +616,7 @@ function consultProductDirectly(productId) {
   }
 
   const priceStr = AppState.config.showPrices ? `Precio: ${formatCurrency(finalPrice)}` : 'A convenir';
-  const message = `¡Hola ${AppState.config.brandName}! 👋 Quiero consultar por el servicio: *${product.name}* [${details}] (${priceStr}). ¿Tienen disponibilidad y activación inmediata?`;
+  const message = `¡Hola *${AppState.config.brandName || 'Sonri Soluciones Digitales'}*! Quiero consultar por el servicio: *${product.name}* [${details}] (${priceStr}). ¿Tienen disponibilidad de entrega?`;
   
   const waNum = AppState.config.whatsappNumber || '5492634377019';
   const url = `https://wa.me/${waNum}?text=${encodeURIComponent(message)}`;
@@ -787,33 +787,76 @@ function renderCartDrawer() {
   }
 }
 
+function copyAliasToClipboard() {
+  const alias = 'sonridigital';
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(alias).then(() => {
+      const btnText = document.getElementById('copyAliasBtnText');
+      if (btnText) {
+        btnText.textContent = '¡Copiado!';
+        setTimeout(() => { btnText.textContent = 'Copiar'; }, 2000);
+      }
+      showToast('¡Alias "sonridigital" copiado al portapapeles!');
+    }).catch(() => {
+      prompt('Copiá el Alias para transferir:', alias);
+    });
+  } else {
+    prompt('Copiá el Alias para transferir:', alias);
+  }
+}
+
 function sendWhatsAppOrder() {
   if (AppState.cart.length === 0) {
     showToast('El carrito está vacío', 'warning');
     return;
   }
 
-  const nameInput = document.getElementById('cartCustomerName');
+  const activationInput = document.getElementById('cartActivationData');
   const notesInput = document.getElementById('cartCustomerNotes');
 
-  const customerName = (nameInput ? nameInput.value.trim() : '') || 'Cliente';
+  const activationData = activationInput ? activationInput.value.trim() : '';
   const customNotes = notesInput ? notesInput.value.trim() : '';
 
+  const totalPrice = AppState.cart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+  const totalFormatted = formatCurrency(totalPrice);
+
+  const hasSMM = AppState.cart.some(i => (i.productId && i.productId.includes('smm')) || (i.name && (i.name.toLowerCase().includes('seguidor') || i.name.toLowerCase().includes('vista') || i.name.toLowerCase().includes('like') || i.name.toLowerCase().includes('redes'))));
+  const hasEmailService = AppState.cart.some(i => i.name && (i.name.toLowerCase().includes('gemini') || i.name.toLowerCase().includes('canva') || i.name.toLowerCase().includes('chatgpt') || i.name.toLowerCase().includes('google')));
+  const hasStandardAccount = AppState.cart.some(i => !hasSMM && !(i.name && i.name.toLowerCase().includes('gemini')));
+
   const itemsText = AppState.cart.map(item => {
-    return `• ${item.quantity}x ${item.name} (${item.variantName})`;
+    return `- ${item.quantity}x *${item.name}* [${item.variantName}] - ${formatCurrency(item.price * item.quantity)}`;
   }).join('\n');
 
-  let message = `¡Hola ${AppState.config.brandName || 'Sonri Soluciones Digitales'}! 👋 Quiero coordinar el pago por transferencia para activar el siguiente pedido:\n\n${itemsText}\n\n`;
+  let message = `¡Hola *${AppState.config.brandName || 'Sonri Soluciones Digitales'}*! Ya realicé la transferencia para encargar el siguiente pedido:\n\n${itemsText}\n\n`;
 
-  if (customerName && customerName !== 'Cliente') {
-    message += `👤 Mi nombre: ${customerName}\n`;
+  message += `*TOTAL TRANSFERIDO:* ${totalFormatted}\n`;
+  message += `*TRANSFERIDO A:* sonridigital\n`;
+  message += `*TITULAR:* Jonathan Emanuel Perez\n\n`;
+
+  if (activationData) {
+    if (hasEmailService && !hasSMM) {
+      message += `*Correo para activar:* ${activationData}\n`;
+    } else if (hasSMM && !hasEmailService) {
+      message += `*Link o usuario:* ${activationData}\n`;
+    } else {
+      message += `*Dato de activación (Correo/Link):* ${activationData}\n`;
+    }
   }
-  
+
   if (customNotes) {
-    message += `📝 Nota: ${customNotes}\n`;
+    message += `*Nota:* ${customNotes}\n`;
   }
 
-  message += `💳 Método de pago: Transferencia (A convenir)\n¿Me pasás el alias y el total para transferir?`;
+  message += `\n*Te adjunto la captura del comprobante por acá.*\n`;
+
+  if (hasEmailService && !hasStandardAccount && !hasSMM) {
+    message += `Quedo a la espera de la activación en mi correo. ¡Muchas gracias!`;
+  } else if (hasSMM && !hasStandardAccount && !hasEmailService) {
+    message += `Quedo a la espera de la entrega en el link indicado. ¡Muchas gracias!`;
+  } else {
+    message += `Quedo a la espera de los datos de acceso (usuario y clave). ¡Muchas gracias!`;
+  }
 
   const waNum = AppState.config.whatsappNumber || '5492634377019';
   const url = `https://wa.me/${waNum}?text=${encodeURIComponent(message)}`;

@@ -151,7 +151,7 @@
       <!-- Badge Neón Superior -->
       <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-panel border border-cyan-500/40 text-cyan-300 text-xs font-bold tracking-wide uppercase mb-6 neon-glow-cyan animate-pulse-glow">
         <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
-        <span>Activación Inmediata • WhatsApp +54 9 263 437-7019 • 100% Garantizado</span>
+        <span>Entrega en el Día • Asignación Segura • WhatsApp +54 9 263 437-7019</span>
       </div>
 
       <!-- Título Principal -->
@@ -370,8 +370,8 @@
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
         </div>
         <div>
-          <h4 class="text-xs font-bold text-white">Activación Rápida</h4>
-          <p class="text-[11px] text-slate-400">En 5 a 20 minutos</p>
+          <h4 class="text-xs font-bold text-white">Entrega Prioritaria</h4>
+          <p class="text-[11px] text-slate-400">En el día · Según stock</p>
         </div>
       </div>
 
@@ -506,17 +506,56 @@
           <!-- Inyectado desde app.js -->
         </div>
 
-        <!-- Formulario sin fricción: Nombre y Notas -->
+        <!-- TARJETA DESTACADA DE DATOS DE TRANSFERENCIA -->
+        <div class="p-4 rounded-2xl bg-gradient-to-br from-[#121424] to-[#08090F] border border-cyan-500/40 relative overflow-hidden mb-4 shadow-xl">
+          <div class="flex items-center justify-between mb-2.5">
+            <span class="text-[11px] font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-1.5">
+              <span>💳</span>
+              <span>Datos para tu Transferencia</span>
+            </span>
+            <span class="text-[10px] text-emerald-400 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/30">
+              Mercado Pago / Bancos
+            </span>
+          </div>
+
+          <div class="p-3 rounded-xl bg-[#05060A] border border-[#1E2238] mb-2.5 flex items-center justify-between">
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase font-bold tracking-wider">Alias oficial:</span>
+              <span class="text-base font-black font-mono text-cyan-300 tracking-wide select-all" id="cartAliasDisplay">sonridigital</span>
+            </div>
+            <button 
+              type="button" 
+              onclick="copyAliasToClipboard()" 
+              class="px-3 py-1.5 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-400/40 text-xs font-bold transition flex items-center gap-1 cursor-pointer"
+              title="Copiar Alias al portapapeles"
+            >
+              <span>📋</span>
+              <span id="copyAliasBtnText">Copiar</span>
+            </button>
+          </div>
+
+          <div class="flex items-center justify-between text-xs text-slate-300 px-1">
+            <span class="text-slate-400">Titular de la cuenta:</span>
+            <span class="font-bold text-white">Jonathan Emanuel Perez</span>
+          </div>
+        </div>
+
+        <!-- FORMULARIO INTELIGENTE DE ACTIVACIÓN -->
         <div class="p-4 rounded-xl bg-[#08090F] border border-[#1E2238] space-y-3">
           <div>
-            <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1">
-              👤 ¿Cómo te llamás? (Opcional)
+            <label class="block text-[11px] font-bold text-slate-200 uppercase tracking-wider mb-1">
+              🔑 Datos de Activación (Según el servicio)
             </label>
+            <p class="text-[10px] text-slate-400 mb-2 leading-relaxed">
+              • <b>Streaming / IPTV:</b> Te enviamos usuario y contraseña por WhatsApp.<br>
+              • <b>Gemini / ChatGPT / Canva:</b> Dejanos tu correo Gmail para activarte.<br>
+              • <b>Redes Sociales (SMM):</b> Dejanos tu @usuario o link de la publicación.
+            </p>
             <input 
               type="text" 
-              id="cartCustomerName" 
-              placeholder="Ej: Lucas" 
-              class="w-full px-3 py-2 rounded-lg bg-[#121424] border border-[#1E2238] text-white text-xs placeholder-slate-500 focus:outline-none focus:border-cyan-400"
+              id="cartActivationData" 
+              placeholder="Ej: tuemail@gmail.com o link de tu video/perfil" 
+              class="w-full px-3 py-2.5 rounded-lg bg-[#121424] border border-[#1E2238] text-white text-xs placeholder-slate-500 focus:outline-none focus:border-cyan-400 font-medium"
             >
           </div>
 
@@ -527,7 +566,7 @@
             <input 
               type="text" 
               id="cartCustomerNotes" 
-              placeholder="Ej: Prefiero activar a las 20hs" 
+              placeholder="Ej: Ya te transferí / Consulta sobre horarios" 
               class="w-full px-3 py-2 rounded-lg bg-[#121424] border border-[#1E2238] text-white text-xs placeholder-slate-500 focus:outline-none focus:border-cyan-400"
             >
           </div>
@@ -540,13 +579,13 @@
     <div class="p-5 border-t border-[#1E2238] bg-[#121424]">
       <div class="flex items-center justify-between mb-4">
         <div>
-          <span class="text-xs text-slate-400 block">Total Estimado:</span>
-          <span id="cartTotalAmount" class="text-xl font-black text-white">
+          <span class="text-xs text-slate-400 block">Total a Transferir:</span>
+          <span id="cartTotalAmount" class="text-2xl font-black text-cyan-300">
             $0
           </span>
         </div>
-        <span class="text-[11px] px-2.5 py-1 rounded-md bg-[#0B0C14] text-cyan-300 border border-cyan-500/30">
-          Transferencia (A convenir)
+        <span class="text-[11px] px-2.5 py-1 rounded-md bg-[#0B0C14] text-slate-300 border border-slate-700">
+          Adjuntar comprobante al enviar 📎
         </span>
       </div>
 
@@ -559,10 +598,10 @@
         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
           <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.698c.969.587 1.961.933 2.796.933 3.183 0 5.769-2.587 5.77-5.767.001-3.181-2.586-5.767-5.77-5.767zm7.502 5.767c-.002 4.137-3.367 7.502-7.504 7.502-1.282 0-2.482-.327-3.541-.952l-4.488 1.176 1.197-4.373c-.696-1.11-1.072-2.39-1.074-3.714.002-4.137 3.367-7.502 7.505-7.502 4.136 0 7.503 3.365 7.505 7.503zm-4.708 2.871c-.19-.095-1.127-.556-1.302-.62-.175-.063-.302-.095-.429.095s-.492.62-.603.747-.222.143-.412.048c-.19-.095-.804-.296-1.531-.944-.566-.505-.948-1.128-1.059-1.319-.111-.19-.012-.293.083-.388.086-.085.19-.222.285-.333.095-.111.127-.19.19-.317.063-.127.032-.238-.016-.333s-.429-1.032-.587-1.413c-.155-.371-.312-.321-.428-.327-.111-.006-.238-.008-.365-.008s-.333.048-.508.238c-.175.19-.667.651-.667 1.587 0 .937.683 1.841.778 1.968.095.127 1.344 2.052 3.256 2.878.455.197.81.315 1.087.403.457.145.873.125 1.202.076.367-.055 1.127-.461 1.286-.905.159-.444.159-.825.111-.905-.047-.079-.174-.127-.364-.222z"/>
         </svg>
-        <span>Enviar Pedido por WhatsApp</span>
+        <span>Enviar Pedido y Comprobante</span>
       </button>
-      <p class="text-[10px] text-slate-500 text-center mt-2.5">
-        Se abrirá WhatsApp (+54 9 263 437-7019) con el resumen listo
+      <p class="text-[10px] text-slate-400 text-center mt-2.5">
+        Se abrirá WhatsApp para que envíes tu comprobante y se active tu entrega
       </p>
     </div>
 

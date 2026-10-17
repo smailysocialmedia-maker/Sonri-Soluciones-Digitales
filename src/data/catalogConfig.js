@@ -43,7 +43,9 @@ const CATALOG_CONFIG = {
   // true = muestra precios en la web; false = modo cotización por privado
   showPrices: true,
   currencySymbol: "$",
-  paymentMethodText: "Transferencia bancaria / Billeteras virtuales (A convenir)",
+  paymentMethodText: "Transferencia bancaria (Alias: sonridigital)",
+  paymentAlias: "sonridigital",
+  paymentAccountHolder: "Jonathan Emanuel Perez",
 
   // ----------------------------------------------------------------------------
   // 2. CATEGORÍAS PRINCIPALES
@@ -960,11 +962,11 @@ const CATALOG_CONFIG = {
   faqs: [
     {
       question: "¿Cómo y cuánto demora la activación?",
-      answer: "La activación es prácticamente inmediata. Una vez enviado tu pedido por WhatsApp y acreditada la transferencia bancaria o billetera virtual, te enviamos los datos de acceso, credenciales o la activación en un plazo promedio de 5 a 20 minutos con una guía paso a paso clara."
+      answer: "Trabajamos con entrega prioritaria. Si el servicio solicitado cuenta con stock inmediato disponible, la activación se realiza en pocos minutos. Aquellos servicios que son bajo pedido o requieren configuración personalizada y asignación de cupo privado se entregan de forma segura en el transcurso de la jornada (plazo habitual: de 1 a 24 hs según demanda), garantizándote total estabilidad y soporte activo."
     },
     {
       question: "¿Qué métodos de pago aceptan?",
-      answer: "Aceptamos transferencias bancarias directas (CBU/CVU), Mercado Pago, Ualá, Lemon Cash, Prex y la mayoría de las billeteras virtuales de Argentina. El pago se coordina directamente por WhatsApp al +54 9 263 437-7019 de forma transparente y sin comisiones extras."
+      answer: "Aceptamos transferencias bancarias directas (CBU/CVU), Mercado Pago, Ualá, Lemon Cash y cualquier billetera virtual a nuestro Alias oficial: sonridigital. Una vez realizada la transferencia, nos enviás el comprobante por WhatsApp al +54 9 263 437-7019 y procesamos tu pedido al instante."
     },
     {
       question: "¿Tienen garantía y soporte durante todo el mes?",
