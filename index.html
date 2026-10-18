@@ -444,8 +444,9 @@
 
       <div class="text-center md:text-right max-w-md text-[11px] text-slate-500">
         <p>Aviso: Las marcas registradas y logos mencionados pertenecen a sus respectivos dueños. Este sitio ofrece asesoría, gestión y soporte independiente.</p>
-        <p class="mt-2 text-slate-400">
-          © 2026 Sonri Soluciones Digitales. Todos los derechos reservados<span onclick="openAdminLoginModal()" class="cursor-pointer select-none text-slate-600 hover:text-slate-400" title="">.</span>
+        <p class="mt-2 text-slate-400 flex items-center justify-center md:justify-end gap-1.5">
+          <span>© 2026 Sonri Soluciones Digitales. Todos los derechos reservados.</span>
+          <button type="button" onclick="openAdminLoginModal()" class="text-slate-600 hover:text-cyan-400 p-1 rounded transition text-xs" title="Panel Privado">🔒</button>
         </p>
       </div>
 
@@ -858,6 +859,9 @@
         <button id="adminTabBtn-smm" onclick="switchAdminTab('smm')" class="px-4 py-2.5 rounded-t-xl text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-white transition">
           📱 Redes Sociales (SMM)
         </button>
+        <button id="adminTabBtn-analytics" onclick="switchAdminTab('analytics')" class="px-4 py-2.5 rounded-t-xl text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-white transition">
+          📊 Visitas & Estadísticas
+        </button>
       </div>
 
       <!-- Contenedor del Contenido del Panel Admin -->
@@ -1095,6 +1099,11 @@
           </div>
         </div>
 
+        <!-- PESTAÑA 4: ANALÍTICAS Y VISITAS -->
+        <div id="adminTab-analytics" class="space-y-6 hidden">
+          <!-- Generado dinámicamente por renderAdminAnalytics() -->
+        </div>
+
       </div>
 
     </div>
@@ -1128,6 +1137,7 @@
               <option value="creadores-ia">Herramientas & IA</option>
               <option value="conectividad">Conectividad & Datos</option>
               <option value="iptv">Televisión Digital & IPTV</option>
+              <option value="emprendimiento">Emprendé con tu Panel</option>
             </select>
           </div>
           <div>

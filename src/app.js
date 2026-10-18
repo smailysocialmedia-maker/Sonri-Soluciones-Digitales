@@ -72,6 +72,33 @@ function initAppConfig() {
   if (!AppState.config.categories || AppState.config.categories.length === 0) {
     AppState.config.categories = (baseConfig.categories || []).slice();
   }
+
+  // Asegurar que si la base local tiene las 12 plataformas de IPTV, se actualicen en AppState
+  const baseIptv = (baseConfig.products || []).filter(p => p.category === 'iptv');
+  const appIptv = (AppState.config.products || []).filter(p => p.category === 'iptv');
+  if (baseIptv.length > appIptv.length) {
+    const nonIptv = (AppState.config.products || []).filter(p => p.category !== 'iptv');
+    AppState.config.products = [...nonIptv, ...baseIptv];
+  }
+
+  // Asegurar que todas las categorías de baseConfig existan en AppState
+  (baseConfig.categories || []).forEach(bc => {
+    if (!AppState.config.categories.some(c => c.id === bc.id)) {
+      AppState.config.categories.push(bc);
+    }
+  });
+
+  // Asegurar que los productos de emprendimiento existan en AppState
+  const baseEmprendimiento = (baseConfig.products || []).filter(p => p.category === 'emprendimiento');
+  const appEmprendimiento = (AppState.config.products || []).filter(p => p.category === 'emprendimiento');
+  if (baseEmprendimiento.length > appEmprendimiento.length) {
+    const existingIds = new Set((AppState.config.products || []).map(p => p.id));
+    baseEmprendimiento.forEach(bp => {
+      if (!existingIds.has(bp.id)) {
+        AppState.config.products.push(bp);
+      }
+    });
+  }
   // Si la estructura SMM no tiene los filtros de audiencia nuevos, actualizar desde baseConfig
   const cloudSmm = AppState.config.smmData;
   if (!cloudSmm || !cloudSmm.instagram || !cloudSmm.instagram.audienceFilters || (baseConfig.smmData && baseConfig.smmData.instagram && baseConfig.smmData.instagram.services.length > (cloudSmm.instagram.services || []).length)) {
@@ -142,6 +169,35 @@ async function fetchCloudConfig() {
           AppState.config.paymentAccountHolder = baseConfig.paymentAccountHolder;
           needsCloudResync = true;
         }
+
+        // Sincronizar catálogo expandido de IPTV (12 plataformas completas)
+        const baseIptvCount = (baseConfig.products || []).filter(p => p.category === 'iptv').length;
+        const cloudIptvCount = (cloudConfig.products || []).filter(p => p.category === 'iptv').length;
+        if (baseIptvCount > cloudIptvCount) {
+          const nonIptvCloud = (cloudConfig.products || []).filter(p => p.category !== 'iptv');
+          const baseIptv = (baseConfig.products || []).filter(p => p.category === 'iptv');
+          AppState.config.products = [...nonIptvCloud, ...baseIptv];
+          needsCloudResync = true;
+        }
+
+        // Sincronizar nueva categoría 'emprendimiento' y sus productos si no están en la nube
+        const baseCategories = baseConfig.categories || [];
+        const cloudCatIds = new Set((cloudConfig.categories || []).map(c => c.id));
+        baseCategories.forEach(bc => {
+          if (!cloudCatIds.has(bc.id)) {
+            AppState.config.categories.push(bc);
+            needsCloudResync = true;
+          }
+        });
+
+        const baseEmprendimientoProds = (baseConfig.products || []).filter(p => p.category === 'emprendimiento');
+        const cloudProdIds = new Set((cloudConfig.products || []).map(p => p.id));
+        baseEmprendimientoProds.forEach(bp => {
+          if (!cloudProdIds.has(bp.id)) {
+            AppState.config.products.push(bp);
+            needsCloudResync = true;
+          }
+        });
 
         if (needsCloudResync) {
           saveConfigToCloud(false);
@@ -427,7 +483,8 @@ function createProductCardHtml(product) {
   if (!AppState.cardVariants[product.id]) {
     AppState.cardVariants[product.id] = {
       carrier: (product.carriers && product.carriers[0]) || '',
-      appOption: (product.appOptions && product.appOptions[0]) || ''
+      appOption: (product.appOptions && product.appOptions[0]) || '',
+      planOption: (product.planOptions && product.planOptions[0]) || ''
     };
   }
 
@@ -438,6 +495,12 @@ function createProductCardHtml(product) {
   if (product.hasCarrierSelector && product.carrierPricing && currentSelection.carrier) {
     const cp = product.carrierPricing[currentSelection.carrier];
     if (cp && cp.price) currentPrice = cp.price;
+  }
+
+  // Si tiene selector de plan (ej. ArgenTV Estándar/Full o Pack 4P Básico/Plus/Premium)
+  if (product.hasPlanSelector && product.planPricing && currentSelection.planOption) {
+    const pp = product.planPricing[currentSelection.planOption];
+    if (pp && pp.price) currentPrice = pp.price;
   }
 
   const isCombo = product.isSpecialCombo;
@@ -514,6 +577,30 @@ function createProductCardHtml(product) {
           </div>
         ` : ''}
 
+        <!-- Selector de Variante / Servidor (para ArgenTV y Pack TV 4P) -->
+        ${product.hasPlanSelector ? `
+          <div class="mb-4">
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1.5 uppercase tracking-wider">
+              Variante / Servidor:
+            </label>
+            <div class="grid grid-cols-${(product.planOptions || []).length > 2 ? '3' : '2'} gap-2">
+              ${(product.planOptions || []).map(plan => `
+                <button 
+                  type="button"
+                  onclick="selectCardPlan('${product.id}', '${plan}')"
+                  class="px-2 py-1.5 rounded-lg text-xs font-semibold border transition-all truncate ${
+                    currentSelection.planOption === plan 
+                      ? 'bg-cyan-500/20 border-cyan-400 text-cyan-300' 
+                      : 'bg-[#121424] border-[#1E2238] text-slate-400 hover:text-white'
+                  }"
+                >
+                  ${plan}
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        ` : ''}
+
         <div class="space-y-2 mb-6">
           ${(product.benefits || []).map(b => `
             <div class="flex items-start gap-2.5 text-xs text-slate-300">
@@ -560,6 +647,20 @@ function createProductCardHtml(product) {
             <span>Configurar Paquete SMM</span>
           </button>
         ` : `
+          ${product.demoUrl ? `
+            <div class="mb-2.5">
+              <a 
+                href="${product.demoUrl}" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                class="w-full py-2 px-3 rounded-xl bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/40 text-xs font-bold flex items-center justify-center gap-1.5 transition shadow-sm"
+              >
+                <span>👁️ Probar Demo en Vivo</span>
+                <span class="text-xs">↗</span>
+              </a>
+            </div>
+          ` : ''}
+
           <div class="grid grid-cols-2 gap-2">
             <button 
               type="button" 
@@ -598,6 +699,12 @@ function selectCardApp(productId, appOption) {
   renderProducts();
 }
 
+function selectCardPlan(productId, planOption) {
+  if (!AppState.cardVariants[productId]) AppState.cardVariants[productId] = {};
+  AppState.cardVariants[productId].planOption = planOption;
+  renderProducts();
+}
+
 function addCardProductToCart(productId) {
   const product = (AppState.config.products || []).find(p => p.id === productId);
   if (!product) return;
@@ -615,6 +722,13 @@ function addCardProductToCart(productId) {
 
   if (product.hasAppSelector && currentSelection.appOption) {
     variantDetails = `App ${currentSelection.appOption} • ${variantDetails}`;
+  }
+
+  if (product.hasPlanSelector && currentSelection.planOption) {
+    variantDetails = `Variante ${currentSelection.planOption} • ${variantDetails}`;
+    if (product.planPricing && product.planPricing[currentSelection.planOption]) {
+      finalPrice = product.planPricing[currentSelection.planOption].price;
+    }
   }
 
   addToCart({
@@ -644,6 +758,12 @@ function consultProductDirectly(productId) {
   }
   if (product.hasAppSelector && currentSelection.appOption) {
     details += ` (App: ${currentSelection.appOption})`;
+  }
+  if (product.hasPlanSelector && currentSelection.planOption) {
+    details += ` (Variante: ${currentSelection.planOption})`;
+    if (product.planPricing && product.planPricing[currentSelection.planOption]) {
+      finalPrice = product.planPricing[currentSelection.planOption].price;
+    }
   }
 
   const priceStr = AppState.config.showPrices ? `Precio: ${formatCurrency(finalPrice)}` : 'A convenir';
@@ -1710,7 +1830,29 @@ function handleAdminLogin(e) {
   }
 }
 
+function ensureAnalyticsTabExists() {
+  const tabsNav = document.getElementById('adminDashboardModal')?.querySelector('.overflow-x-auto');
+  if (tabsNav && !document.getElementById('adminTabBtn-analytics')) {
+    const btn = document.createElement('button');
+    btn.id = 'adminTabBtn-analytics';
+    btn.type = 'button';
+    btn.onclick = () => switchAdminTab('analytics');
+    btn.className = 'px-4 py-2.5 rounded-t-xl text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-white transition';
+    btn.innerHTML = '📊 Visitas & Estadísticas';
+    tabsNav.appendChild(btn);
+  }
+
+  const contentContainer = document.getElementById('adminDashboardModal')?.querySelector('.overflow-y-auto');
+  if (contentContainer && !document.getElementById('adminTab-analytics')) {
+    const tabDiv = document.createElement('div');
+    tabDiv.id = 'adminTab-analytics';
+    tabDiv.className = 'space-y-6 hidden';
+    contentContainer.appendChild(tabDiv);
+  }
+}
+
 function openAdminDashboard() {
+  ensureAnalyticsTabExists();
   const modal = document.getElementById('adminDashboardModal');
   if (!modal) return;
   modal.classList.remove('hidden');
@@ -1738,7 +1880,7 @@ function closeAdminDashboard() {
 }
 
 function switchAdminTab(tabKey) {
-  const tabs = ['general', 'products', 'smm'];
+  const tabs = ['general', 'products', 'smm', 'analytics'];
   tabs.forEach(t => {
     const content = document.getElementById(`adminTab-${t}`);
     const btn = document.getElementById(`adminTabBtn-${t}`);
@@ -1759,6 +1901,7 @@ function switchAdminTab(tabKey) {
 
   if (tabKey === 'products') renderAdminProductsTable();
   if (tabKey === 'smm') renderAdminSmmTable();
+  if (tabKey === 'analytics') renderAdminAnalytics();
 }
 
 function applyGlobalMarginToAll() {
@@ -1776,6 +1919,13 @@ function applyGlobalMarginToAll() {
       Object.keys(product.carrierPricing).forEach(ck => {
         product.carrierPricing[ck].margin = newMargin;
         product.carrierPricing[ck].price = calcSalePrice(product.carrierPricing[ck].costPrice, newMargin);
+      });
+    }
+
+    if (product.planPricing) {
+      Object.keys(product.planPricing).forEach(pk => {
+        product.planPricing[pk].margin = newMargin;
+        product.planPricing[pk].price = calcSalePrice(product.planPricing[pk].cost, newMargin);
       });
     }
   });
@@ -2278,10 +2428,278 @@ function getIconSvg(iconName, classes = 'w-5 h-5') {
     Heart: `<svg class="${classes}" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>`,
     Layers: `<svg class="${classes}" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>`,
     Flame: `<svg class="${classes}" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>`,
-    Music2: `<svg class="${classes}" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="18" r="4"/><path d="M12 18V2l10 4"/></svg>`
+    Music2: `<svg class="${classes}" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="18" r="4"/><path d="M12 18V2l10 4"/></svg>`,
+    Briefcase: `<svg class="${classes}" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>`
   };
 
   return icons[iconName] || icons.Sparkles;
+}
+
+// ==============================================================================
+// 14.1 CONTADOR OCULTO DE VISITAS & ANALÍTICAS PRIVADAS
+// ==============================================================================
+
+async function recordSiteVisit() {
+  if (sessionStorage.getItem('sonri_visit_tracked')) {
+    return;
+  }
+
+  if (!supabaseClient) {
+    setTimeout(recordSiteVisit, 1500);
+    return;
+  }
+
+  try {
+    let visitorId = localStorage.getItem('sonri_visitor_id');
+    const isNewVisitor = !visitorId;
+    if (isNewVisitor) {
+      visitorId = 'v_' + Math.random().toString(36).substring(2, 9) + Date.now().toString(36);
+      localStorage.setItem('sonri_visitor_id', visitorId);
+    }
+
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const deviceType = isMobile ? 'mobile' : 'desktop';
+
+    // Detección de fuente / origen
+    const ref = (document.referrer || '').toLowerCase();
+    let source = 'direct';
+    if (ref.includes('instagram')) source = 'instagram';
+    else if (ref.includes('whatsapp') || ref.includes('wa.me')) source = 'whatsapp';
+    else if (ref.includes('facebook') || ref.includes('fb.')) source = 'facebook';
+    else if (ref.includes('google')) source = 'google';
+    else if (ref.includes('tiktok')) source = 'tiktok';
+    else if (ref && !ref.includes(window.location.hostname)) source = 'referral';
+
+    const today = new Date().toISOString().split('T')[0];
+
+    const { data: row } = await supabaseClient
+      .from('app_config')
+      .select('data')
+      .eq('id', 'site_analytics')
+      .maybeSingle();
+
+    const stats = (row && row.data) ? row.data : {
+      total_visits: 0,
+      unique_visitors: 0,
+      devices: { mobile: 0, desktop: 0 },
+      sources: { direct: 0, instagram: 0, whatsapp: 0, facebook: 0, google: 0, referral: 0 },
+      daily: {}
+    };
+
+    stats.total_visits = (stats.total_visits || 0) + 1;
+    if (isNewVisitor) {
+      stats.unique_visitors = (stats.unique_visitors || 0) + 1;
+    }
+    stats.devices = stats.devices || { mobile: 0, desktop: 0 };
+    stats.devices[deviceType] = (stats.devices[deviceType] || 0) + 1;
+
+    stats.sources = stats.sources || { direct: 0, instagram: 0, whatsapp: 0, facebook: 0, google: 0, referral: 0 };
+    stats.sources[source] = (stats.sources[source] || 0) + 1;
+
+    stats.daily = stats.daily || {};
+    stats.daily[today] = (stats.daily[today] || 0) + 1;
+
+    const dailyKeys = Object.keys(stats.daily).sort();
+    if (dailyKeys.length > 30) {
+      delete stats.daily[dailyKeys[0]];
+    }
+
+    stats.last_visit = new Date().toISOString();
+
+    await supabaseClient
+      .from('app_config')
+      .upsert({
+        id: 'site_analytics',
+        data: stats,
+        updated_at: new Date().toISOString()
+      });
+
+    sessionStorage.setItem('sonri_visit_tracked', '1');
+  } catch (err) {
+    console.debug('Analytics error:', err);
+  }
+}
+
+async function renderAdminAnalytics() {
+  const container = document.getElementById('adminTab-analytics');
+  if (!container) return;
+
+  container.innerHTML = `
+    <div class="p-8 text-center text-slate-400">
+      <div class="inline-block w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin mb-3"></div>
+      <p class="text-xs">Cargando métricas de visitas en tiempo real...</p>
+    </div>
+  `;
+
+  if (!supabaseClient) {
+    container.innerHTML = `
+      <div class="p-8 text-center text-amber-400 text-xs">
+        Se requiere conexión a Supabase para consultar analíticas en tiempo real.
+      </div>
+    `;
+    return;
+  }
+
+  try {
+    const { data: row } = await supabaseClient
+      .from('app_config')
+      .select('data, updated_at')
+      .eq('id', 'site_analytics')
+      .maybeSingle();
+
+    const stats = (row && row.data) ? row.data : {
+      total_visits: 0,
+      unique_visitors: 0,
+      devices: { mobile: 0, desktop: 0 },
+      sources: { direct: 0, instagram: 0, whatsapp: 0, facebook: 0, google: 0, referral: 0 },
+      daily: {}
+    };
+
+    const total = stats.total_visits || 0;
+    const unique = stats.unique_visitors || 0;
+    const mobileCount = (stats.devices && stats.devices.mobile) || 0;
+    const desktopCount = (stats.devices && stats.devices.desktop) || 0;
+    const devTotal = mobileCount + desktopCount || 1;
+    const mobilePct = Math.round((mobileCount / devTotal) * 100);
+    const desktopPct = 100 - mobilePct;
+
+    const lastVisitDate = stats.last_visit ? new Date(stats.last_visit).toLocaleString('es-AR') : 'Sin registros aún';
+
+    const sources = stats.sources || {};
+    const sourceLabels = {
+      instagram: '📸 Instagram',
+      whatsapp: '💬 WhatsApp',
+      direct: '🔗 Enlace Directo',
+      facebook: '👥 Facebook',
+      google: '🔍 Google',
+      referral: '🌐 Otros Sitios'
+    };
+
+    const sortedSources = Object.keys(sourceLabels).map(key => ({
+      key,
+      label: sourceLabels[key],
+      count: sources[key] || 0
+    })).sort((a, b) => b.count - a.count);
+
+    const dailyEntries = Object.entries(stats.daily || {}).slice(-7);
+
+    container.innerHTML = `
+      <div class="space-y-6">
+        
+        <!-- Tarjeta de Encabezado -->
+        <div class="p-5 rounded-2xl glass-panel border border-cyan-500/40 flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <h4 class="text-lg font-black text-white">Métricas de Tráfico y Visitantes</h4>
+            </div>
+            <p class="text-xs text-slate-400 mt-1">
+              Contador 100% privado y encriptado. Solo visible desde tu panel de administrador.
+            </p>
+          </div>
+          <button 
+            type="button" 
+            onclick="renderAdminAnalytics()" 
+            class="px-3.5 py-2 rounded-xl bg-[#121424] hover:bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 font-bold text-xs flex items-center gap-1.5 transition"
+          >
+            <span>🔄</span>
+            <span>Actualizar Datos</span>
+          </button>
+        </div>
+
+        <!-- 4 Tarjetas de Estadísticas Principales -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="p-4 rounded-xl bg-[#08090F] border border-[#1E2238]">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Visitantes Únicos</span>
+              <span class="text-xl">👥</span>
+            </div>
+            <div class="text-2xl font-black text-cyan-300">${unique.toLocaleString('es-AR')}</div>
+            <p class="text-[10px] text-slate-500 mt-1">Personas distintas que ingresaron</p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-[#08090F] border border-[#1E2238]">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Vistas de Página</span>
+              <span class="text-xl">👁️</span>
+            </div>
+            <div class="text-2xl font-black text-purple-300">${total.toLocaleString('es-AR')}</div>
+            <p class="text-[10px] text-slate-500 mt-1">Total de aperturas del catálogo</p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-[#08090F] border border-[#1E2238]">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Dispositivo Principal</span>
+              <span class="text-xl">📱</span>
+            </div>
+            <div class="text-2xl font-black text-emerald-300">${mobilePct}% Celular</div>
+            <p class="text-[10px] text-slate-500 mt-1">${desktopPct}% Computadora</p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-[#08090F] border border-[#1E2238]">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Última Visita</span>
+              <span class="text-xl">🕒</span>
+            </div>
+            <div class="text-xs font-bold text-white leading-snug">${lastVisitDate}</div>
+            <p class="text-[10px] text-slate-500 mt-1">Actividad en tiempo real</p>
+          </div>
+        </div>
+
+        <!-- Gráficos y Distribución -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          
+          <!-- Fuentes de Tráfico -->
+          <div class="p-5 rounded-2xl glass-panel border border-[#1E2238] space-y-4">
+            <h5 class="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
+              <span>🌐</span>
+              <span>Fuentes de Tráfico (¿De dónde vienen?)</span>
+            </h5>
+            <div class="space-y-3">
+              ${sortedSources.map(s => {
+                const pct = total > 0 ? Math.round((s.count / total) * 100) : 0;
+                return `
+                  <div>
+                    <div class="flex justify-between text-xs font-semibold mb-1">
+                      <span class="text-slate-300">${s.label}</span>
+                      <span class="text-cyan-400 font-bold">${s.count} (${pct}%)</span>
+                    </div>
+                    <div class="w-full h-2 rounded-full bg-[#121424] overflow-hidden">
+                      <div class="h-full bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full" style="width: ${pct}%"></div>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+
+          <!-- Actividad Reciente -->
+          <div class="p-5 rounded-2xl glass-panel border border-[#1E2238] space-y-4">
+            <h5 class="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
+              <span>📅</span>
+              <span>Actividad Diaria Reciente</span>
+            </h5>
+            <div class="space-y-2">
+              ${dailyEntries.length > 0 ? dailyEntries.map(([date, count]) => `
+                <div class="flex items-center justify-between p-2 rounded-lg bg-[#08090F] border border-[#1E2238]/60 text-xs">
+                  <span class="text-slate-400 font-mono">${date}</span>
+                  <span class="text-cyan-300 font-bold">${count} visitas</span>
+                </div>
+              `).join('') : '<p class="text-xs text-slate-500">Registrando primeras visitas...</p>'}
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    `;
+  } catch (e) {
+    container.innerHTML = `
+      <div class="p-6 text-center text-red-400 text-xs">
+        Error cargando analíticas: ${e.message}
+      </div>
+    `;
+  }
 }
 
 // ==============================================================================
@@ -2291,6 +2709,7 @@ function getIconSvg(iconName, classes = 'w-5 h-5') {
 document.addEventListener('DOMContentLoaded', () => {
   initAppConfig();
   initSupabaseClient();
+  recordSiteVisit();
   loadCartFromStorage();
   updateCartBadge();
   renderCategories();
@@ -2314,7 +2733,9 @@ document.addEventListener('DOMContentLoaded', () => {
       closeNewProductModal();
       toggleCartDrawer(false);
     }
-    if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
+    // Atajos de teclado: Escape cierra modales; Alt+A, Ctrl+Shift+A o Ctrl+Alt+A abre login admin
+    const isAKey = e.key === 'A' || e.key === 'a' || e.code === 'KeyA';
+    if (isAKey && (e.altKey || ((e.ctrlKey || e.metaKey) && (e.shiftKey || e.altKey)))) {
       e.preventDefault();
       openAdminLoginModal();
     }

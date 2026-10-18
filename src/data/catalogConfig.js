@@ -90,6 +90,14 @@ const CATALOG_CONFIG = {
       icon: "TrendingUp",
       badge: "Sin Contraseñas",
       description: "Seguidores, vistas, likes y reproducción para escalar tus redes sociales."
+    },
+    {
+      id: "emprendimiento",
+      name: "Emprendé con tu Panel",
+      shortName: "Emprendé / Tu Negocio",
+      icon: "Briefcase",
+      badge: "Ganancias 100% Tuyas",
+      description: "Obtené tu propio panel mayorista para revender servicios y software profesional para gestionar tus clientes."
     }
   ],
 
@@ -581,37 +589,198 @@ const CATALOG_CONFIG = {
     },
 
     // --------------------------------------------------------------------------
-    // PILAR 4: TELEVISIÓN DIGITAL & IPTV (1 precio unificado por servicio)
+    // PILAR 4: TELEVISIÓN DIGITAL & IPTV (12 plataformas completas)
     // --------------------------------------------------------------------------
     {
-      id: "pack-tv-digital-futbol",
+      id: "tv-digital-premium-futbol",
       name: "TV Digital Premium + Pack Fútbol",
       category: "iptv",
       badge: "Fútbol en Vivo HD",
       highlight: true,
-      hasAppSelector: true,
-      // Costo más alto de proveedor: 8.000 ARS (3 pantallas)
+      costPrice: 5920,
+      margin: 40,
+      price: calcSalePrice(5920, 40),
+      period: "30 días · 3 pantallas",
+      icon: "Tv",
+      gradient: "from-blue-600 via-indigo-700 to-cyan-500",
+      description: "Ideal para ver todo el fútbol argentino e internacional en vivo con máxima fluidez. Incluye señales de cable premium, cine y series.",
+      benefits: [
+        "⏱ Entrega rápida: 15 min a 1 hs (horario 7:30 a 00:30 hs)",
+        "Pack Fútbol completo (ESPN Premium y TNT Sports en HD/FHD)",
+        "3 pantallas en simultáneo para disfrutar en familia",
+        "Compatible con Smart TV, TV Box, Fire Stick, PC y Celular"
+      ]
+    },
+    {
+      id: "vision-digital-tv",
+      name: "Vision Digital TV",
+      category: "iptv",
+      badge: "4 Pantallas · Ultra HD",
+      costPrice: 5600,
+      margin: 40,
+      price: calcSalePrice(5600, 40),
+      period: "30 días · 4 pantallas",
+      icon: "MonitorPlay",
+      gradient: "from-cyan-600 to-blue-800",
+      description: "Plataforma de alta definición diseñada para hasta 4 dispositivos en simultáneo, ideal para hogares numerosos.",
+      benefits: [
+        "⏱ Entrega estimada: 30 min a 6 hs máx",
+        "Hasta 4 dispositivos en simultáneo sin cortes",
+        "Gran variedad de canales de deportes, noticias y películas",
+        "Calidad Ultra HD / Full HD optimizada"
+      ]
+    },
+    {
+      id: "tv-digital-lumix",
+      name: "TV Digital Lumix",
+      category: "iptv",
+      badge: "4 Pantallas · Estabilidad",
+      costPrice: 6400,
+      margin: 40,
+      price: calcSalePrice(6400, 40),
+      period: "30 días · 4 pantallas",
+      icon: "Zap",
+      gradient: "from-emerald-600 to-teal-800",
+      description: "Servidores robustos de altísima estabilidad para transmisiones deportivas en vivo y eventos especiales sin interrupciones.",
+      benefits: [
+        "⏱ Entrega estimada: 20 min a 12 hs",
+        "4 pantallas simultáneas para toda la familia",
+        "Excelente estabilidad en partidos clave y fines de semana",
+        "App intuitiva para Android TV, Fire TV y dispositivos móviles"
+      ]
+    },
+    {
+      id: "gs-play-hd",
+      name: "GS Play HD",
+      category: "iptv",
+      badge: "Sin Interrupciones",
+      costPrice: 6400,
+      margin: 40,
+      price: calcSalePrice(6400, 40),
+      period: "30 días · 3 pantallas",
+      icon: "PlaySquare",
+      gradient: "from-violet-600 to-purple-800",
+      description: "Disfrutá donde quieras y cuando quieras sin interrupciones con la mejor programación en vivo y a demanda.",
+      benefits: [
+        "⏱ Entrega estimada: 2 a 24 hs",
+        "3 pantallas simultáneas en alta resolución",
+        "Cientos de señales en vivo: deportes, infantiles y cine",
+        "Conexión simple y rápida con soporte dedicado"
+      ]
+    },
+    {
+      id: "tv-digital-roku",
+      name: "TV Digital Especial ROKU",
+      category: "iptv",
+      badge: "Especial Roku",
+      costPrice: 5120,
+      margin: 40,
+      price: calcSalePrice(5120, 40),
+      period: "30 días · 3 pantallas",
+      icon: "Tv",
+      gradient: "from-purple-600 to-pink-800",
+      description: "Servicio especialmente optimizado y configurado para televisores y dispositivos con sistema Roku.",
+      benefits: [
+        "⏱ Entrega estimada: 1 a 24 hs",
+        "100% compatible con sistema Roku y Smart TVs compatibles",
+        "3 pantallas en simultáneo con transmisión fluida",
+        "Guía de configuración paso a paso garantizada"
+      ]
+    },
+    {
+      id: "tv-digital-argentv",
+      name: "TV Digital ArgenTV",
+      category: "iptv",
+      badge: "Estándar / Full",
+      hasPlanSelector: true,
+      planOptions: ["Estándar", "Full"],
+      planPricing: {
+        "Estándar": { cost: 4800, margin: 40, price: calcSalePrice(4800, 40) },
+        "Full": { cost: 7520, margin: 40, price: calcSalePrice(7520, 40) }
+      },
+      costPrice: 4800,
+      margin: 40,
+      price: calcSalePrice(4800, 40),
+      period: "30 días · 3 pantallas",
+      icon: "Tv",
+      gradient: "from-sky-500 to-indigo-700",
+      description: "Elegí el plan que mejor se adapte a vos: Estándar económico o Full con catálogo expandido y máxima potencia.",
+      benefits: [
+        "⏱ Entrega estimada: 1 a 12 hs",
+        "Selector de plan: Estándar ($6.700) o Full ($10.550)",
+        "3 pantallas simultáneas en cualquier dispositivo",
+        "Canales en vivo de Argentina y el mundo con programación 24/7"
+      ]
+    },
+    {
+      id: "tv-digital-argentum",
+      name: "TV Digital Argentum",
+      category: "iptv",
+      badge: "Máxima Calidad",
       costPrice: 8000,
       margin: 40,
       price: calcSalePrice(8000, 40),
       period: "30 días · 3 pantallas",
-      icon: "Tv",
-      gradient: "from-blue-600 via-indigo-700 to-cyan-500",
-      description: "Más de 1.500 canales en vivo, Pack Fútbol Argentino e internacional, señales de cine, infantiles y deportes en HD.",
+      icon: "Sparkles",
+      gradient: "from-amber-600 to-orange-800",
+      description: "Servidor de primera categoría con baja latencia, gran fidelidad de imagen y catálogo VOD prémium actualizado.",
       benefits: [
-        "Elegí tu aplicación preferida: Argentum, Lumix, Flujo TV o Argen TV",
-        "Pack Fútbol completo (ESPN Premium y TNT Sports en Full HD)",
-        "Más de 10.000 películas y series a demanda incluidas",
-        "Compatible con Smart TV, TV Box, Fire Stick, PC y Celular"
-      ],
-      appOptions: ["Argentum", "Lumix", "Flujo TV", "Argen TV"]
+        "⏱ Entrega estimada: 2 a 6 hs",
+        "3 pantallas en simultáneo con ancho de banda optimizado",
+        "Pack Fútbol y deportes sin desfasaje de transmisión",
+        "Miles de películas y temporadas completas de series"
+      ]
+    },
+    {
+      id: "iptv-flujo-tv",
+      name: "IPTV Flujo TV",
+      category: "iptv",
+      badge: "Servidor Potente",
+      costPrice: 9120,
+      margin: 40,
+      price: calcSalePrice(9120, 40),
+      period: "30 días · 3 pantallas",
+      icon: "Flame",
+      gradient: "from-rose-600 to-red-800",
+      description: "Servidor de altísimo desempeño diseñado para exigentes: fluidez inquebrantable en superclásicos y partidos decisivos.",
+      benefits: [
+        "⏱ Entrega estimada: 1 a 12 hs",
+        "3 pantallas simultáneas con servidores de alto poder",
+        "Cero buffering en transmisiones en vivo de alta demanda",
+        "Canales argentinos, latinoamericanos y globales en Full HD"
+      ]
+    },
+    {
+      id: "pack-tv-digital-internet-4p",
+      name: "Pack TV Digital por Internet (4 Pantallas)",
+      category: "iptv",
+      badge: "4 Pantallas · Multi-Servidor",
+      hasPlanSelector: true,
+      planOptions: ["Básico", "Plus", "Premium"],
+      planPricing: {
+        "Básico": { cost: 4000, margin: 40, price: calcSalePrice(4000, 40) },
+        "Plus": { cost: 5120, margin: 40, price: calcSalePrice(5120, 40) },
+        "Premium": { cost: 5600, margin: 40, price: calcSalePrice(5600, 40) }
+      },
+      costPrice: 4000,
+      margin: 40,
+      price: calcSalePrice(4000, 40),
+      period: "30 días · 4 pantallas",
+      icon: "Layers",
+      gradient: "from-cyan-600 to-teal-700",
+      description: "La alternativa más completa para 4 pantallas familiares. Elegí entre variante Básico, Plus o Premium según tus necesidades.",
+      benefits: [
+        "⏱ Entrega rápida: 30 min a 2 hs",
+        "Variantes de servidor: Básico ($5.600), Plus ($7.150) o Premium ($7.850)",
+        "4 pantallas activas en simultáneo para toda la casa",
+        "Excelente variedad de señales en vivo, series y películas"
+      ]
     },
     {
       id: "directv-go",
       name: "DirecTV GO (DGO)",
       category: "iptv",
       badge: "Deportes DSPORTS",
-      // Costo: 14.400 ARS
       costPrice: 14400,
       margin: 38,
       price: calcSalePrice(14400, 38),
@@ -620,10 +789,10 @@ const CATALOG_CONFIG = {
       gradient: "from-sky-600 to-blue-900",
       description: "La experiencia oficial de DGO: canales en vivo, señales exclusivas de DSPORTS y retroceso de programación en Full HD.",
       benefits: [
+        "⏱ Entrega estimada: 1 a 24 hs",
         "Señales exclusivas de DSPORTS con coberturas únicas",
         "Guía electrónica interactiva y retroceso de programación",
-        "Alta estabilidad en servidores oficiales",
-        "Calidad Full HD nítida sin caídas"
+        "Calidad Full HD nítida sin caídas en servidores oficiales"
       ]
     },
     {
@@ -631,7 +800,6 @@ const CATALOG_CONFIG = {
       name: "Mio TV / La Tele que va con vos",
       category: "iptv",
       badge: "Señales Digitales",
-      // Costo: 12.800 ARS
       costPrice: 12800,
       margin: 38,
       price: calcSalePrice(12800, 38),
@@ -640,10 +808,10 @@ const CATALOG_CONFIG = {
       gradient: "from-indigo-600 to-purple-800",
       description: "Excelente alternativa con programación variada, canales de aire, cable y deportes para Smart TV y Android.",
       benefits: [
+        "⏱ Entrega estimada: 1 a 24 hs",
         "Interfaz ligera y rápida ideal para Smart TVs",
         "Canales nacionales e internacionales en vivo",
-        "Alta estabilidad de transmisión",
-        "Soporte y guía de conexión paso a paso"
+        "Alta estabilidad de transmisión y soporte guiado"
       ]
     },
     {
@@ -651,7 +819,6 @@ const CATALOG_CONFIG = {
       name: "Plex TV Multimedia Server",
       category: "iptv",
       badge: "Cine & Series HD",
-      // Costo: 2.400 ARS
       costPrice: 2400,
       margin: 50,
       price: calcSalePrice(2400, 50),
@@ -660,9 +827,9 @@ const CATALOG_CONFIG = {
       gradient: "from-amber-600 to-yellow-700",
       description: "Servidor privado con miles de películas de estreno y series completas en la más alta calidad audiovisual a demanda.",
       benefits: [
+        "⏱ Entrega estimada: 15 min a 2 hs",
         "Catálogo masivo sin límite de horas de visualización",
         "Calidad original 4K y 1080p con subtítulos y doblajes",
-        "Organización estilo Netflix con sinopsis y trailers",
         "Compatible con todas las aplicaciones oficiales de Plex"
       ]
     },
@@ -689,6 +856,99 @@ const CATALOG_CONFIG = {
         "Servidores de alta calidad con entrega gradual y natural",
         "Servicios segmentados para Instagram, Facebook, YouTube y WhatsApp",
         "Elegí tu audiencia: Argentinos 🇦🇷, Latinos 🌎, Femeninos 👩 o Globales 🌐"
+      ]
+    },
+
+    // --------------------------------------------------------------------------
+    // PILAR 6: EMPRENDIMIENTO, PANELES REVENDEDOR & SOFTWARE PRO
+    // --------------------------------------------------------------------------
+    {
+      id: "membresia-inicial-agencia-redes",
+      name: "Membresía Inicial — Panel Mayorista Propio",
+      category: "emprendimiento",
+      badge: "Acceso Mayorista",
+      costPrice: 25000,
+      margin: 20,
+      price: 29900,
+      period: "Acceso Permanente",
+      icon: "Briefcase",
+      gradient: "from-blue-600 via-indigo-600 to-cyan-500",
+      description: "Acceso directo a tu propio panel de proveedor mayorista para revender streaming, TV digital, cuentas IA, internet y redes sociales con tus propios precios y ganancias.",
+      benefits: [
+        "🔑 Panel mayorista propio sin intermediarios",
+        "💰 Comprá a costo neto y fijá tus propios precios de venta",
+        "⚡ Ganancias 100% tuyas directo a tu cuenta",
+        "📱 Plataforma web accesible desde celular, tablet o PC",
+        "🛡️ Activación personalizada y segura vía WhatsApp"
+      ]
+    },
+    {
+      id: "membresia-acelerador-agencia-redes",
+      name: "Membresía Acelerador — Panel + Formación + Grupo VIP",
+      category: "emprendimiento",
+      badge: "Recomendado · Más Completo",
+      highlight: true,
+      costPrice: 45000,
+      margin: 18,
+      price: 52900,
+      period: "Acceso Completo + Comunidad",
+      icon: "Flame",
+      gradient: "from-amber-500 via-orange-600 to-red-600",
+      description: "La solución completa para arrancar a facturar rápido con acompañamiento. Incluye el panel mayorista, curso intensivo paso a paso y comunidad activa.",
+      benefits: [
+        "🌟 Todo lo incluido en la Membresía Inicial (Panel Mayorista propio)",
+        "🎓 Curso intensivo paso a paso: cómo vender y conseguir clientes",
+        "👥 Acceso exclusivo al Grupo Privado de WhatsApp de la comunidad",
+        "🚀 Estrategias de venta comprobadas y acompañamiento continuo",
+        "⚡ Activación rápida y soporte para arrancar sin trabas"
+      ]
+    },
+    {
+      id: "clarita-la-cuenta-software",
+      name: "Clarita la Cuenta — Software de Gestión y Control",
+      category: "emprendimiento",
+      badge: "App Exclusiva",
+      hasPlanSelector: true,
+      planOptions: ["Anual (1 Año)", "Vitalicia (De por Vida)"],
+      planPricing: {
+        "Anual (1 Año)": { cost: 35000, margin: 57, price: 54900 },
+        "Vitalicia (De por Vida)": { cost: 55000, margin: 54, price: 84900 }
+      },
+      costPrice: 35000,
+      margin: 57,
+      price: 54900,
+      period: "Licencia de Software",
+      icon: "Sliders",
+      gradient: "from-purple-600 via-indigo-600 to-cyan-500",
+      demoUrl: "https://clarita-la-cuenta.netlify.app/",
+      description: "El software definitivo para revendedores de cuentas. Llevá el control de tus clientes, llaves de acceso, servicios contratados y fechas de cobro sin planillas complejas.",
+      benefits: [
+        "📋 Base de datos ordenada de todos tus clientes y servicios",
+        "⏰ Control de fechas de vencimiento y alertas de cobro",
+        "💬 Registro de consultas y soporte por cliente",
+        "☁️ 100% web, liviana, rápida y segura en cualquier dispositivo",
+        "👁️ Incluye acceso a Demo en vivo para probar antes de comprar"
+      ]
+    },
+    {
+      id: "pack-emprendedor-total",
+      name: "Pack Emprendedor Total (Acelerador + Clarita la Cuenta)",
+      category: "emprendimiento",
+      badge: "Mega Combo · Ahorro $17.900",
+      highlight: true,
+      costPrice: 70000,
+      margin: 28,
+      price: 89900,
+      period: "Panel + Formación + Software",
+      icon: "Sparkles",
+      gradient: "from-cyan-500 via-purple-600 to-pink-500",
+      description: "El paquete llave en mano definitivo para lanzar tu negocio digital: Panel mayorista + Curso + Grupo de WhatsApp + Software Clarita la Cuenta (Licencia Anual).",
+      benefits: [
+        "🚀 Membresía Acelerador completa (Panel + Curso + Grupo VIP)",
+        "💻 Clarita la Cuenta Software (Licencia Anual incluida)",
+        "💰 Ahorro de $17.900 comprando el combo conjunto",
+        "⚡ Todo lo necesario para vender, cobrar y gestionar desde el día 1",
+        "🛡️ Asesoramiento y activación guiada por WhatsApp"
       ]
     }
   ],
