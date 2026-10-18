@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 120" width="100%" height="100%">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="neonGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00D4FF" />
+      <stop offset="50%" stop-color="#6A00FF" />
+      <stop offset="100%" stop-color="#9D00FF" />
+    </linearGradient>
+    <linearGradient id="glowGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00D4FF" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#9D00FF" stop-opacity="0.8" />
+    </linearGradient>
+    <linearGradient id="ringGradient" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00D4FF" />
+      <stop offset="100%" stop-color="#9D00FF" />
+    </linearGradient>
+    
+    <!-- Filters for Glow -->
+    <filter id="neonGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="5" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="2.5" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- ISOTIPO: Anillos y "S" Tecnológica con Botón Power -->
+  <g transform="translate(60, 60)">
+    <!-- Resplandor de fondo -->
+    <circle cx="0" cy="0" r="46" fill="url(#neonGradient)" opacity="0.12" filter="url(#neonGlow)" />
+    
+    <!-- Anillo exterior tecnológico segmentado -->
+    <circle cx="0" cy="0" r="44" fill="none" stroke="url(#ringGradient)" stroke-width="2.5" stroke-dasharray="8 6 32 6 8 6 42 6" opacity="0.85" />
+    
+    <!-- Puntos orbitales neón -->
+    <circle cx="31" cy="-31" r="3" fill="#00D4FF" filter="url(#softGlow)" />
+    <circle cx="-31" cy="31" r="3" fill="#9D00FF" filter="url(#softGlow)" />
+    
+    <!-- Anillo interior con efecto cristal -->
+    <circle cx="0" cy="0" r="36" fill="#0B0C14" stroke="#1E2238" stroke-width="2" />
+    
+    <!-- S estilizada tipo flujo de energía / streaming -->
+    <path d="M 14 -16 
+             C 14 -24, -12 -25, -14 -14 
+             C -16 -4, 18 -1, 16 14 
+             C 14 26, -14 25, -16 16" 
+          fill="none" 
+          stroke="url(#neonGradient)" 
+          stroke-width="6.5" 
+          stroke-linecap="round" 
+          stroke-linejoin="round"
+          filter="url(#softGlow)" />
+
+    <!-- Icono integrado de Power / Encendido tecnológico en el centro superior -->
+    <path d="M 0 -29 L 0 -21" stroke="#00D4FF" stroke-width="2.5" stroke-linecap="round" filter="url(#softGlow)" />
+    <circle cx="0" cy="0" r="3.5" fill="#00D4FF" filter="url(#softGlow)" />
+  </g>
+
+  <!-- LOGOTIPO TIPOGRÁFICO: SONRI SOLUCIONES DIGITALES -->
+  <g transform="translate(135, 68)">
+    <!-- Título Principal "SONRI" -->
+    <text x="0" y="0" font-family="'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif" font-weight="900" font-size="44" letter-spacing="4" fill="#FFFFFF">
+      SON<tspan fill="url(#neonGradient)">RI</tspan>
+    </text>
+    
+    <!-- Punto de energía neón después del nombre -->
+    <circle cx="198" cy="-8" r="4" fill="#00D4FF" filter="url(#softGlow)" />
+
+    <!-- Subtítulo "SOLUCIONES DIGITALES" -->
+    <text x="2" y="24" font-family="'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif" font-weight="700" font-size="12.5" letter-spacing="4.5" fill="#A0AEC0">
+      SOLUCIONES DIGITALES
+    </text>
+  </g>
+</svg>
