@@ -11,6 +11,12 @@ function calcSalePrice(costNeto, marginPct = 40) {
   return Math.round(raw / 50) * 50;
 }
 
+// Helper para cálculo en Zona Gamer (costo base + ganancia fija en pesos)
+function calcGamerSalePrice(costNeto, markupARS = 7000) {
+  if (!costNeto || isNaN(costNeto)) return 0;
+  return Number(costNeto) + Number(markupARS);
+}
+
 // Estado global de la aplicación
 const AppState = {
   config: {},
@@ -26,6 +32,11 @@ const AppState = {
     selectedProductIds: ['netflix-premium', 'disney-plus-premium'],
     filterCategory: 'all'
   },
+
+  // Estado para el buscador interactivo Zona Gamer (Bloque B)
+  gamerSearchQuery: '',
+  gamerFilter: 'all',
+  gamerDisplayCount: 24,
 
   // Estado para el modal de Crecimiento en Redes (SMM)
   smmState: {
@@ -180,7 +191,7 @@ async function fetchCloudConfig() {
           needsCloudResync = true;
         }
 
-        // Sincronizar nueva categoría 'emprendimiento' y sus productos si no están en la nube
+        // Sincronizar nuevas categorías si no están en la nube (zona-gamer, mega-packs, emprendimiento, etc.)
         const baseCategories = baseConfig.categories || [];
         const cloudCatIds = new Set((cloudConfig.categories || []).map(c => c.id));
         baseCategories.forEach(bc => {
@@ -190,14 +201,44 @@ async function fetchCloudConfig() {
           }
         });
 
-        const baseEmprendimientoProds = (baseConfig.products || []).filter(p => p.category === 'emprendimiento');
+        // Sincronizar nuevos productos si no están en la nube (Gamer, Mega Packs, Emprendimiento, etc.)
+        const baseProducts = baseConfig.products || [];
         const cloudProdIds = new Set((cloudConfig.products || []).map(p => p.id));
-        baseEmprendimientoProds.forEach(bp => {
+        baseProducts.forEach(bp => {
           if (!cloudProdIds.has(bp.id)) {
             AppState.config.products.push(bp);
             needsCloudResync = true;
           }
         });
+
+        // Sincronizar planes y precios actualizados de streaming (Netflix, Disney+, Max, Prime, Crunchyroll, Paramount+)
+        const baseStreamingWithPlans = baseProducts.filter(p => p.category === 'streaming' && p.hasPlanSelector);
+        baseStreamingWithPlans.forEach(bp => {
+          const idx = (AppState.config.products || []).findIndex(p => p.id === bp.id);
+          if (idx >= 0) {
+            const cloudP = AppState.config.products[idx];
+            if (!cloudP.hasPlanSelector || !cloudP.planPricing || Object.keys(cloudP.planPricing || {}).length < Object.keys(bp.planPricing || {}).length) {
+              AppState.config.products[idx] = JSON.parse(JSON.stringify(bp));
+              needsCloudResync = true;
+            }
+          }
+        });
+
+        // Sincronizar base de 277 juegos individuales gamer
+        if (!AppState.config.gamerIndividualGames || AppState.config.gamerIndividualGames.length < (baseConfig.gamerIndividualGames || []).length) {
+          AppState.config.gamerIndividualGames = JSON.parse(JSON.stringify(baseConfig.gamerIndividualGames || []));
+          needsCloudResync = true;
+        }
+
+        // Sincronizar configuración especial Zona Gamer
+        if (AppState.config.gamerFixedMarkupARS === undefined) {
+          AppState.config.gamerFixedMarkupARS = baseConfig.gamerFixedMarkupARS !== undefined ? baseConfig.gamerFixedMarkupARS : 7000;
+          needsCloudResync = true;
+        }
+        if (AppState.config.showGamerIndividualPrices === undefined) {
+          AppState.config.showGamerIndividualPrices = baseConfig.showGamerIndividualPrices !== false;
+          needsCloudResync = true;
+        }
 
         if (needsCloudResync) {
           saveConfigToCloud(false);
@@ -473,10 +514,31 @@ function renderProducts() {
         </button>
       </div>
     `;
+
+    const gamerBlockContainer = document.getElementById('gamerSearchSection');
+    if (gamerBlockContainer) {
+      if (AppState.activeCategory === 'zona-gamer') {
+        gamerBlockContainer.classList.remove('hidden');
+        renderGamerIndividualSection();
+      } else {
+        gamerBlockContainer.classList.add('hidden');
+      }
+    }
     return;
   }
 
   container.innerHTML = products.map(product => createProductCardHtml(product)).join('');
+
+  // Control de visibilidad del Bloque B de Zona Gamer
+  const gamerBlockContainer = document.getElementById('gamerSearchSection');
+  if (gamerBlockContainer) {
+    if (AppState.activeCategory === 'zona-gamer') {
+      gamerBlockContainer.classList.remove('hidden');
+      renderGamerIndividualSection();
+    } else {
+      gamerBlockContainer.classList.add('hidden');
+    }
+  }
 }
 
 function createProductCardHtml(product) {
@@ -484,12 +546,21 @@ function createProductCardHtml(product) {
     AppState.cardVariants[product.id] = {
       carrier: (product.carriers && product.carriers[0]) || '',
       appOption: (product.appOptions && product.appOptions[0]) || '',
-      planOption: (product.planOptions && product.planOptions[0]) || ''
+      planOption: (product.planOptions && product.planOptions[0]) || '',
+      game1: (product.gamerPool && product.gamerPool[0]) || '',
+      game2: (product.gamerPool && product.gamerPool[1]) || '',
+      customGames: ''
     };
   }
 
   const currentSelection = AppState.cardVariants[product.id];
   let currentPrice = product.price;
+
+  // Si es un producto gamer con costo base y ganancia fija en pesos
+  if (product.isGamerProduct && product.costPrice > 0) {
+    const markup = Number(AppState.config.gamerFixedMarkupARS !== undefined ? AppState.config.gamerFixedMarkupARS : 7000);
+    currentPrice = calcGamerSalePrice(product.costPrice, markup);
+  }
 
   // Si es Internet Móvil con precios por operador
   if (product.hasCarrierSelector && product.carrierPricing && currentSelection.carrier) {
@@ -497,7 +568,7 @@ function createProductCardHtml(product) {
     if (cp && cp.price) currentPrice = cp.price;
   }
 
-  // Si tiene selector de plan (ej. ArgenTV Estándar/Full o Pack 4P Básico/Plus/Premium)
+  // Si tiene selector de plan (ej. Netflix, Disney+, Max, Prime, IPTV, etc.)
   if (product.hasPlanSelector && product.planPricing && currentSelection.planOption) {
     const pp = product.planPricing[currentSelection.planOption];
     if (pp && pp.price) currentPrice = pp.price;
@@ -577,27 +648,91 @@ function createProductCardHtml(product) {
           </div>
         ` : ''}
 
-        <!-- Selector de Variante / Servidor (para ArgenTV y Pack TV 4P) -->
+        <!-- Selector de Variante / Servidor / Plan -->
         ${product.hasPlanSelector ? `
           <div class="mb-4">
             <label class="block text-[11px] font-semibold text-slate-300 mb-1.5 uppercase tracking-wider">
-              Variante / Servidor:
+              Variante / Modalidad:
             </label>
-            <div class="grid grid-cols-${(product.planOptions || []).length > 2 ? '3' : '2'} gap-2">
-              ${(product.planOptions || []).map(plan => `
-                <button 
-                  type="button"
-                  onclick="selectCardPlan('${product.id}', '${plan}')"
-                  class="px-2 py-1.5 rounded-lg text-xs font-semibold border transition-all truncate ${
-                    currentSelection.planOption === plan 
-                      ? 'bg-cyan-500/20 border-cyan-400 text-cyan-300' 
-                      : 'bg-[#121424] border-[#1E2238] text-slate-400 hover:text-white'
-                  }"
-                >
-                  ${plan}
-                </button>
-              `).join('')}
+            ${(product.planOptions || []).length > 3 ? `
+              <select 
+                onchange="selectCardPlan('${product.id}', this.value)"
+                class="w-full bg-[#0E101D] border border-cyan-500/40 text-cyan-300 text-xs rounded-xl px-3 py-2.5 font-bold focus:outline-none focus:border-cyan-400 cursor-pointer shadow-inner"
+              >
+                ${(product.planOptions || []).map(plan => {
+                  const isSel = currentSelection.planOption === plan ? 'selected' : '';
+                  const pp = product.planPricing ? product.planPricing[plan] : null;
+                  const pStr = (pp && pp.price && AppState.config.showPrices) ? ` — ${formatCurrency(pp.price)}` : '';
+                  return `<option value="${plan}" ${isSel}>${plan}${pStr}</option>`;
+                }).join('')}
+              </select>
+            ` : `
+              <div class="grid grid-cols-${(product.planOptions || []).length > 2 ? '3' : '2'} gap-2">
+                ${(product.planOptions || []).map(plan => `
+                  <button 
+                    type="button"
+                    onclick="selectCardPlan('${product.id}', '${plan}')"
+                    class="px-2 py-1.5 rounded-lg text-xs font-semibold border transition-all truncate ${
+                      currentSelection.planOption === plan 
+                        ? 'bg-cyan-500/20 border-cyan-400 text-cyan-300 shadow-sm' 
+                        : 'bg-[#121424] border-[#1E2238] text-slate-400 hover:text-white'
+                    }"
+                  >
+                    ${plan}
+                  </button>
+                `).join('')}
+              </div>
+            `}
+          </div>
+        ` : ''}
+
+        <!-- Selector de Juegos para Combos Gamer Bronce, Plata, Oro -->
+        ${product.hasGamerPackSelectors && product.gamerPool ? `
+          <div class="space-y-2.5 mb-4 bg-[#08090F]/80 p-3 rounded-xl border border-cyan-500/30">
+            <div>
+              <label class="block text-[10px] font-bold text-cyan-300 mb-1 uppercase tracking-wider flex items-center gap-1">
+                <span>🎮</span> <span>Elegí tu Juego 1:</span>
+              </label>
+              <select 
+                onchange="selectGamerPackGame('${product.id}', 1, this.value)"
+                class="w-full bg-[#0E101D] border border-[#1E2238] focus:border-cyan-400 text-slate-200 text-xs rounded-lg px-2.5 py-2 font-medium focus:outline-none cursor-pointer"
+              >
+                <option value="">-- Seleccionar Juego 1 --</option>
+                ${product.gamerPool.map(g => `
+                  <option value="${g}" ${currentSelection.game1 === g ? 'selected' : ''}>${g}</option>
+                `).join('')}
+              </select>
             </div>
+            <div>
+              <label class="block text-[10px] font-bold text-purple-300 mb-1 uppercase tracking-wider flex items-center gap-1">
+                <span>🎮</span> <span>Elegí tu Juego 2:</span>
+              </label>
+              <select 
+                onchange="selectGamerPackGame('${product.id}', 2, this.value)"
+                class="w-full bg-[#0E101D] border border-[#1E2238] focus:border-purple-400 text-slate-200 text-xs rounded-lg px-2.5 py-2 font-medium focus:outline-none cursor-pointer"
+              >
+                <option value="">-- Seleccionar Juego 2 --</option>
+                ${product.gamerPool.map(g => `
+                  <option value="${g}" ${currentSelection.game2 === g ? 'selected' : ''}>${g}</option>
+                `).join('')}
+              </select>
+            </div>
+          </div>
+        ` : ''}
+
+        <!-- Selector Personalizado para Pack Retro PS3 -->
+        ${product.hasPs3CustomInput ? `
+          <div class="mb-4 bg-[#08090F]/80 p-3 rounded-xl border border-indigo-500/30">
+            <label class="block text-[10px] font-bold text-indigo-300 mb-1 uppercase tracking-wider flex items-center gap-1">
+              <span>🎮</span> <span>Escribí tus 3 Juegos deseados:</span>
+            </label>
+            <input 
+              type="text" 
+              placeholder="Ej: GTA V, God of War 3, The Last of Us" 
+              value="${currentSelection.customGames || ''}"
+              oninput="selectGamerPackCustomInput('${product.id}', this.value)"
+              class="w-full bg-[#0E101D] border border-[#1E2238] focus:border-indigo-400 text-slate-200 text-xs rounded-lg px-2.5 py-2 font-medium focus:outline-none placeholder-slate-600"
+            >
           </div>
         ` : ''}
 
@@ -661,6 +796,19 @@ function createProductCardHtml(product) {
             </div>
           ` : ''}
 
+          ${product.category === 'mega-packs' ? `
+            <div class="mb-2.5">
+              <button 
+                type="button" 
+                onclick="openMegaPackModal('${product.id}')"
+                class="w-full py-2 px-3 rounded-xl bg-purple-950/40 hover:bg-purple-900/60 border border-purple-500/40 hover:border-purple-400 text-purple-300 hover:text-white text-xs font-bold flex items-center justify-center gap-2 transition shadow-sm cursor-pointer"
+              >
+                <span>👁️</span>
+                <span>Ver temario y contenido</span>
+              </button>
+            </div>
+          ` : ''}
+
           <div class="grid grid-cols-2 gap-2">
             <button 
               type="button" 
@@ -705,6 +853,17 @@ function selectCardPlan(productId, planOption) {
   renderProducts();
 }
 
+function selectGamerPackGame(productId, slot, title) {
+  if (!AppState.cardVariants[productId]) AppState.cardVariants[productId] = {};
+  if (slot === 1) AppState.cardVariants[productId].game1 = title;
+  if (slot === 2) AppState.cardVariants[productId].game2 = title;
+}
+
+function selectGamerPackCustomInput(productId, value) {
+  if (!AppState.cardVariants[productId]) AppState.cardVariants[productId] = {};
+  AppState.cardVariants[productId].customGames = value;
+}
+
 function addCardProductToCart(productId) {
   const product = (AppState.config.products || []).find(p => p.id === productId);
   if (!product) return;
@@ -712,6 +871,11 @@ function addCardProductToCart(productId) {
   const currentSelection = AppState.cardVariants[productId] || {};
   let finalPrice = product.price;
   let variantDetails = product.period || '30 días';
+
+  if (product.isGamerProduct && product.costPrice > 0) {
+    const markup = Number(AppState.config.gamerFixedMarkupARS !== undefined ? AppState.config.gamerFixedMarkupARS : 7000);
+    finalPrice = calcGamerSalePrice(product.costPrice, markup);
+  }
 
   if (product.hasCarrierSelector && currentSelection.carrier) {
     variantDetails = `Línea ${currentSelection.carrier} • ${variantDetails}`;
@@ -729,6 +893,16 @@ function addCardProductToCart(productId) {
     if (product.planPricing && product.planPricing[currentSelection.planOption]) {
       finalPrice = product.planPricing[currentSelection.planOption].price;
     }
+  }
+
+  if (product.hasGamerPackSelectors) {
+    const g1 = currentSelection.game1 || 'Juego 1 a convenir';
+    const g2 = currentSelection.game2 || 'Juego 2 a convenir';
+    variantDetails = `Juegos: ${g1} + ${g2} • ${variantDetails}`;
+  }
+
+  if (product.hasPs3CustomInput && currentSelection.customGames) {
+    variantDetails = `3 Juegos PS3: ${currentSelection.customGames} • ${variantDetails}`;
   }
 
   addToCart({
@@ -750,6 +924,11 @@ function consultProductDirectly(productId) {
   let finalPrice = product.price;
   let details = product.period || '30 días';
 
+  if (product.isGamerProduct && product.costPrice > 0) {
+    const markup = Number(AppState.config.gamerFixedMarkupARS !== undefined ? AppState.config.gamerFixedMarkupARS : 7000);
+    finalPrice = calcGamerSalePrice(product.costPrice, markup);
+  }
+
   if (product.hasCarrierSelector && currentSelection.carrier) {
     details += ` (Línea: ${currentSelection.carrier})`;
     if (product.carrierPricing && product.carrierPricing[currentSelection.carrier]) {
@@ -765,6 +944,14 @@ function consultProductDirectly(productId) {
       finalPrice = product.planPricing[currentSelection.planOption].price;
     }
   }
+  if (product.hasGamerPackSelectors) {
+    const g1 = currentSelection.game1 || 'Juego 1 a convenir';
+    const g2 = currentSelection.game2 || 'Juego 2 a convenir';
+    details += ` (Juegos elegidos: ${g1} + ${g2})`;
+  }
+  if (product.hasPs3CustomInput && currentSelection.customGames) {
+    details += ` (Juegos: ${currentSelection.customGames})`;
+  }
 
   const priceStr = AppState.config.showPrices ? `Precio: ${formatCurrency(finalPrice)}` : 'A convenir';
   const message = `¡Hola *${AppState.config.brandName || 'Sonri Soluciones Digitales'}*! Quiero consultar por el servicio: *${product.name}* [${details}] (${priceStr}). ¿Tienen disponibilidad de entrega?`;
@@ -772,6 +959,304 @@ function consultProductDirectly(productId) {
   const waNum = AppState.config.whatsappNumber || '5492634377019';
   const url = `https://wa.me/${waNum}?text=${encodeURIComponent(message)}`;
   window.open(url, '_blank');
+}
+
+// ==============================================================================
+// 4.5. ZONA GAMER: MOTOR DE BÚSQUEDA Y FILTRADO INTERACTIVO (BLOQUE B)
+// ==============================================================================
+
+function renderGamerIndividualSection() {
+  const container = document.getElementById('gamerGamesGrid');
+  const counterEl = document.getElementById('gamerGamesCounter');
+  const loadMoreBtn = document.getElementById('gamerLoadMoreBtn');
+  const loadMoreContainer = document.getElementById('gamerLoadMoreContainer');
+  if (!container) return;
+
+  const allGames = AppState.config.gamerIndividualGames || [];
+  const q = (AppState.gamerSearchQuery || '').toLowerCase().trim();
+  const filter = AppState.gamerFilter || 'all';
+  const markup = Number(AppState.config.gamerFixedMarkupARS !== undefined ? AppState.config.gamerFixedMarkupARS : 7000);
+  const showPrices = AppState.config.showGamerIndividualPrices !== false && AppState.config.showPrices !== false;
+
+  let filtered = allGames.filter(game => {
+    // Búsqueda por texto
+    if (q) {
+      const matchTitle = (game.title || '').toLowerCase().includes(q);
+      const matchPlatform = (game.platform || '').toLowerCase().includes(q);
+      if (!matchTitle && !matchPlatform) return false;
+    }
+
+    // Filtros rápidos
+    const finalPrice = calcGamerSalePrice(game.cost, markup);
+    if (filter === 'PS5') {
+      return (game.platform || '').includes('PS5');
+    }
+    if (filter === 'PS4') {
+      return (game.platform || '').includes('PS4') && !(game.platform || '').includes('PS5');
+    }
+    if (filter === 'latino') {
+      return game.isLatino || (game.title || '').toLowerCase().includes('español latino');
+    }
+    if (filter === 'under20k') {
+      return finalPrice < 20000;
+    }
+    return true;
+  });
+
+  if (counterEl) {
+    counterEl.textContent = `${filtered.length} de ${allGames.length} Juegos`;
+  }
+
+  const limit = AppState.gamerDisplayCount || 24;
+  const displayed = filtered.slice(0, limit);
+
+  if (displayed.length === 0) {
+    container.innerHTML = `
+      <div class="col-span-full py-12 text-center glass-panel rounded-2xl border border-dashed border-[#1E2238]">
+        <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-slate-900 flex items-center justify-center text-cyan-400">
+          🎮
+        </div>
+        <h4 class="text-base font-bold text-white mb-1">No encontramos juegos con ese filtro</h4>
+        <p class="text-slate-400 text-xs mb-4">
+          Probá buscando otra palabra clave o limpiando el filtro de búsqueda.
+        </p>
+        <button onclick="clearGamerSearch()" class="px-4 py-2 rounded-xl bg-[#121424] text-cyan-300 border border-cyan-500/30 text-xs font-bold hover:bg-cyan-500/20 transition cursor-pointer">
+          Ver todos los juegos
+        </button>
+      </div>
+    `;
+    if (loadMoreContainer) loadMoreContainer.classList.add('hidden');
+    return;
+  }
+
+  container.innerHTML = displayed.map(game => {
+    const finalPrice = calcGamerSalePrice(game.cost, markup);
+    return `
+      <div class="glass-panel rounded-2xl p-4 border border-[#1E2238] hover:border-cyan-500/50 transition-all flex flex-col justify-between group">
+        <div>
+          <div class="flex items-start justify-between gap-2 mb-2">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${
+              game.platform.includes('PS5')
+                ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'
+                : 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+            }">
+              ${game.platform}
+            </span>
+            ${game.isLatino || (game.title || '').includes('Español Latino') ? `
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                Latino 🇦🇷
+              </span>
+            ` : ''}
+          </div>
+          <h4 class="text-xs sm:text-sm font-bold text-white group-hover:text-cyan-300 transition-colors line-clamp-2 mb-1.5 leading-snug">
+            ${game.title}
+          </h4>
+          <p class="text-[11px] text-slate-400 mb-3 line-clamp-2">
+            Cuenta Primaria original • Jugás con tu propio usuario • Trofeos habilitados
+          </p>
+        </div>
+
+        <div class="pt-3 border-t border-[#1E2238]/60 flex items-center justify-between gap-2">
+          <div>
+            ${showPrices ? `
+              <div class="text-[10px] text-slate-400 font-semibold uppercase">Precio Final</div>
+              <div class="text-sm sm:text-base font-black text-emerald-400">${formatCurrency(finalPrice)}</div>
+            ` : `
+              <span class="px-2 py-1 rounded-md text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 whitespace-nowrap">
+                🔥 En Stock · Cotizar
+              </span>
+            `}
+          </div>
+          <div class="flex items-center gap-1.5 shrink-0">
+            <button 
+              type="button"
+              onclick="addGamerGameToCart('${game.id}')"
+              class="py-1.5 px-2.5 rounded-lg gradient-btn-neon text-white text-xs font-bold transition shadow-sm flex items-center gap-1 cursor-pointer"
+              title="Agregar al pedido"
+            >
+              <span>+</span> <span>Pedir</span>
+            </button>
+            <button 
+              type="button"
+              onclick="consultGamerGameDirectly('${game.id}')"
+              class="p-1.5 rounded-lg bg-[#25D366]/20 hover:bg-[#25D366]/30 text-[#25D366] border border-[#25D366]/40 transition text-xs font-bold cursor-pointer"
+              title="Consultar por WhatsApp"
+            >
+              ${getIconSvg('MessageSquare', 'w-3.5 h-3.5')}
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  if (loadMoreContainer) {
+    if (filtered.length > limit) {
+      loadMoreContainer.classList.remove('hidden');
+      if (loadMoreBtn) {
+        loadMoreBtn.textContent = `Cargar Más Juegos (+${Math.min(24, filtered.length - limit)} restantes)`;
+      }
+    } else {
+      loadMoreContainer.classList.add('hidden');
+    }
+  }
+}
+
+function handleGamerSearch(query) {
+  AppState.gamerSearchQuery = query;
+  AppState.gamerDisplayCount = 24;
+  const clearBtn = document.getElementById('gamerSearchClearBtn');
+  if (clearBtn) {
+    if (query.trim()) clearBtn.classList.remove('hidden');
+    else clearBtn.classList.add('hidden');
+  }
+  renderGamerIndividualSection();
+}
+
+function clearGamerSearch() {
+  AppState.gamerSearchQuery = '';
+  AppState.gamerDisplayCount = 24;
+  const input = document.getElementById('gamerSearchInput');
+  if (input) input.value = '';
+  const clearBtn = document.getElementById('gamerSearchClearBtn');
+  if (clearBtn) clearBtn.classList.add('hidden');
+  renderGamerIndividualSection();
+}
+
+function setGamerFilter(filterKey) {
+  AppState.gamerFilter = filterKey;
+  AppState.gamerDisplayCount = 24;
+
+  const buttons = document.querySelectorAll('#gamerFilterPills .gamer-pill');
+  buttons.forEach(btn => {
+    if (btn.getAttribute('data-filter') === filterKey) {
+      btn.className = 'gamer-pill px-3 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow-sm';
+    } else {
+      btn.className = 'gamer-pill px-3 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap bg-[#121424] text-slate-300 border border-[#1E2238] hover:text-white';
+    }
+  });
+
+  renderGamerIndividualSection();
+}
+
+function loadMoreGamerGames() {
+  AppState.gamerDisplayCount = (AppState.gamerDisplayCount || 24) + 24;
+  renderGamerIndividualSection();
+}
+
+function addGamerGameToCart(gameId) {
+  const games = AppState.config.gamerIndividualGames || [];
+  const game = games.find(g => g.id === gameId);
+  if (!game) return;
+
+  const markup = Number(AppState.config.gamerFixedMarkupARS !== undefined ? AppState.config.gamerFixedMarkupARS : 7000);
+  const finalPrice = calcGamerSalePrice(game.cost, markup);
+
+  addToCart({
+    productId: game.id,
+    name: game.title,
+    variantName: `Cuenta Primaria 100% Original (${game.platform})`,
+    price: finalPrice,
+    quantity: 1
+  });
+
+  showToast(`¡${game.title} agregado al pedido!`);
+}
+
+function consultGamerGameDirectly(gameId) {
+  const games = AppState.config.gamerIndividualGames || [];
+  const game = games.find(g => g.id === gameId);
+  if (!game) return;
+
+  const markup = Number(AppState.config.gamerFixedMarkupARS !== undefined ? AppState.config.gamerFixedMarkupARS : 7000);
+  const finalPrice = calcGamerSalePrice(game.cost, markup);
+  const priceStr = (AppState.config.showGamerIndividualPrices !== false && AppState.config.showPrices !== false)
+    ? `Precio: ${formatCurrency(finalPrice)}`
+    : 'A convenir';
+
+  const message = `¡Hola *${AppState.config.brandName || 'Sonri Soluciones Digitales'}*! Quiero consultar por el juego de PlayStation: *${game.title}* (${game.platform} · Cuenta Primaria) [${priceStr}]. ¿Tienen disponibilidad de entrega?`;
+  
+  const waNum = AppState.config.whatsappNumber || '5492634377019';
+  const url = `https://wa.me/${waNum}?text=${encodeURIComponent(message)}`;
+  window.open(url, '_blank');
+}
+
+// ==============================================================================
+// 4.6. MODAL: TEMARIO Y CONTENIDO DE MEGA PACKS DIGITALES (+14 TB)
+// ==============================================================================
+
+function openMegaPackModal(packId) {
+  const product = (AppState.config.products || []).find(p => p.id === packId);
+  if (!product) return;
+
+  const modal = document.getElementById('megaPackModal');
+  if (!modal) return;
+
+  document.getElementById('megaPackModalTitle').textContent = product.name;
+  document.getElementById('megaPackModalBadge').textContent = product.badge || '+14 Terabytes';
+  document.getElementById('megaPackModalPeriod').textContent = product.period || 'Acceso Vitalicio';
+  document.getElementById('megaPackModalDescription').textContent = product.description || '';
+
+  const benefitsEl = document.getElementById('megaPackModalBenefits');
+  const items = product.syllabus && product.syllabus.length > 0 ? product.syllabus : product.benefits;
+  benefitsEl.innerHTML = (items || []).map(b => `
+    <li class="flex items-start gap-2 text-slate-200">
+      <span class="text-cyan-400 font-bold shrink-0 mt-0.5">✓</span>
+      <span>${b}</span>
+    </li>
+  `).join('');
+
+  const addBtn = document.getElementById('megaPackModalAddToCartBtn');
+  if (addBtn) {
+    addBtn.innerHTML = `<span>🛒</span> <span>Agregar al Pedido (${formatCurrency(product.price)})</span>`;
+    addBtn.onclick = () => {
+      addCardProductToCart(product.id);
+      closeMegaPackModal();
+    };
+  }
+
+  const waBtn = document.getElementById('megaPackModalWhatsAppBtn');
+  if (waBtn) {
+    waBtn.onclick = () => {
+      consultProductDirectly(product.id);
+      closeMegaPackModal();
+    };
+  }
+
+  modal.classList.remove('hidden');
+}
+
+function closeMegaPackModal() {
+  const modal = document.getElementById('megaPackModal');
+  if (modal) modal.classList.add('hidden');
+}
+
+// ==============================================================================
+// 4.7. CONTROL DE GANANCIA Y PRECIOS ZONA GAMER EN PANEL ADMIN
+// ==============================================================================
+
+function applyGamerMarkupSetting() {
+  const input = document.getElementById('adminGamerMarkupInput');
+  const val = Number(input ? input.value : 7000) || 7000;
+  AppState.config.gamerFixedMarkupARS = val;
+
+  (AppState.config.products || []).forEach(p => {
+    if (p.isGamerProduct && p.costPrice > 0) {
+      p.price = calcGamerSalePrice(p.costPrice, val);
+    }
+  });
+
+  saveConfigToStorage();
+  renderProducts();
+  if (AppState.isAdminLoggedIn) renderAdminProductsTable();
+  showToast(`¡Ganancia fija Gamer actualizada a $${val.toLocaleString('es-AR')} ARS!`);
+}
+
+function toggleGamerShowPricesSetting(enabled) {
+  AppState.config.showGamerIndividualPrices = enabled;
+  saveConfigToStorage();
+  renderProducts();
+  showToast(enabled ? 'Precios de juegos individuales visibles' : 'Modo "Cotizar promo del día" activado para juegos');
 }
 
 // ==============================================================================
@@ -1871,6 +2356,11 @@ function openAdminDashboard() {
   if (marginSlider) marginSlider.value = AppState.config.defaultProfitMargin || 40;
   if (marginInput) marginInput.value = AppState.config.defaultProfitMargin || 40;
 
+  const gamerMarkupInput = document.getElementById('adminGamerMarkupInput');
+  const gamerShowPricesCheck = document.getElementById('adminSettingGamerShowPrices');
+  if (gamerMarkupInput) gamerMarkupInput.value = AppState.config.gamerFixedMarkupARS !== undefined ? AppState.config.gamerFixedMarkupARS : 7000;
+  if (gamerShowPricesCheck) gamerShowPricesCheck.checked = AppState.config.showGamerIndividualPrices !== false;
+
   switchAdminTab('general');
 }
 
@@ -1912,6 +2402,17 @@ function applyGlobalMarginToAll() {
 
   // 1. Recalcular cada servicio en base a su costo más alto
   (AppState.config.products || []).forEach(product => {
+    // Si es producto gamer con costo base, conserva su ganancia fija en pesos
+    if (product.isGamerProduct && product.costPrice > 0) {
+      product.price = calcGamerSalePrice(product.costPrice, AppState.config.gamerFixedMarkupARS || 7000);
+      return;
+    }
+
+    // Los mega packs digitales y productos de costo 0 conservan su precio de venta fijo
+    if (product.category === 'mega-packs' || product.costPrice === 0) {
+      return;
+    }
+
     product.margin = newMargin;
     product.price = calcSalePrice(product.costPrice, newMargin);
 
@@ -2429,7 +2930,10 @@ function getIconSvg(iconName, classes = 'w-5 h-5') {
     Layers: `<svg class="${classes}" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>`,
     Flame: `<svg class="${classes}" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>`,
     Music2: `<svg class="${classes}" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="18" r="4"/><path d="M12 18V2l10 4"/></svg>`,
-    Briefcase: `<svg class="${classes}" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>`
+    Briefcase: `<svg class="${classes}" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>`,
+    Gamepad2: `<svg class="${classes}" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" x2="10" y1="12" y2="12"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="15" x2="15.01" y1="13" y2="13"/><line x1="18" x2="18.01" y1="11" y2="11"/><rect width="20" height="12" x="2" y="6" rx="6"/></svg>`,
+    FolderArchive: `<svg class="${classes}" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>`,
+    Smartphone: `<svg class="${classes}" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><line x1="12" x2="12.01" y1="18" y2="18"/></svg>`
   };
 
   return icons[iconName] || icons.Sparkles;

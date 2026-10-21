@@ -1,0 +1,9 @@
+{
+  "name": "sonri-soluciones-digitales",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Catálogo interactivo de servicios con checkout a WhatsApp para Sonri Soluciones Digitales",
+  "scripts": {
+    "build": "echo 'Build OK'"
+  }
+}

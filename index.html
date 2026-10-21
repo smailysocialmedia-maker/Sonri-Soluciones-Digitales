@@ -226,6 +226,81 @@
       <!-- Inyectado dinámicamente con JavaScript -->
     </div>
 
+    <!-- Bloque B: Buscador Interactivo de Juegos Individuales PS4 & PS5 (Elección del Jugador) -->
+    <div id="gamerSearchSection" class="mt-14 hidden space-y-6">
+      
+      <!-- Banner Informativo -->
+      <div class="rounded-2xl p-4 sm:p-5 glass-panel border border-cyan-500/40 bg-gradient-to-r from-cyan-950/40 via-[#0B0C14] to-purple-950/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-300 shrink-0 text-xl">
+            🎮
+          </div>
+          <div>
+            <h3 class="text-sm sm:text-base font-black text-white">
+              Elección del Jugador — Catálogo de Juegos Individuales PS4 &amp; PS5
+            </h3>
+            <p class="text-[11px] sm:text-xs text-slate-300">
+              🎮 Juegos 100% Originales en Cuenta Primaria · Jugás desde tu propio usuario personal, ganás trofeos y tenés garantía total
+            </p>
+          </div>
+        </div>
+        <div id="gamerGamesCounter" class="px-3 py-1.5 rounded-xl bg-[#08090F] border border-[#1E2238] text-xs font-bold text-cyan-300 shrink-0 self-start sm:self-auto">
+          277 Juegos Disponibles
+        </div>
+      </div>
+
+      <!-- Barra de Búsqueda y Filtros Rápidos -->
+      <div class="glass-panel rounded-2xl p-4 border border-[#1E2238] space-y-3">
+        <div class="relative">
+          <input 
+            type="text" 
+            id="gamerSearchInput" 
+            placeholder="Buscar por título, ej: Spider-Man, Resident Evil, Mortal Kombat, FIFA..." 
+            oninput="handleGamerSearch(this.value)"
+            class="w-full pl-10 pr-24 py-3 rounded-xl bg-[#08090F] border border-[#1E2238] text-white text-xs sm:text-sm placeholder-slate-500 focus:outline-none focus:border-cyan-400 transition"
+          >
+          <span class="absolute left-3.5 top-3.5 text-slate-500">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </span>
+          <button 
+            type="button" 
+            id="gamerSearchClearBtn" 
+            onclick="clearGamerSearch()" 
+            class="absolute right-3 top-2.5 px-2.5 py-1 rounded-lg bg-[#121424] text-xs text-slate-400 hover:text-white transition hidden"
+          >
+            ✕ Limpiar
+          </button>
+        </div>
+
+        <!-- Filtros Píldoras -->
+        <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none" id="gamerFilterPills">
+          <button type="button" onclick="setGamerFilter('all')" class="gamer-pill px-3 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow-sm" data-filter="all">Todos (277)</button>
+          <button type="button" onclick="setGamerFilter('PS5')" class="gamer-pill px-3 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap bg-[#121424] text-slate-300 border border-[#1E2238] hover:text-white" data-filter="PS5">PS5</button>
+          <button type="button" onclick="setGamerFilter('PS4')" class="gamer-pill px-3 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap bg-[#121424] text-slate-300 border border-[#1E2238] hover:text-white" data-filter="PS4">PS4</button>
+          <button type="button" onclick="setGamerFilter('latino')" class="gamer-pill px-3 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap bg-[#121424] text-slate-300 border border-[#1E2238] hover:text-white" data-filter="latino">Español Latino</button>
+          <button type="button" onclick="setGamerFilter('under20k')" class="gamer-pill px-3 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap bg-[#121424] text-slate-300 border border-[#1E2238] hover:text-white" data-filter="under20k">Menos de $20.000</button>
+        </div>
+      </div>
+
+      <!-- Grilla de Juegos Individuales -->
+      <div id="gamerGamesGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <!-- Inyectado por app.js -->
+      </div>
+
+      <!-- Botón Paginación / Cargar Más -->
+      <div id="gamerLoadMoreContainer" class="text-center pt-2">
+        <button 
+          type="button" 
+          onclick="loadMoreGamerGames()" 
+          id="gamerLoadMoreBtn"
+          class="py-3 px-8 rounded-xl bg-[#121424] hover:bg-[#1A1D33] text-cyan-300 border border-cyan-500/40 text-xs font-bold uppercase tracking-wider transition shadow-lg cursor-pointer"
+        >
+          Cargar Más Juegos (+24)
+        </button>
+      </div>
+
+    </div>
+
   </section>
 
   <!-- ========================================================================= -->
@@ -814,6 +889,75 @@
   </div>
 
   <!-- ========================================================================= -->
+  <!-- 12.5. MODAL: TEMARIO Y CONTENIDO DE MEGA PACKS DIGITALES (+14 TB)         -->
+  <!-- ========================================================================= -->
+  <div id="megaPackModal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 hidden flex items-center justify-center p-3 sm:p-4">
+    <div class="glass-panel-deep w-full max-w-2xl rounded-3xl border border-purple-500/50 p-5 sm:p-7 shadow-2xl relative max-h-[92vh] flex flex-col justify-between overflow-hidden">
+      <!-- Header -->
+      <div class="flex items-start justify-between pb-4 border-b border-[#1E2238] shrink-0">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="text-xs px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40 font-bold uppercase tracking-wider" id="megaPackModalBadge">
+              +14 Terabytes
+            </span>
+            <span class="text-xs text-slate-400 font-semibold" id="megaPackModalPeriod">
+              Acceso Vitalicio
+            </span>
+          </div>
+          <h3 class="text-xl sm:text-2xl font-black text-white" id="megaPackModalTitle">
+            Temario del Pack
+          </h3>
+        </div>
+        <button onclick="closeMegaPackModal()" class="w-8 h-8 rounded-lg bg-[#121424] text-slate-400 hover:text-white flex items-center justify-center text-sm font-bold cursor-pointer">✕</button>
+      </div>
+
+      <!-- Description and Syllabus Content -->
+      <div class="flex-1 overflow-y-auto pr-2 my-4 space-y-4">
+        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed" id="megaPackModalDescription"></p>
+
+        <div>
+          <h4 class="text-xs font-bold text-cyan-300 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+            <span>📚</span>
+            <span>Módulos y Contenido Incluido:</span>
+          </h4>
+          <ul class="space-y-2 text-xs sm:text-sm text-slate-200" id="megaPackModalBenefits"></ul>
+        </div>
+
+        <!-- Security / Guarantee Notice -->
+        <div class="p-3.5 rounded-xl bg-purple-950/30 border border-purple-500/30 text-xs text-purple-200 space-y-1">
+          <div class="font-bold flex items-center gap-1.5 text-purple-300">
+            <span>🔒</span>
+            <span>Entrega Inmediata y Segura Post-Pago</span>
+          </div>
+          <p class="text-[11px] text-slate-300 leading-relaxed">
+            Por estrictas políticas de seguridad, los enlaces directos a las carpetas privadas en la nube se entregan únicamente tras confirmar la transferencia bancaria al Alias oficial <b>sonridigital</b> (Jonathan Emanuel Perez). Acceso garantizado de por vida con soporte y actualizaciones.
+          </p>
+        </div>
+      </div>
+
+      <!-- Footer Buttons -->
+      <div class="pt-4 border-t border-[#1E2238] shrink-0 flex flex-col sm:flex-row gap-2.5">
+        <button 
+          id="megaPackModalAddToCartBtn"
+          type="button" 
+          class="flex-1 py-3 px-4 rounded-xl gradient-btn-neon text-white font-bold text-xs uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 cursor-pointer"
+        >
+          <span>🛒</span>
+          <span>Agregar al Pedido</span>
+        </button>
+        <button 
+          id="megaPackModalWhatsAppBtn"
+          type="button" 
+          class="py-3 px-4 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] text-slate-950 font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg transition cursor-pointer"
+        >
+          <span>💬</span>
+          <span>Consultar por WhatsApp</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
   <!-- 13. PANEL DE ADMINISTRADOR COMPLETO (ADMIN DASHBOARD)                     -->
   <!-- ========================================================================= -->
   <div id="adminDashboardModal" class="fixed inset-0 bg-black/95 backdrop-blur-lg z-50 hidden flex items-center justify-center p-2 sm:p-4 md:p-6 overflow-hidden">
@@ -1012,6 +1156,70 @@
 
           </div>
 
+          <!-- Control Maestro Zona Gamer & Consolas -->
+          <div class="p-6 rounded-2xl glass-panel border border-cyan-500/40 relative overflow-hidden">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-300 font-bold text-lg">
+                  🎮
+                </div>
+                <div>
+                  <h5 class="text-base font-black text-white">Ajustes Zona Gamer & Consolas (PS4, PS5, PS3 & PC)</h5>
+                  <p class="text-xs text-slate-300">Control de ganancia fija por título/pack y switch de visibilidad para promociones rotativas.</p>
+                </div>
+              </div>
+              <span class="px-3 py-1 rounded-full text-[10px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shrink-0">
+                Sincronizado Supabase ☁️
+              </span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center bg-[#08090F] p-4 rounded-xl border border-[#1E2238]">
+              <div>
+                <label class="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">
+                  Ganancia Fija por Juego / Pack ($ ARS):
+                </label>
+                <div class="flex items-center gap-2">
+                  <span class="text-slate-500 text-sm font-bold">$</span>
+                  <input 
+                    type="number" 
+                    id="adminGamerMarkupInput" 
+                    value="7000" 
+                    min="1000" 
+                    max="50000" 
+                    step="500" 
+                    class="w-full px-3 py-2 text-xs rounded-lg bg-[#121424] border border-[#1E2238] text-emerald-400 font-bold focus:outline-none focus:border-cyan-400"
+                  >
+                  <button 
+                    type="button" 
+                    onclick="applyGamerMarkupSetting()" 
+                    class="px-4 py-2 rounded-lg gradient-btn-neon text-white text-xs font-bold whitespace-nowrap transition cursor-pointer"
+                  >
+                    Actualizar Ganancia
+                  </button>
+                </div>
+                <p class="text-[11px] text-slate-400 mt-1">
+                  Se suma automáticamente al costo de cada pack gamer y a los 277 juegos individuales (editable entre $5.000 y $10.000 ARS).
+                </p>
+              </div>
+
+              <div class="pt-2 sm:pt-0 sm:border-l sm:border-[#1E2238] sm:pl-4">
+                <label class="flex items-center gap-3 cursor-pointer">
+                  <input 
+                    type="checkbox" 
+                    id="adminSettingGamerShowPrices" 
+                    onchange="toggleGamerShowPricesSetting(this.checked)" 
+                    checked 
+                    class="w-4 h-4 accent-cyan-400 rounded cursor-pointer"
+                  >
+                  <div>
+                    <div class="text-xs font-bold text-white">Mostrar precios en juegos individuales</div>
+                    <div class="text-[11px] text-slate-400">Si se apaga (ej. post 21 de octubre), oculta el número y muestra "🔥 En Stock · Cotizar promo del día"</div>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+
         </div>
 
         <!-- PESTAÑA 2: LISTA DE SERVICIOS Y PRECIOS -->
@@ -1036,6 +1244,9 @@
                 <option value="creadores-ia">Herramientas & IA</option>
                 <option value="conectividad">Conectividad & Datos</option>
                 <option value="iptv">TV Digital & IPTV</option>
+                <option value="emprendimiento">Emprendé con tu Panel</option>
+                <option value="zona-gamer">Zona Gamer & Consolas</option>
+                <option value="mega-packs">Mega Packs & Cursos +14TB</option>
               </select>
             </div>
 
@@ -1138,6 +1349,8 @@
               <option value="conectividad">Conectividad & Datos</option>
               <option value="iptv">Televisión Digital & IPTV</option>
               <option value="emprendimiento">Emprendé con tu Panel</option>
+              <option value="zona-gamer">Zona Gamer & Consolas</option>
+              <option value="mega-packs">Mega Packs & Cursos +14TB</option>
             </select>
           </div>
           <div>

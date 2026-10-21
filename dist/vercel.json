@@ -1,8 +1,6 @@
 {
   "version": 2,
   "cleanUrls": true,
-  "outputDirectory": "dist",
-  "buildCommand": "node build.js",
   "headers": [
     {
       "source": "/(.*)",
