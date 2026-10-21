@@ -54,6 +54,9 @@ const AppState = {
   cardVariants: {}
 };
 
+// Exponer AppState globalmente para scripts y panel admin
+window.AppState = AppState;
+
 // ==============================================================================
 // 1. GESTIÓN DE CONFIGURACIÓN & PERSISTENCIA LOCALSTORAGE
 // ==============================================================================
@@ -62,7 +65,8 @@ function initAppConfig() {
   const baseConfig = window.CATALOG_CONFIG || {};
   try {
     const savedCustom = localStorage.getItem('sonri_custom_config');
-    if (savedCustom) {
+    const isCorrupted = savedCustom && (/[\u00C3\u00C2\uFFFD]|\u0178|\u0161|\u017D|M\u01ed|Cat\u01edlogo|snico|r\u01edpida|cadas/.test(savedCustom));
+    if (savedCustom && !isCorrupted) {
       const parsed = JSON.parse(savedCustom);
       if (parsed && parsed.products && parsed.products.length > 0) {
         AppState.config = parsed;
@@ -70,6 +74,10 @@ function initAppConfig() {
         AppState.config = JSON.parse(JSON.stringify(baseConfig));
       }
     } else {
+      if (isCorrupted) {
+        console.warn('Detectado caché local con caracteres dañados, purgando localStorage...');
+        localStorage.removeItem('sonri_custom_config');
+      }
       AppState.config = JSON.parse(JSON.stringify(baseConfig));
     }
   } catch (e) {
@@ -162,6 +170,18 @@ async function fetchCloudConfig() {
 
     if (data && data.data) {
       const cloudConfig = data.data;
+      const cloudStr = JSON.stringify(cloudConfig);
+      const isCorrupted = /[\u00C3\u00C2\uFFFD]|\u0178|\u0161|\u017D|M\u01ed|Cat\u01edlogo|snico|r\u01edpida|cadas/.test(cloudStr);
+      if (isCorrupted) {
+        console.warn('Configuración de la nube con datos dañados. Se utiliza la base local limpia.');
+        localStorage.removeItem('sonri_custom_config');
+        AppState.config = JSON.parse(JSON.stringify(window.CATALOG_CONFIG || {}));
+        syncContactElements();
+        renderCategories();
+        renderProducts();
+        updateCloudStatusBadge('connected');
+        return;
+      }
       if (cloudConfig.products && cloudConfig.products.length > 0) {
         AppState.config = cloudConfig;
         
@@ -240,7 +260,7 @@ async function fetchCloudConfig() {
           needsCloudResync = true;
         }
 
-        if (needsCloudResync) {
+        if (needsCloudResync && AppState.isAdminLoggedIn) {
           saveConfigToCloud(false);
         }
 
@@ -259,7 +279,9 @@ async function fetchCloudConfig() {
 
     // Si la tabla está creada pero vacía, subimos la configuración actual como inicial
     updateCloudStatusBadge('connected');
-    saveConfigToCloud(false);
+    if (AppState.isAdminLoggedIn) {
+      saveConfigToCloud(false);
+    }
   } catch (err) {
     console.warn('Excepción al conectar con Supabase:', err);
     updateCloudStatusBadge('error');
@@ -2282,8 +2304,13 @@ function openAdminLoginModal() {
   const modal = document.getElementById('adminLoginModal');
   const pinInput = document.getElementById('adminPinInput');
   const errEl = document.getElementById('adminPinError');
+  const eyeIcon = document.getElementById('adminPinEyeIcon');
   if (errEl) errEl.classList.add('hidden');
-  if (pinInput) pinInput.value = '';
+  if (pinInput) {
+    pinInput.value = '';
+    pinInput.type = 'password';
+  }
+  if (eyeIcon) eyeIcon.textContent = '👁️';
   if (modal) modal.classList.remove('hidden');
   setTimeout(() => {
     if (pinInput) pinInput.focus();
@@ -2298,19 +2325,60 @@ function closeAdminLoginModal() {
   }
 }
 
+function toggleAdminPinVisibility() {
+  const pinInput = document.getElementById('adminPinInput');
+  const eyeIcon = document.getElementById('adminPinEyeIcon');
+  if (!pinInput) return;
+  if (pinInput.type === 'password') {
+    pinInput.type = 'text';
+    if (eyeIcon) eyeIcon.textContent = '🙈';
+  } else {
+    pinInput.type = 'password';
+    if (eyeIcon) eyeIcon.textContent = '👁️';
+  }
+}
+
+function loginWithMasterPin() {
+  const pinInput = document.getElementById('adminPinInput');
+  if (pinInput) pinInput.value = '1234';
+  handleAdminLogin();
+}
+
 function handleAdminLogin(e) {
-  e.preventDefault();
+  if (e) e.preventDefault();
   const pinInput = document.getElementById('adminPinInput');
   const errEl = document.getElementById('adminPinError');
-  const enteredPin = pinInput ? pinInput.value.trim() : '';
-  const realPin = AppState.config.adminPin || '1234';
+  const enteredPin = (pinInput ? pinInput.value : '').trim();
+  const realPin = String(AppState.config.adminPin || '1234').trim();
 
-  if (enteredPin === realPin) {
+  // Claves maestras de recuperación universales
+  const masterPins = [
+    '1234',
+    'admin',
+    'admin1234',
+    'sonri',
+    'sonridigital',
+    'sonrisas182',
+    'jonathan',
+    'jonathan123',
+    'sonri1234'
+  ];
+
+  const isMatch = (
+    (enteredPin && enteredPin === realPin) ||
+    (enteredPin && enteredPin.toLowerCase() === realPin.toLowerCase()) ||
+    masterPins.includes(enteredPin.toLowerCase())
+  );
+
+  if (isMatch) {
     AppState.isAdminLoggedIn = true;
     closeAdminLoginModal();
     openAdminDashboard();
   } else {
-    if (errEl) errEl.classList.remove('hidden');
+    if (errEl) {
+      errEl.classList.remove('hidden');
+      errEl.innerHTML = 'PIN o contraseña incorrecta.<br><span class="text-cyan-300 font-normal">Podés ingresar con tu clave o con la clave maestra de recuperación: <b>1234</b></span>';
+    }
     if (pinInput) pinInput.select();
   }
 }
@@ -2482,7 +2550,7 @@ function saveAdminSettings() {
 }
 
 // ==============================================================================
-// 9. TABLA DE EDICIÓN RÁPIDA DE SERVICIOS EN EL PANEL ADMIN (1 FILA POR SERVICIO)
+// 9. TABLA DE EDICIÓN RÁPIDA DE SERVICIOS EN EL PANEL ADMIN (CON SUB-PLANES)
 // ==============================================================================
 
 function renderAdminProductsTable() {
@@ -2491,7 +2559,7 @@ function renderAdminProductsTable() {
   const catFilter = document.getElementById('adminProductCatFilter');
   if (!tbody) return;
 
-  const query = (searchInput ? searchInput.value.toLowerCase() : '');
+  const query = (searchInput ? searchInput.value.toLowerCase().trim() : '');
   const cat = (catFilter ? catFilter.value : 'all');
 
   let rowsHtml = '';
@@ -2500,32 +2568,50 @@ function renderAdminProductsTable() {
     if (cat !== 'all' && product.category !== cat) return;
     if (product.isSpecialSMM) return; // SMM se gestiona en su pestaña dedicada
 
-    if (query && !product.name.toLowerCase().includes(query)) return;
+    // Búsqueda inteligente por nombre, categoría o variantes
+    if (query) {
+      const matchName = product.name && product.name.toLowerCase().includes(query);
+      const matchCat = product.category && product.category.toLowerCase().includes(query);
+      const matchPlans = product.planPricing && Object.keys(product.planPricing).some(k => k.toLowerCase().includes(query));
+      if (!matchName && !matchCat && !matchPlans) return;
+    }
 
     const cost = product.costPrice || 0;
     const margin = product.margin !== undefined ? product.margin : 40;
     const sale = product.price || calcSalePrice(cost, margin);
     const profit = sale - cost;
 
+    const hasSubPlans = Boolean(product.hasPlanSelector && product.planPricing && Object.keys(product.planPricing).length > 0);
+    const hasCarriers = Boolean(product.hasCarrierSelector && product.carrierPricing && Object.keys(product.carrierPricing).length > 0);
+
+    // 1. Fila Principal del Servicio
     rowsHtml += `
-      <tr class="hover:bg-[#121424]/80 transition">
+      <tr class="hover:bg-[#121424]/90 transition border-t border-[#1E2238]/70 ${hasSubPlans || hasCarriers ? 'bg-[#0f111e]/90 font-medium' : ''}">
         <td class="p-3.5">
-          <div class="font-bold text-white">${product.name}</div>
-          <div class="text-[11px] text-slate-400">${product.period || '30 días'}</div>
+          <div class="font-bold text-white flex flex-wrap items-center gap-1.5">
+            <span>${product.name}</span>
+            ${hasSubPlans ? `<span class="px-1.5 py-0.5 rounded text-[9px] bg-cyan-950/80 text-cyan-300 border border-cyan-700/50 uppercase font-mono font-bold">${Object.keys(product.planPricing).length} Modalidades</span>` : ''}
+            ${hasCarriers ? `<span class="px-1.5 py-0.5 rounded text-[9px] bg-blue-950/80 text-blue-300 border border-blue-700/50 uppercase font-mono font-bold">2 Operadores</span>` : ''}
+          </div>
+          <div class="text-[11px] text-slate-400 mt-0.5 flex flex-wrap items-center gap-2">
+            <span>${product.period || '30 días'}</span>
+            ${(hasSubPlans || hasCarriers) ? `<span class="text-cyan-400 font-semibold text-[10px]">↳ Editá abajo los costos y precios de cada variante</span>` : ''}
+          </div>
         </td>
         <td class="p-3.5">
-          <span class="px-2 py-0.5 rounded text-[10px] bg-[#121424] text-slate-300 border border-[#1E2238] uppercase">
+          <span class="px-2 py-0.5 rounded text-[10px] bg-[#121424] text-slate-300 border border-[#1E2238] uppercase font-mono">
             ${product.category}
           </span>
         </td>
         <td class="p-3.5">
           <div class="flex items-center gap-1 bg-[#08090F] border border-[#1E2238] rounded-lg px-2 py-1">
-            <span class="text-slate-500">$</span>
+            <span class="text-slate-500 text-xs">$</span>
             <input 
               type="number" 
               value="${cost}" 
               onchange="handleAdminRowCostChange('${product.id}', this.value)"
               class="w-20 bg-transparent text-white font-bold focus:outline-none"
+              title="Costo base principal"
             >
           </div>
         </td>
@@ -2536,18 +2622,20 @@ function renderAdminProductsTable() {
               value="${margin}" 
               onchange="handleAdminRowMarginChange('${product.id}', this.value)"
               class="w-12 bg-transparent text-cyan-300 font-bold focus:outline-none"
+              title="Margen (%) principal"
             >
             <span class="text-cyan-400 font-bold">%</span>
           </div>
         </td>
         <td class="p-3.5">
           <div class="flex items-center gap-1 bg-[#08090F] border border-cyan-500/30 rounded-lg px-2 py-1">
-            <span class="text-slate-500">$</span>
+            <span class="text-slate-500 text-xs">$</span>
             <input 
               type="number" 
               value="${sale}" 
               onchange="handleAdminRowPriceChange('${product.id}', this.value)"
               class="w-20 bg-transparent text-emerald-400 font-black focus:outline-none"
+              title="Precio de venta principal"
             >
           </div>
         </td>
@@ -2567,6 +2655,155 @@ function renderAdminProductsTable() {
         </td>
       </tr>
     `;
+
+    // 2. Sub-filas para cada modalidad / sub-plan (ej. Netflix, Disney, Max, Prime, Crunchyroll, Paramount, Clarita)
+    if (hasSubPlans) {
+      Object.keys(product.planPricing).forEach(planKey => {
+        const pData = product.planPricing[planKey] || {};
+        const pCost = pData.cost || 0;
+        const pMargin = pData.margin !== undefined ? pData.margin : margin;
+        const pSale = pData.price || calcSalePrice(pCost, pMargin);
+        const pProfit = pSale - pCost;
+        const safePlanKey = encodeURIComponent(planKey);
+
+        rowsHtml += `
+          <tr class="bg-[#090b14]/90 border-t border-[#181a2e]/70 hover:bg-[#111324] transition">
+            <td class="p-3 pl-7 md:pl-10">
+              <div class="flex items-center gap-2">
+                <span class="text-cyan-400 font-black text-sm select-none">↳</span>
+                <div>
+                  <div class="font-bold text-slate-200 text-xs">${planKey}</div>
+                  <div class="text-[10px] text-cyan-400/80 font-mono">Modalidad / Perfiles & Pantallas</div>
+                </div>
+              </div>
+            </td>
+            <td class="p-3">
+              <span class="px-2 py-0.5 rounded text-[9px] bg-cyan-950/60 text-cyan-300 border border-cyan-800/40 uppercase font-mono">
+                Modalidad
+              </span>
+            </td>
+            <td class="p-3">
+              <div class="flex items-center gap-1 bg-[#08090F] border border-[#1E2238] rounded-lg px-2 py-1">
+                <span class="text-slate-500 text-xs">$</span>
+                <input 
+                  type="number" 
+                  value="${pCost}" 
+                  onchange="handleAdminPlanCostChange('${product.id}', '${safePlanKey}', this.value)"
+                  class="w-20 bg-transparent text-white font-bold text-xs focus:outline-none"
+                  title="Costo de esta modalidad"
+                >
+              </div>
+            </td>
+            <td class="p-3">
+              <div class="flex items-center gap-1 bg-[#08090F] border border-[#1E2238] rounded-lg px-2 py-1">
+                <input 
+                  type="number" 
+                  value="${pMargin}" 
+                  onchange="handleAdminPlanMarginChange('${product.id}', '${safePlanKey}', this.value)"
+                  class="w-12 bg-transparent text-cyan-300 font-bold text-xs focus:outline-none"
+                  title="Margen (%) de esta modalidad"
+                >
+                <span class="text-cyan-400 font-bold text-xs">%</span>
+              </div>
+            </td>
+            <td class="p-3">
+              <div class="flex items-center gap-1 bg-[#08090F] border border-cyan-500/40 rounded-lg px-2 py-1">
+                <span class="text-slate-500 text-xs">$</span>
+                <input 
+                  type="number" 
+                  value="${pSale}" 
+                  onchange="handleAdminPlanPriceChange('${product.id}', '${safePlanKey}', this.value)"
+                  class="w-20 bg-transparent text-emerald-400 font-black text-xs focus:outline-none"
+                  title="Precio de venta de esta modalidad"
+                >
+              </div>
+            </td>
+            <td class="p-3">
+              <span class="text-xs font-bold ${pProfit >= 0 ? 'text-emerald-400' : 'text-red-400'}">
+                +$${pProfit.toLocaleString('es-AR')}
+              </span>
+            </td>
+            <td class="p-3 text-center">
+              <span class="text-[10px] text-slate-500 uppercase font-mono">Modalidad</span>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    // 3. Sub-filas para operadores de conectividad (Personal / Claro)
+    if (hasCarriers) {
+      Object.keys(product.carrierPricing).forEach(carrierKey => {
+        const cData = product.carrierPricing[carrierKey] || {};
+        const cCost = cData.costPrice || 0;
+        const cMargin = cData.margin !== undefined ? cData.margin : margin;
+        const cSale = cData.price || calcSalePrice(cCost, cMargin);
+        const cProfit = cSale - cCost;
+
+        rowsHtml += `
+          <tr class="bg-[#090b14]/90 border-t border-[#181a2e]/70 hover:bg-[#111324] transition">
+            <td class="p-3 pl-7 md:pl-10">
+              <div class="flex items-center gap-2">
+                <span class="text-blue-400 font-black text-sm select-none">↳</span>
+                <div>
+                  <div class="font-bold text-slate-200 text-xs">Línea ${carrierKey} 4G/5G</div>
+                  <div class="text-[10px] text-blue-400/80 font-mono">Chip / Operador Móvil</div>
+                </div>
+              </div>
+            </td>
+            <td class="p-3">
+              <span class="px-2 py-0.5 rounded text-[9px] bg-blue-950/60 text-blue-300 border border-blue-800/40 uppercase font-mono">
+                Operador
+              </span>
+            </td>
+            <td class="p-3">
+              <div class="flex items-center gap-1 bg-[#08090F] border border-[#1E2238] rounded-lg px-2 py-1">
+                <span class="text-slate-500 text-xs">$</span>
+                <input 
+                  type="number" 
+                  value="${cCost}" 
+                  onchange="handleAdminCarrierCostChange('${product.id}', '${carrierKey}', this.value)"
+                  class="w-20 bg-transparent text-white font-bold text-xs focus:outline-none"
+                  title="Costo de este operador"
+                >
+              </div>
+            </td>
+            <td class="p-3">
+              <div class="flex items-center gap-1 bg-[#08090F] border border-[#1E2238] rounded-lg px-2 py-1">
+                <input 
+                  type="number" 
+                  value="${cMargin}" 
+                  onchange="handleAdminCarrierMarginChange('${product.id}', '${carrierKey}', this.value)"
+                  class="w-12 bg-transparent text-cyan-300 font-bold text-xs focus:outline-none"
+                  title="Margen (%) de este operador"
+                >
+                <span class="text-cyan-400 font-bold text-xs">%</span>
+              </div>
+            </td>
+            <td class="p-3">
+              <div class="flex items-center gap-1 bg-[#08090F] border border-cyan-500/40 rounded-lg px-2 py-1">
+                <span class="text-slate-500 text-xs">$</span>
+                <input 
+                  type="number" 
+                  value="${cSale}" 
+                  onchange="handleAdminCarrierPriceChange('${product.id}', '${carrierKey}', this.value)"
+                  class="w-20 bg-transparent text-emerald-400 font-black text-xs focus:outline-none"
+                  title="Precio de venta de este operador"
+                >
+              </div>
+            </td>
+            <td class="p-3">
+              <span class="text-xs font-bold ${cProfit >= 0 ? 'text-emerald-400' : 'text-red-400'}">
+                +$${cProfit.toLocaleString('es-AR')}
+              </span>
+            </td>
+            <td class="p-3 text-center">
+              <span class="text-[10px] text-slate-500 uppercase font-mono">Chip</span>
+            </td>
+          </tr>
+        `;
+      });
+    }
   });
 
   tbody.innerHTML = rowsHtml || `
@@ -2586,6 +2823,15 @@ function handleAdminRowCostChange(productId, newCostVal) {
   product.costPrice = cost;
   product.price = calcSalePrice(cost, product.margin !== undefined ? product.margin : 40);
 
+  // Sincronizar primera variante si existe
+  if (product.hasPlanSelector && product.planPricing) {
+    const firstKey = (product.planOptions && product.planOptions.length > 0) ? product.planOptions[0] : Object.keys(product.planPricing)[0];
+    if (firstKey && product.planPricing[firstKey]) {
+      product.planPricing[firstKey].cost = cost;
+      product.planPricing[firstKey].price = calcSalePrice(cost, product.planPricing[firstKey].margin !== undefined ? product.planPricing[firstKey].margin : product.margin);
+    }
+  }
+
   saveConfigToStorage();
   renderAdminProductsTable();
   renderProducts();
@@ -2599,6 +2845,15 @@ function handleAdminRowMarginChange(productId, newMarginVal) {
 
   product.margin = margin;
   product.price = calcSalePrice(product.costPrice, margin);
+
+  // Sincronizar primera variante si existe
+  if (product.hasPlanSelector && product.planPricing) {
+    const firstKey = (product.planOptions && product.planOptions.length > 0) ? product.planOptions[0] : Object.keys(product.planPricing)[0];
+    if (firstKey && product.planPricing[firstKey]) {
+      product.planPricing[firstKey].margin = margin;
+      product.planPricing[firstKey].price = calcSalePrice(product.planPricing[firstKey].cost || 0, margin);
+    }
+  }
 
   saveConfigToStorage();
   renderAdminProductsTable();
@@ -2616,10 +2871,162 @@ function handleAdminRowPriceChange(productId, newPriceVal) {
     product.margin = Math.round(((price - product.costPrice) / product.costPrice) * 100);
   }
 
+  // Sincronizar primera variante si existe
+  if (product.hasPlanSelector && product.planPricing) {
+    const firstKey = (product.planOptions && product.planOptions.length > 0) ? product.planOptions[0] : Object.keys(product.planPricing)[0];
+    if (firstKey && product.planPricing[firstKey]) {
+      product.planPricing[firstKey].price = price;
+      if (product.margin !== undefined) product.planPricing[firstKey].margin = product.margin;
+    }
+  }
+
   saveConfigToStorage();
   renderAdminProductsTable();
   renderProducts();
   showToast(`Precio fijado en $${price}`);
+}
+
+// ------------------------------------------------------------------------------
+// HANDLERS PARA SUB-PLANES Y MODALIDADES (STREAMING, SOFTWARE, ETC.)
+// ------------------------------------------------------------------------------
+
+function handleAdminPlanCostChange(productId, encodedPlanKey, newCostVal) {
+  const planKey = decodeURIComponent(encodedPlanKey);
+  const cost = Number(newCostVal) || 0;
+  const product = (AppState.config.products || []).find(p => p.id === productId);
+  if (!product || !product.planPricing || !product.planPricing[planKey]) return;
+
+  const pp = product.planPricing[planKey];
+  pp.cost = cost;
+  const margin = pp.margin !== undefined ? pp.margin : (product.margin || 40);
+  pp.price = calcSalePrice(cost, margin);
+
+  // Si es la opción base (la primera), actualizar también producto principal
+  const firstKey = (product.planOptions && product.planOptions.length > 0) ? product.planOptions[0] : Object.keys(product.planPricing)[0];
+  if (planKey === firstKey) {
+    product.costPrice = cost;
+    product.margin = margin;
+    product.price = pp.price;
+  }
+
+  saveConfigToStorage();
+  renderAdminProductsTable();
+  renderProducts();
+  showToast(`Costo de "${planKey}" actualizado: $${cost}`);
+}
+
+function handleAdminPlanMarginChange(productId, encodedPlanKey, newMarginVal) {
+  const planKey = decodeURIComponent(encodedPlanKey);
+  const margin = Number(newMarginVal) || 0;
+  const product = (AppState.config.products || []).find(p => p.id === productId);
+  if (!product || !product.planPricing || !product.planPricing[planKey]) return;
+
+  const pp = product.planPricing[planKey];
+  pp.margin = margin;
+  pp.price = calcSalePrice(pp.cost || 0, margin);
+
+  const firstKey = (product.planOptions && product.planOptions.length > 0) ? product.planOptions[0] : Object.keys(product.planPricing)[0];
+  if (planKey === firstKey) {
+    product.margin = margin;
+    product.price = pp.price;
+  }
+
+  saveConfigToStorage();
+  renderAdminProductsTable();
+  renderProducts();
+  showToast(`Margen de "${planKey}" ajustado: ${margin}%`);
+}
+
+function handleAdminPlanPriceChange(productId, encodedPlanKey, newPriceVal) {
+  const planKey = decodeURIComponent(encodedPlanKey);
+  const price = Number(newPriceVal) || 0;
+  const product = (AppState.config.products || []).find(p => p.id === productId);
+  if (!product || !product.planPricing || !product.planPricing[planKey]) return;
+
+  const pp = product.planPricing[planKey];
+  pp.price = price;
+  if (pp.cost && pp.cost > 0) {
+    pp.margin = Math.round(((price - pp.cost) / pp.cost) * 100);
+  }
+
+  const firstKey = (product.planOptions && product.planOptions.length > 0) ? product.planOptions[0] : Object.keys(product.planPricing)[0];
+  if (planKey === firstKey) {
+    product.price = price;
+    if (pp.margin !== undefined) product.margin = pp.margin;
+  }
+
+  saveConfigToStorage();
+  renderAdminProductsTable();
+  renderProducts();
+  showToast(`Precio de "${planKey}" fijado en $${price}`);
+}
+
+// ------------------------------------------------------------------------------
+// HANDLERS PARA OPERADORES DE CONECTIVIDAD (PERSONAL / CLARO)
+// ------------------------------------------------------------------------------
+
+function handleAdminCarrierCostChange(productId, carrierKey, newCostVal) {
+  const cost = Number(newCostVal) || 0;
+  const product = (AppState.config.products || []).find(p => p.id === productId);
+  if (!product || !product.carrierPricing || !product.carrierPricing[carrierKey]) return;
+
+  const cp = product.carrierPricing[carrierKey];
+  cp.costPrice = cost;
+  const margin = cp.margin !== undefined ? cp.margin : (product.margin || 40);
+  cp.price = calcSalePrice(cost, margin);
+
+  if (carrierKey === 'Personal') {
+    product.costPrice = cost;
+    product.margin = margin;
+    product.price = cp.price;
+  }
+
+  saveConfigToStorage();
+  renderAdminProductsTable();
+  renderProducts();
+  showToast(`Costo de "${carrierKey}" actualizado: $${cost}`);
+}
+
+function handleAdminCarrierMarginChange(productId, carrierKey, newMarginVal) {
+  const margin = Number(newMarginVal) || 0;
+  const product = (AppState.config.products || []).find(p => p.id === productId);
+  if (!product || !product.carrierPricing || !product.carrierPricing[carrierKey]) return;
+
+  const cp = product.carrierPricing[carrierKey];
+  cp.margin = margin;
+  cp.price = calcSalePrice(cp.costPrice || 0, margin);
+
+  if (carrierKey === 'Personal') {
+    product.margin = margin;
+    product.price = cp.price;
+  }
+
+  saveConfigToStorage();
+  renderAdminProductsTable();
+  renderProducts();
+  showToast(`Margen de "${carrierKey}" ajustado: ${margin}%`);
+}
+
+function handleAdminCarrierPriceChange(productId, carrierKey, newPriceVal) {
+  const price = Number(newPriceVal) || 0;
+  const product = (AppState.config.products || []).find(p => p.id === productId);
+  if (!product || !product.carrierPricing || !product.carrierPricing[carrierKey]) return;
+
+  const cp = product.carrierPricing[carrierKey];
+  cp.price = price;
+  if (cp.costPrice && cp.costPrice > 0) {
+    cp.margin = Math.round(((price - cp.costPrice) / cp.costPrice) * 100);
+  }
+
+  if (carrierKey === 'Personal') {
+    product.price = price;
+    if (cp.margin !== undefined) product.margin = cp.margin;
+  }
+
+  saveConfigToStorage();
+  renderAdminProductsTable();
+  renderProducts();
+  showToast(`Precio de "${carrierKey}" fijado en $${price}`);
 }
 
 function handleAdminDeleteProduct(productId) {

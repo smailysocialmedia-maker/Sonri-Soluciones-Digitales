@@ -1,9 +1,9 @@
-﻿/**
+/**
  * ==============================================================================
- * SONRI SOLUCIONES DIGITALES â€” CONFIGURACIÃ“N CENTRAL DEL CATÃLOGO
+ * SONRI SOLUCIONES DIGITALES — CONFIGURACIÓN CENTRAL DEL CATÁLOGO
  * ==============================================================================
  * REGLA DE NEGOCIO: Cada servicio tiene 1 solo precio unificado tomando
- * como costo base el MÃS ALTO de los proveedores para garantizar la rentabilidad.
+ * como costo base el MÁS ALTO de los proveedores para garantizar la rentabilidad.
  * ==============================================================================
  */
 
@@ -26,7 +26,7 @@ const CATALOG_CONFIG = {
   // ----------------------------------------------------------------------------
   brandName: "Sonri Soluciones Digitales",
   tagline: "Todo tu entretenimiento, herramientas Pro e impulso digital en un solo lugar",
-  subtagline: "ActivaciÃ³n inmediata â€¢ Soporte 24/7 garantizado â€¢ Pago por transferencia a convenir",
+  subtagline: "Activación inmediata • Soporte 24/7 garantizado • Pago por transferencia a convenir",
 
   // CONTACTOS OFICIALES DEL CLIENTE
   whatsappNumber: "5492634377019",
@@ -35,7 +35,7 @@ const CATALOG_CONFIG = {
   instagramUrl: "https://instagram.com/sonrisas182",
 
   // ----------------------------------------------------------------------------
-  // CONEXIÃ“N EN LA NUBE (SUPABASE) PARA SINCRONIZACIÃ“N EN TIEMPO REAL
+  // CONEXIÓN EN LA NUBE (SUPABASE) PARA SINCRONIZACIÓN EN TIEMPO REAL
   // ----------------------------------------------------------------------------
   supabaseUrl: "https://yeuswjpjlujvtcjauddz.supabase.co",
   supabaseAnonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlldXN3anBqbHVqdnRjamF1ZGR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIyNTEzNzcsImV4cCI6MjEwNzgyNzM3N30.rgjO8-tFFZSv9f1oCsd65NKzrDD30FNAyX9qP48zLak",
@@ -46,11 +46,11 @@ const CATALOG_CONFIG = {
   // Margen de ganancia general por defecto (en porcentaje)
   defaultProfitMargin: 40,
 
-  // ConfiguraciÃ³n especial Zona Gamer
+  // Configuración especial Zona Gamer
   gamerFixedMarkupARS: 7000,
   showGamerIndividualPrices: true,
 
-  // true = muestra precios en la web; false = modo cotizaciÃ³n por privado
+  // true = muestra precios en la web; false = modo cotización por privado
   showPrices: true,
   currencySymbol: "$",
   paymentMethodText: "Transferencia bancaria (Alias: sonridigital)",
@@ -58,7 +58,7 @@ const CATALOG_CONFIG = {
   paymentAccountHolder: "Jonathan Emanuel Perez",
 
   // ----------------------------------------------------------------------------
-  // 2. CATEGORÃAS PRINCIPALES (8 PILARES)
+  // 2. CATEGORÍAS PRINCIPALES (8 PILARES)
   // ----------------------------------------------------------------------------
   categories: [
     {
@@ -67,7 +67,7 @@ const CATALOG_CONFIG = {
       shortName: "Streaming",
       icon: "Film",
       badge: "Cuentas Premium 4K",
-      description: "Cuentas y perfiles privados en Ultra HD 4K con mÃ¡xima estabilidad y sin cortes."
+      description: "Cuentas y perfiles privados en Ultra HD 4K con máxima estabilidad y sin cortes."
     },
     {
       id: "creadores-ia",
@@ -80,42 +80,42 @@ const CATALOG_CONFIG = {
     {
       id: "conectividad",
       name: "Conectividad & Datos",
-      shortName: "Internet MÃ³vil",
+      shortName: "Internet Móvil",
       icon: "Wifi",
       badge: "Ilimitado",
-      description: "ConexiÃ³n a internet ilimitada mediante aplicaciones seguras para tu celular."
+      description: "Conexión a internet ilimitada mediante aplicaciones seguras para tu celular."
     },
     {
       id: "iptv",
-      name: "TelevisiÃ³n Digital & IPTV",
-      shortName: "TV & FÃºtbol",
+      name: "Televisión Digital & IPTV",
+      shortName: "TV & Fútbol",
       icon: "Tv",
-      badge: "FÃºtbol Libre & Canales",
-      description: "Canales en vivo, Pack FÃºtbol HD, series y cine a demanda sin interrupciones."
+      badge: "Fútbol Libre & Canales",
+      description: "Canales en vivo, Pack Fútbol HD, series y cine a demanda sin interrupciones."
     },
     {
       id: "smm",
       name: "Crecimiento en Redes (SMM)",
       shortName: "Crecimiento SMM",
       icon: "TrendingUp",
-      badge: "Sin ContraseÃ±as",
-      description: "Seguidores, vistas, likes y reproducciÃ³n para escalar tus redes sociales."
+      badge: "Sin Contraseñas",
+      description: "Seguidores, vistas, likes y reproducción para escalar tus redes sociales."
     },
     {
       id: "emprendimiento",
-      name: "EmprendÃ© con tu Panel",
-      shortName: "EmprendÃ© / Tu Negocio",
+      name: "Emprendé con tu Panel",
+      shortName: "Emprendé / Tu Negocio",
       icon: "Briefcase",
       badge: "Ganancias 100% Tuyas",
-      description: "ObtenÃ© tu propio panel mayorista para revender servicios y software profesional para gestionar tus clientes."
+      description: "Obtené tu propio panel mayorista para revender servicios y software profesional para gestionar tus clientes."
     },
     {
       id: "zona-gamer",
       name: "Zona Gamer & Consolas",
       shortName: "Zona Gamer",
       icon: "Gamepad2",
-      badge: "PS4 â€¢ PS5 â€¢ PC",
-      description: "Packs de juegos primarios, emuladores para PC, retro PS3, mods y catÃ¡logo de +230 tÃ­tulos."
+      badge: "PS4 • PS5 • PC",
+      description: "Packs de juegos primarios, emuladores para PC, retro PS3, mods y catálogo de +230 títulos."
     },
     {
       id: "mega-packs",
@@ -123,12 +123,12 @@ const CATALOG_CONFIG = {
       shortName: "Mega Packs +14TB",
       icon: "FolderArchive",
       badge: "+14 Terabytes",
-      description: "Bibliotecas masivas de cursos, recursos grÃ¡ficos, programaciÃ³n, oficios y libros con acceso vitalicio."
+      description: "Bibliotecas masivas de cursos, recursos gráficos, programación, oficios y libros con acceso vitalicio."
     }
   ],
 
   // ----------------------------------------------------------------------------
-  // 3. CONSTRUCTOR DE COMBOS DE STREAMING (Costo base mÃ¡s alto: .000 ARS)
+  // 3. CONSTRUCTOR DE COMBOS DE STREAMING (Costo base más alto: .000 ARS)
   // ----------------------------------------------------------------------------
   comboPlatforms: [
     { id: "netflix", name: "Netflix Premium 4K", icon: "Flame" },
@@ -145,21 +145,21 @@ const CATALOG_CONFIG = {
   ],
 
   comboTiers: [
-    { count: 2, label: "Combo DÃºo (2 Plataformas)", costPrice: 11000, margin: 40, price: calcSalePrice(11000, 40), tag: "Ahorro Especial" },
-    { count: 3, label: "Combo TrÃ­o (3 Plataformas)", costPrice: 16000, margin: 38, price: calcSalePrice(16000, 38), tag: "MÃ¡s Elegido ðŸ”¥" },
-    { count: 4, label: "Combo Master (4 Plataformas)", costPrice: 20500, margin: 36, price: calcSalePrice(20500, 36), tag: "Mejor Precio âš¡" }
+    { count: 2, label: "Combo Dúo (2 Plataformas)", costPrice: 11000, margin: 40, price: calcSalePrice(11000, 40), tag: "Ahorro Especial" },
+    { count: 3, label: "Combo Trío (3 Plataformas)", costPrice: 16000, margin: 38, price: calcSalePrice(16000, 38), tag: "Más Elegido 🔥" },
+    { count: 4, label: "Combo Master (4 Plataformas)", costPrice: 20500, margin: 36, price: calcSalePrice(20500, 36), tag: "Mejor Precio ⚡" }
   ],
 
   // ----------------------------------------------------------------------------
-  // 4. INVENTARIO UNIFICADO (PILARES DEL CATÃLOGO)
+  // 4. INVENTARIO UNIFICADO (PILARES DEL CATÁLOGO)
   // ----------------------------------------------------------------------------
   products: [
     // --------------------------------------------------------------------------
-    // PILAR 1: STREAMING & CINE EN CASA (CON PROVEEDOR ECONÃ“MICO ACTUALIZADO)
+    // PILAR 1: STREAMING & CINE EN CASA (CON PROVEEDOR ECONÓMICO ACTUALIZADO)
     // --------------------------------------------------------------------------
     {
       id: "combo-streaming-personalizado",
-      name: "Combos de Entretenimiento a ElecciÃ³n",
+      name: "Combos de Entretenimiento a Elección",
       category: "streaming",
       badge: "Super Promo",
       highlight: true,
@@ -167,209 +167,193 @@ const CATALOG_CONFIG = {
       costPrice: 16000,
       margin: 38,
       price: calcSalePrice(16000, 38),
-      period: "30 dÃ­as",
+      period: "30 días",
       icon: "Layers",
       gradient: "from-cyan-500 via-blue-600 to-purple-600",
-      description: "ArmÃ¡ tu propio pack personalizado combinando 2, 3 o 4 plataformas favoritas a un precio promocional insuperable.",
+      description: "Armá tu propio pack personalizado combinando 2, 3 o 4 plataformas favoritas a un precio promocional insuperable.",
       benefits: [
-        "ElegÃ­ entre Netflix, Disney+, Prime, Max, Crunchyroll, Spotify y mÃ¡s",
+        "Elegí entre Netflix, Disney+, Prime, Max, Crunchyroll, Spotify y más",
         "Perfiles privados con PIN personal en Ultra HD 4K",
-        "GarantÃ­a total de reposiciÃ³n y soporte durante todo el mes",
-        "ActivaciÃ³n rÃ¡pida en minutos"
+        "Garantía total de reposición y soporte durante todo el mes",
+        "Activación rápida en minutos"
       ]
     },
     {
       id: "netflix-premium",
       name: "Netflix Original 4K",
       category: "streaming",
-      badge: "MÃ¡s Pedido ðŸ”¥",
+      badge: "Más Pedido 🔥",
       hasPlanSelector: true,
       planOptions: [
-        "Perfil Compartido",
-        "Perfil Extra Personal"
+        "Perfil Compartido (1 Pantalla)",
+        "Perfil Extra Personal (1 Pantalla sin bloqueo)"
       ],
       planPricing: {
-        "Perfil Compartido": { cost: 8500, margin: 40, price: calcSalePrice(8500, 40) },
-        "Perfil Extra Personal": { cost: 10500, margin: 40, price: calcSalePrice(10500, 40) }
+        "Perfil Compartido (1 Pantalla)": { cost: 8500, margin: 42, price: 12000 },
+        "Perfil Extra Personal (1 Pantalla sin bloqueo)": { cost: 10500, margin: 80, price: 18900 }
       },
       costPrice: 8500,
-      margin: 40,
-      price: calcSalePrice(8500, 40),
-      period: "30 dÃ­as",
+      margin: 42,
+      price: 12000,
+      period: "30 días",
       icon: "Film",
       gradient: "from-red-600 to-purple-800",
-      description: "Acceso con perfil privado y PIN de seguridad en Ultra HD 4K + HDR. Cero caÃ­das y sin cortes por geolocalizaciÃ³n.",
+      description: "Acceso con perfil privado y PIN de seguridad en Ultra HD 4K + HDR. Cero caídas y sin cortes por geolocalización.",
       benefits: [
-        "Perfil Compartido: 1 perfil en cuenta de 5 usuarios Â· 30 dÃ­as",
-        "Perfil Extra Personal: Ãšnico perfil en la cuenta, sin bloqueo de hogar Â· 30 dÃ­as",
+        "Perfil Compartido (1 Pantalla en cuenta de 5 usuarios · 30 días)",
+        "Perfil Extra Personal (1 Pantalla sin bloqueo de hogar · 30 días)",
         "Calidad Ultra HD 4K + HDR con audio espacial",
-        "ActivaciÃ³n rÃ¡pida y soporte 30 dÃ­as garantizado"
+        "Activación rápida y soporte 30 días garantizado"
       ]
     },
     {
       id: "disney-plus-premium",
-      name: "Disney+ (Selector de Plan)",
+      name: "Disney+ (ESPN Deportes)",
       category: "streaming",
       badge: "Deportes ESPN",
       hasPlanSelector: true,
       planOptions: [
-        "EstÃ¡ndar: Perfil Personal",
-        "EstÃ¡ndar: Cuenta Completa",
-        "Premium 4K: Perfil Personal",
-        "Premium 4K: Cuenta Completa",
-        "Disney+ con ESPN: Perfil",
-        "Disney+ con ESPN: Completa"
+        "Perfil Personal (1 Pantalla HD)",
+        "Perfil Premium 4K + ESPN (1 Pantalla)",
+        "Cuenta Completa Familiar (4 Pantallas · 7 Perfiles)"
       ],
       planPricing: {
-        "EstÃ¡ndar: Perfil Personal": { cost: 2500, margin: 40, price: calcSalePrice(2500, 40) },
-        "EstÃ¡ndar: Cuenta Completa": { cost: 6000, margin: 40, price: calcSalePrice(6000, 40) },
-        "Premium 4K: Perfil Personal": { cost: 4000, margin: 40, price: calcSalePrice(4000, 40) },
-        "Premium 4K: Cuenta Completa": { cost: 12000, margin: 40, price: calcSalePrice(12000, 40) },
-        "Disney+ con ESPN: Perfil": { cost: 6000, margin: 40, price: calcSalePrice(6000, 40) },
-        "Disney+ con ESPN: Completa": { cost: 20000, margin: 40, price: calcSalePrice(20000, 40) }
+        "Perfil Personal (1 Pantalla HD)": { cost: 2500, margin: 176, price: 6900 },
+        "Perfil Premium 4K + ESPN (1 Pantalla)": { cost: 6000, margin: 100, price: 12000 },
+        "Cuenta Completa Familiar (4 Pantallas · 7 Perfiles)": { cost: 12000, margin: 91, price: 22900 }
       },
       costPrice: 2500,
-      margin: 40,
-      price: calcSalePrice(2500, 40),
-      period: "30 dÃ­as",
+      margin: 176,
+      price: 6900,
+      period: "30 días",
       icon: "Sparkles",
       gradient: "from-blue-600 to-indigo-900",
-      description: "CatÃ¡logo completo de Disney, Pixar, Marvel, Star Wars y todos los eventos y partidos en vivo de ESPN.",
+      description: "Catálogo completo de Disney, Pixar, Marvel, Star Wars y todos los eventos y partidos en vivo de ESPN.",
       benefits: [
-        "Plan EstÃ¡ndar (con anuncios): Perfil Personal o Cuenta Completa 7 perfiles (2 simultÃ¡neos)",
-        "Plan Premium 4K (sin anuncios): Perfil Personal o Cuenta Completa (4 simultÃ¡neos)",
-        "Plan Disney+ con ESPN: Pack FÃºtbol en vivo sin anuncios y deportes ESPN",
-        "Compatible con Smart TV, celulares, tablets y consolas"
+        "Perfil Personal (1 Pantalla HD · 30 días)",
+        "Perfil Premium 4K + ESPN (1 Pantalla Ultra HD · Sin anuncios · Deportes en vivo · 30 días)",
+        "Cuenta Completa Familiar (4 Pantallas simultáneas · 7 Perfiles creados · 30 días)",
+        "Compatible con Smart TV, celulares, tablets, TV Box y consolas"
       ]
     },
     {
       id: "max-hbo",
-      name: "Max / HBO Max (Selector de Plan)",
+      name: "Max / HBO Max",
       category: "streaming",
       badge: "Cine Taquillero",
       hasPlanSelector: true,
       planOptions: [
-        "EstÃ¡ndar: Perfil Personal",
-        "EstÃ¡ndar: Cuenta Completa",
-        "Platino 4K: Perfil Personal",
-        "Platino 4K: Cuenta Completa"
+        "Perfil Personal (1 Pantalla Full HD)",
+        "Perfil Platino 4K (1 Pantalla Ultra HD)",
+        "Cuenta Completa Familiar (4 Pantallas simultáneas)"
       ],
       planPricing: {
-        "EstÃ¡ndar: Perfil Personal": { cost: 2500, margin: 40, price: calcSalePrice(2500, 40) },
-        "EstÃ¡ndar: Cuenta Completa": { cost: 6000, margin: 40, price: calcSalePrice(6000, 40) },
-        "Platino 4K: Perfil Personal": { cost: 4000, margin: 40, price: calcSalePrice(4000, 40) },
-        "Platino 4K: Cuenta Completa": { cost: 10000, margin: 40, price: calcSalePrice(10000, 40) }
+        "Perfil Personal (1 Pantalla Full HD)": { cost: 2500, margin: 176, price: 6900 },
+        "Perfil Platino 4K (1 Pantalla Ultra HD)": { cost: 4000, margin: 122, price: 8900 },
+        "Cuenta Completa Familiar (4 Pantallas simultáneas)": { cost: 10000, margin: 85, price: 18500 }
       },
       costPrice: 2500,
-      margin: 40,
-      price: calcSalePrice(2500, 40),
-      period: "30 dÃ­as",
+      margin: 176,
+      price: 6900,
+      period: "30 días",
       icon: "Clapperboard",
       gradient: "from-purple-600 to-blue-800",
-      description: "Las mejores pelÃ­culas de Warner Bros, sagas icÃ³nicas, series multipremiadas y eventos deportivos.",
+      description: "Las mejores películas de Warner Bros, sagas icónicas, series multipremiadas y eventos deportivos.",
       benefits: [
-        "Plan EstÃ¡ndar: Perfil Personal o Cuenta Completa 5 disp. (2 en simultÃ¡neo)",
-        "Plan Platino 4K Ultra HD: Perfil Personal o Cuenta Completa (4 en simultÃ¡neo)",
-        "Estrenos taquilleros directos de cine y transmisiones exclusivas",
+        "Perfil Personal (1 Pantalla Full HD · 30 días)",
+        "Perfil Platino 4K (1 Pantalla Ultra HD + Deportes en vivo · 30 días)",
+        "Cuenta Completa Familiar (4 Pantallas simultáneas · 5 Perfiles · 30 días)",
         "Calidad 4K con Dolby Vision y Dolby Atmos"
       ]
     },
     {
       id: "prime-video",
-      name: "Prime Video (Selector de DuraciÃ³n)",
+      name: "Prime Video HD",
       category: "streaming",
       badge: "Recomendado",
       hasPlanSelector: true,
       planOptions: [
-        "Perfil: 1 Mes",
-        "Perfil: 3 Meses",
-        "Perfil: 6 Meses",
-        "Perfil: 12 Meses",
-        "Cuenta Completa: 1 Mes",
-        "Cuenta Completa: 12 Meses",
-        "Mayorista: 10 Cuentas x 1M"
+        "Perfil Personal (1 Pantalla · 1 Mes)",
+        "Perfil Personal (1 Pantalla · 3 Meses)",
+        "Cuenta Completa Familiar (3 Pantallas · 1 Mes)",
+        "Cuenta Completa Anual (3 Pantallas · 12 Meses)"
       ],
       planPricing: {
-        "Perfil: 1 Mes": { cost: 2500, margin: 40, price: calcSalePrice(2500, 40) },
-        "Perfil: 3 Meses": { cost: 6000, margin: 40, price: calcSalePrice(6000, 40) },
-        "Perfil: 6 Meses": { cost: 10000, margin: 40, price: calcSalePrice(10000, 40) },
-        "Perfil: 12 Meses": { cost: 15000, margin: 40, price: calcSalePrice(15000, 40) },
-        "Cuenta Completa: 1 Mes": { cost: 6000, margin: 40, price: calcSalePrice(6000, 40) },
-        "Cuenta Completa: 12 Meses": { cost: 25000, margin: 40, price: calcSalePrice(25000, 40) },
-        "Mayorista: 10 Cuentas x 1M": { cost: 20000, margin: 40, price: calcSalePrice(20000, 40) }
+        "Perfil Personal (1 Pantalla · 1 Mes)": { cost: 2500, margin: 176, price: 6900 },
+        "Perfil Personal (1 Pantalla · 3 Meses)": { cost: 6000, margin: 132, price: 13900 },
+        "Cuenta Completa Familiar (3 Pantallas · 1 Mes)": { cost: 6000, margin: 115, price: 12900 },
+        "Cuenta Completa Anual (3 Pantallas · 12 Meses)": { cost: 25000, margin: 80, price: 45000 }
       },
       costPrice: 2500,
-      margin: 40,
-      price: calcSalePrice(2500, 40),
-      period: "30 dÃ­as a 12 meses",
+      margin: 176,
+      price: 6900,
+      period: "30 días / Anual",
       icon: "PlaySquare",
-      gradient: "from-sky-500 to-blue-700",
-      description: "Estrenos cinematogrÃ¡ficos exclusivos, series originales galardonadas y contenido en alta definiciÃ³n.",
+      gradient: "from-sky-600 to-blue-900",
+      description: "Series exclusivas, cine internacional, producciones originales de Amazon Prime y estrenos semanales.",
       benefits: [
-        "Perfil Personal: DuraciÃ³n de 1, 3, 6 o 12 meses",
-        "Cuenta Completa: 7 perfiles / 4 en simultÃ¡neo (1 mes o Anual 12 meses)",
-        "Lote Mayorista para revendedores: 10 cuentas de 1 mes",
-        "Descargas para ver sin conexiÃ³n a internet y mÃ¡xima estabilidad"
+        "Perfil Personal (1 Pantalla privada con PIN · 1 Mes o 3 Meses)",
+        "Cuenta Completa Familiar (3 Pantallas simultáneas · 7 Perfiles)",
+        "Catálogo completo de cine, series originales y producciones argentinas",
+        "Soporte y garantía durante todo el período contratado"
       ]
     },
     {
       id: "crunchyroll-mega-fan",
-      name: "Crunchyroll Original (Anime)",
+      name: "Crunchyroll Mega Fan (Anime)",
       category: "streaming",
       badge: "Anime Simulcast",
       hasPlanSelector: true,
       planOptions: [
-        "Perfil: 1 Mes",
-        "Perfil: 12 Meses (Anual)",
-        "Cuenta Completa: 1 Mes",
-        "Cuenta Completa: 12 Meses"
+        "Perfil Personal (1 Pantalla · 1 Mes)",
+        "Perfil Personal Anual (1 Pantalla · 12 Meses)",
+        "Cuenta Completa Mega Fan (4 Pantallas · 1 Mes)"
       ],
       planPricing: {
-        "Perfil: 1 Mes": { cost: 2000, margin: 40, price: calcSalePrice(2000, 40) },
-        "Perfil: 12 Meses (Anual)": { cost: 15000, margin: 40, price: calcSalePrice(15000, 40) },
-        "Cuenta Completa: 1 Mes": { cost: 6000, margin: 40, price: calcSalePrice(6000, 40) },
-        "Cuenta Completa: 12 Meses": { cost: 30000, margin: 40, price: calcSalePrice(30000, 40) }
+        "Perfil Personal (1 Pantalla · 1 Mes)": { cost: 2000, margin: 195, price: 5900 },
+        "Perfil Personal Anual (1 Pantalla · 12 Meses)": { cost: 15000, margin: 86, price: 27900 },
+        "Cuenta Completa Mega Fan (4 Pantallas · 1 Mes)": { cost: 6000, margin: 115, price: 12900 }
       },
       costPrice: 2000,
-      margin: 40,
-      price: calcSalePrice(2000, 40),
-      period: "30 dÃ­as a 12 meses",
+      margin: 195,
+      price: 5900,
+      period: "30 días / Anual",
       icon: "Zap",
-      gradient: "from-amber-500 to-orange-700",
-      description: "La biblioteca de anime mÃ¡s grande del mundo sin anuncios. Episodios disponibles 1 hora despuÃ©s de JapÃ³n.",
+      gradient: "from-orange-500 to-amber-700",
+      description: "La biblioteca de anime más grande del mundo sin publicidad, con simulcast 1 hora después de Japón.",
       benefits: [
-        "Perfil Personal: 1 mes o pase anual de 12 meses",
-        "Cuenta Completa (5 perfiles): 1 mes o pase anual de 12 meses",
-        "Episodios estreno en simultÃ¡neo con JapÃ³n (Simulcast)",
-        "Doblajes latinos y subtÃ­tulos en alta definiciÃ³n"
+        "Perfil Personal (1 Pantalla · Sin publicidad · Simulcast con Japón)",
+        "Cuenta Completa Mega Fan (4 Pantallas simultáneas · Modo offline)",
+        "Plan Anual con ahorro exclusivo para fanáticos",
+        "Audio original japonés subtitulado y doblajes en español latino"
       ]
     },
     {
       id: "paramount-plus",
-      name: "Paramount+ (Selector de Plan)",
+      name: "Paramount+",
       category: "streaming",
-      badge: "Cine & Series",
+      badge: "Series & Cine",
       hasPlanSelector: true,
       planOptions: [
-        "Perfil Compartido",
-        "Perfil Extra Ãšnico DueÃ±o"
+        "Perfil Personal (1 Pantalla · 30 días)",
+        "Perfil Exclusivo Único Dueño (1 Pantalla · 30 días)"
       ],
       planPricing: {
-        "Perfil Compartido": { cost: 2500, margin: 40, price: calcSalePrice(2500, 40) },
-        "Perfil Extra Ãšnico DueÃ±o": { cost: 6000, margin: 40, price: calcSalePrice(6000, 40) }
+        "Perfil Personal (1 Pantalla · 30 días)": { cost: 2500, margin: 176, price: 6900 },
+        "Perfil Exclusivo Único Dueño (1 Pantalla · 30 días)": { cost: 6000, margin: 115, price: 12900 }
       },
       costPrice: 2500,
-      margin: 40,
-      price: calcSalePrice(2500, 40),
-      period: "30 dÃ­as",
+      margin: 176,
+      price: 6900,
+      period: "30 días",
       icon: "Star",
-      gradient: "from-blue-700 to-cyan-900",
-      description: "Cine exclusivo, series estelares de Showtime, producciones locales y partidos en vivo.",
+      gradient: "from-blue-700 to-indigo-950",
+      description: "Contenido de Showtime, CBS, MTV, Nickelodeon, Comedy Central y partidos exclusivos.",
       benefits: [
-        "Perfil Personal Compartido 30 dÃ­as",
-        "Perfil Extra Ãšnico DueÃ±o 30 dÃ­as sin compartir",
-        "CatÃ¡logo completo de Paramount, CBS y Nickelodeon",
-        "ActivaciÃ³n rÃ¡pida en minutos"
+        "Perfil Personal (1 Pantalla · Catálogo completo · 30 días)",
+        "Perfil Exclusivo Único Dueño (1 Pantalla sin compartir · 30 días)",
+        "Transmisiones deportivas exclusivas y producciones originales",
+        "Activación inmediata y soporte garantizado"
       ]
     },
     {
@@ -380,14 +364,14 @@ const CATALOG_CONFIG = {
       costPrice: 4800,
       margin: 40,
       price: calcSalePrice(4800, 40),
-      period: "30 dÃ­as",
+      period: "30 días",
       icon: "Compass",
       gradient: "from-indigo-600 to-purple-800",
-      description: "Los 5 canales premium de Universal en una sola suscripciÃ³n: Cinema, Premiere, Comedy, Crime y Reality.",
+      description: "Los 5 canales premium de Universal en una sola suscripción: Cinema, Premiere, Comedy, Crime y Reality.",
       benefits: [
-        "Las 5 seÃ±ales temÃ¡ticas de Universal sin cortes",
+        "Las 5 señales temáticas de Universal sin cortes",
         "Series policiales, comedia y reality shows exclusivos",
-        "PelÃ­culas taquilleras de Universal Pictures",
+        "Películas taquilleras de Universal Pictures",
         "Calidad Full HD y sonido de alta fidelidad"
       ]
     },
@@ -395,30 +379,30 @@ const CATALOG_CONFIG = {
       id: "vix-premium",
       name: "ViX+ Premium",
       category: "streaming",
-      badge: "FÃºtbol en EspaÃ±ol",
+      badge: "Fútbol en Español",
       costPrice: 4800,
       margin: 40,
       price: calcSalePrice(4800, 40),
-      period: "30 dÃ­as",
+      period: "30 días",
       icon: "Tv",
       gradient: "from-orange-600 to-red-800",
-      description: "El mayor contenido en espaÃ±ol: novelas completas, cine latino, series originales y partidos en vivo.",
+      description: "El mayor contenido en español: novelas completas, cine latino, series originales y partidos en vivo.",
       benefits: [
-        "FÃºtbol y ligas en vivo en idioma espaÃ±ol",
+        "Fútbol y ligas en vivo en idioma español",
         "Producciones originales exclusivas",
         "Acceso directo y perfiles optimizados",
-        "Soporte rÃ¡pido vÃ­a WhatsApp"
+        "Soporte rápido vía WhatsApp"
       ]
     },
     {
       id: "apple-tv-plus",
       name: "Apple TV + MLS",
       category: "streaming",
-      badge: "MÃ¡xima Calidad 4K",
+      badge: "Máxima Calidad 4K",
       costPrice: 4800,
       margin: 40,
       price: calcSalePrice(4800, 40),
-      period: "30 dÃ­as",
+      period: "30 días",
       icon: "Monitor",
       gradient: "from-slate-600 to-zinc-900",
       description: "Producciones galardonadas en 4K con Dolby Vision y acceso a partidos de la Major League Soccer.",
@@ -437,29 +421,29 @@ const CATALOG_CONFIG = {
       costPrice: 4800,
       margin: 40,
       price: calcSalePrice(4800, 40),
-      period: "30 dÃ­as",
+      period: "30 días",
       icon: "Heart",
       gradient: "from-pink-600 to-rose-900",
-      description: "El catÃ¡logo definitivo de K-Dramas coreanos, dramas asiÃ¡ticos, pelÃ­culas y programas de variedades subtitulados.",
+      description: "El catálogo definitivo de K-Dramas coreanos, dramas asiáticos, películas y programas de variedades subtitulados.",
       benefits: [
         "Acceso exclusivo a producciones Viki Originals",
-        "SubtÃ­tulos en espaÃ±ol profesionales",
+        "Subtítulos en español profesionales",
         "Calidad Full HD sin interrupciones",
-        "VisualizaciÃ³n en mÃºltiples dispositivos"
+        "Visualización en múltiples dispositivos"
       ]
     },
     {
       id: "spotify-premium",
       name: "Spotify Premium",
       category: "streaming",
-      badge: "MÃºsica Sin LÃ­mites",
+      badge: "Música Sin Límites",
       costPrice: 6400,
       margin: 40,
       price: calcSalePrice(6400, 40),
-      period: "30 dÃ­as",
+      period: "30 días",
       icon: "Music2",
       gradient: "from-emerald-500 to-teal-800",
-      description: "MÃºsica sin anuncios, reproducciÃ³n aleatoria libre, descargas offline y mÃ¡xima calidad de audio.",
+      description: "Música sin anuncios, reproducción aleatoria libre, descargas offline y máxima calidad de audio.",
       benefits: [
         "Sin interrupciones comerciales",
         "Descarga de canciones y podcasts offline",
@@ -475,15 +459,15 @@ const CATALOG_CONFIG = {
       costPrice: 5440,
       margin: 40,
       price: calcSalePrice(5440, 40),
-      period: "30 dÃ­as",
+      period: "30 días",
       icon: "PlaySquare",
       gradient: "from-red-600 to-pink-700",
-      description: "Todo YouTube sin anuncios en tu Smart TV y celular, reproducciÃ³n en segundo plano y YouTube Music Premium.",
+      description: "Todo YouTube sin anuncios en tu Smart TV y celular, reproducción en segundo plano y YouTube Music Premium.",
       benefits: [
         "Cero publicidad en YouTube y YouTube Music",
-        "ReproducciÃ³n con pantalla apagada en celulares",
+        "Reproducción con pantalla apagada en celulares",
         "Descargas para ver y escuchar sin internet",
-        "ActivaciÃ³n en tu cuenta con garantÃ­a total"
+        "Activación en tu cuenta con garantía total"
       ]
     },
     {
@@ -494,14 +478,14 @@ const CATALOG_CONFIG = {
       costPrice: 4800,
       margin: 40,
       price: calcSalePrice(4800, 40),
-      period: "30 dÃ­as",
+      period: "30 días",
       icon: "Radio",
       gradient: "from-purple-600 to-indigo-800",
-      description: "Millones de pistas musicales con calidad de sonido High Fidelity (FLAC) sin pÃ©rdida.",
+      description: "Millones de pistas musicales con calidad de sonido High Fidelity (FLAC) sin pérdida.",
       benefits: [
-        "Sonido HiFi de alta fidelidad sin compresiÃ³n",
-        "Modo sin conexiÃ³n a internet",
-        "Flow personalizado segÃºn tus gustos",
+        "Sonido HiFi de alta fidelidad sin compresión",
+        "Modo sin conexión a internet",
+        "Flow personalizado según tus gustos",
         "Sin publicidad"
       ]
     },
@@ -517,34 +501,34 @@ const CATALOG_CONFIG = {
       costPrice: 11200,
       margin: 40,
       price: calcSalePrice(11200, 40),
-      period: "30 dÃ­as",
+      period: "30 días",
       icon: "Video",
       gradient: "from-teal-500 to-cyan-800",
-      description: "DesbloqueÃ¡ todo el potencial del editor #1 de TikTok y Reels. SubtÃ­tulos automÃ¡ticos bilingÃ¼es y exportaciÃ³n 4K limpia.",
+      description: "Desbloqueá todo el potencial del editor #1 de TikTok y Reels. Subtítulos automáticos bilingües y exportación 4K limpia.",
       benefits: [
-        "SubtÃ­tulos automÃ¡ticos inteligentes con estilos Pro",
-        "ExportaciÃ³n en 4K a 60 FPS sin marca de agua",
+        "Subtítulos automáticos inteligentes con estilos Pro",
+        "Exportación en 4K a 60 FPS sin marca de agua",
         "Efectos de voz, tracking y filtros avanzados",
         "Compatible con PC, Mac, iPhone y Android"
       ]
     },
     {
       id: "canva-pro-educacion",
-      name: "Canva Pro EducaciÃ³n",
+      name: "Canva Pro Educación",
       category: "creadores-ia",
       badge: "Indispensable",
       costPrice: 3200,
       margin: 60,
       price: calcSalePrice(3200, 60),
-      period: "30 dÃ­as",
+      period: "30 días",
       icon: "Palette",
       gradient: "from-cyan-500 to-blue-600",
-      description: "DiseÃ±o grÃ¡fico profesional para redes, folletos y presentaciones sin lÃ­mites creativos.",
+      description: "Diseño gráfico profesional para redes, folletos y presentaciones sin límites creativos.",
       benefits: [
-        "Quitafondos mÃ¡gico de imÃ¡genes y videos en 1 clic",
+        "Quitafondos mágico de imágenes y videos en 1 clic",
         "+100 millones de fotos, videos y elementos Pro",
-        "Kit de marcas con tus tipografÃ­as y paletas",
-        "Redimensionamiento mÃ¡gico de diseÃ±os"
+        "Kit de marcas con tus tipografías y paletas",
+        "Redimensionamiento mágico de diseños"
       ]
     },
     {
@@ -555,15 +539,15 @@ const CATALOG_CONFIG = {
       costPrice: 8000,
       margin: 40,
       price: calcSalePrice(8000, 40),
-      period: "30 dÃ­as",
+      period: "30 días",
       icon: "Bot",
       gradient: "from-emerald-500 to-teal-800",
-      description: "El modelo de lenguaje mÃ¡s inteligente del mundo para redacciÃ³n, programaciÃ³n, anÃ¡lisis y estudio.",
+      description: "El modelo de lenguaje más inteligente del mundo para redacción, programación, análisis y estudio.",
       benefits: [
         "Acceso preferencial a GPT-4o sin demoras",
-        "Generador de imÃ¡genes fotorrealistas con DALL-E 3",
-        "AnÃ¡lisis avanzado de datos, planillas y PDFs",
-        "NavegaciÃ³n web en tiempo real"
+        "Generador de imágenes fotorrealistas con DALL-E 3",
+        "Análisis avanzado de datos, planillas y PDFs",
+        "Navegación web en tiempo real"
       ]
     },
     {
@@ -577,12 +561,12 @@ const CATALOG_CONFIG = {
       period: "18 meses",
       icon: "Cpu",
       gradient: "from-blue-500 to-purple-600",
-      description: "Plan extendido con el modelo mÃ¡s potente de Google y un enorme almacenamiento en la nube para tus archivos.",
+      description: "Plan extendido con el modelo más potente de Google y un enorme almacenamiento en la nube para tus archivos.",
       benefits: [
         "Acceso ilimitado a Gemini Ultra y Advanced",
         "5 Terabytes (5.000 GB) de almacenamiento en Google Cloud",
-        "IntegraciÃ³n directa con Docs, Gmail y Drive",
-        "DuraciÃ³n extendida garantizada de 18 meses"
+        "Integración directa con Docs, Gmail y Drive",
+        "Duración extendida garantizada de 18 meses"
       ]
     },
     {
@@ -593,15 +577,15 @@ const CATALOG_CONFIG = {
       costPrice: 8000,
       margin: 40,
       price: calcSalePrice(8000, 40),
-      period: "30 dÃ­as",
+      period: "30 días",
       icon: "Wand2",
       gradient: "from-fuchsia-600 to-pink-800",
-      description: "GenerÃ¡ avatares realistas que hablan, clonÃ¡ tu propia voz y creÃ¡ videos virales desde texto en segundos.",
+      description: "Generá avatares realistas que hablan, cloná tu propia voz y creá videos virales desde texto en segundos.",
       benefits: [
-        "Avatares humanos hiperrealistas con sincronizaciÃ³n labial",
-        "ClonaciÃ³n de voz en mÃ¡s de 20 idiomas",
-        "GeneraciÃ³n automÃ¡tica de guiones con IA",
-        "ExportaciÃ³n en alta definiciÃ³n sin marcas de agua"
+        "Avatares humanos hiperrealistas con sincronización labial",
+        "Clonación de voz en más de 20 idiomas",
+        "Generación automática de guiones con IA",
+        "Exportación en alta definición sin marcas de agua"
       ]
     },
 
@@ -610,7 +594,7 @@ const CATALOG_CONFIG = {
     // --------------------------------------------------------------------------
     {
       id: "internet-movil-ilimitado",
-      name: "Internet MÃ³vil Ilimitado",
+      name: "Internet Móvil Ilimitado",
       category: "conectividad",
       badge: "Datos Ilimitados",
       highlight: true,
@@ -633,57 +617,57 @@ const CATALOG_CONFIG = {
       costPrice: 3200,
       margin: 40,
       price: calcSalePrice(3200, 40),
-      period: "30 dÃ­as",
+      period: "30 días",
       icon: "Wifi",
       gradient: "from-cyan-500 to-blue-700",
-      description: "NavegÃ¡ sin lÃ­mites desde tu celular sin gastar saldo ni abono mediante servidores VPN privados de alta velocidad.",
+      description: "Navegá sin límites desde tu celular sin gastar saldo ni abono mediante servidores VPN privados de alta velocidad.",
       benefits: [
-        "SeleccionÃ¡ tu lÃ­nea: Personal o Claro",
+        "Seleccioná tu línea: Personal o Claro",
         "Consumo ilimitado de datos para YouTube, TikTok, Netflix y descargas",
         "No consume tu saldo de recarga ni datos de abono",
-        "AplicaciÃ³n fÃ¡cil de conectar con soporte guiado paso a paso",
+        "Aplicación fácil de conectar con soporte guiado paso a paso",
         "Velocidad 4G/5G con baja latencia para juegos online"
       ]
     },
 
     // --------------------------------------------------------------------------
-    // PILAR 4: TELEVISIÃ“N DIGITAL & IPTV (12 PLATAFORMAS COMPLETAS)
+    // PILAR 4: TELEVISIÓN DIGITAL & IPTV (12 PLATAFORMAS COMPLETAS)
     // --------------------------------------------------------------------------
     {
       id: "tv-digital-premium-pack-futbol",
-      name: "TV Digital Premium + Pack FÃºtbol",
+      name: "TV Digital Premium + Pack Fútbol",
       category: "iptv",
-      badge: "3 Pantallas Â· MÃ¡s Pedido ðŸ”¥",
+      badge: "3 Pantallas · Más Pedido 🔥",
       highlight: true,
       costPrice: 5920,
       margin: 40,
       price: calcSalePrice(5920, 40),
-      period: "30 dÃ­as Â· 3 pantallas",
+      period: "30 días · 3 pantallas",
       icon: "Tv",
       gradient: "from-blue-600 to-cyan-600",
-      description: "Ideal para ver todo el fÃºtbol argentino e internacional en vivo. Incluye canales premium de deportes, cine, series y contenido infantil en HD y Full HD.",
+      description: "Ideal para ver todo el fútbol argentino e internacional en vivo. Incluye canales premium de deportes, cine, series y contenido infantil en HD y Full HD.",
       benefits: [
-        "â± Entrega rÃ¡pida: 15 min a 1 hs (7:30 a 00:30 hs)",
-        "3 pantallas simultÃ¡neas en alta definiciÃ³n",
-        "Pack FÃºtbol completo (ESPN Premium, TNT Sports)",
-        "GuÃ­a de programaciÃ³n interactiva y canales 24/7"
+        "⏱ Entrega rápida: 15 min a 1 hs (7:30 a 00:30 hs)",
+        "3 pantallas simultáneas en alta definición",
+        "Pack Fútbol completo (ESPN Premium, TNT Sports)",
+        "Guía de programación interactiva y canales 24/7"
       ]
     },
     {
       id: "vision-digital-tv",
       name: "Vision Digital TV",
       category: "iptv",
-      badge: "4 Pantallas Â· Ultra Estable",
+      badge: "4 Pantallas · Ultra Estable",
       costPrice: 5600,
       margin: 40,
       price: calcSalePrice(5600, 40),
-      period: "30 dÃ­as Â· 4 pantallas",
+      period: "30 días · 4 pantallas",
       icon: "MonitorPlay",
       gradient: "from-cyan-600 to-indigo-700",
-      description: "Servicio de televisiÃ³n digital con 4 accesos simultÃ¡neos y servidores de alto rendimiento optimizados para evitar cortes durante eventos masivos.",
+      description: "Servicio de televisión digital con 4 accesos simultáneos y servidores de alto rendimiento optimizados para evitar cortes durante eventos masivos.",
       benefits: [
-        "â± Entrega estimada: 30 min a 6 hs mÃ¡x",
-        "4 pantallas en simultÃ¡neo para toda la familia",
+        "⏱ Entrega estimada: 30 min a 6 hs máx",
+        "4 pantallas en simultáneo para toda la familia",
         "Gran estabilidad en partidos de alta audiencia",
         "Compatible con Smart TV, TV Box, Firestick y celulares"
       ]
@@ -692,37 +676,37 @@ const CATALOG_CONFIG = {
       id: "tv-digital-lumix",
       name: "TV Digital Lumix",
       category: "iptv",
-      badge: "4 Pantallas Â· MÃ¡xima Fluidez",
+      badge: "4 Pantallas · Máxima Fluidez",
       costPrice: 6400,
       margin: 40,
       price: calcSalePrice(6400, 40),
-      period: "30 dÃ­as Â· 4 pantallas",
+      period: "30 días · 4 pantallas",
       icon: "Tv",
       gradient: "from-purple-600 to-blue-700",
-      description: "Plataforma moderna con interfaz Ã¡gil, cambio rÃ¡pido de canal y una amplia grilla de seÃ±ales nacionales, internacionales y eventos PPV.",
+      description: "Plataforma moderna con interfaz ágil, cambio rápido de canal y una amplia grilla de señales nacionales, internacionales y eventos PPV.",
       benefits: [
-        "â± Entrega estimada: 20 min a 12 hs",
-        "4 pantallas simultÃ¡neas",
+        "⏱ Entrega estimada: 20 min a 12 hs",
+        "4 pantallas simultáneas",
         "Servidores con balanceo de carga continuo",
-        "FÃºtbol argentino, copas internacionales y cine"
+        "Fútbol argentino, copas internacionales y cine"
       ]
     },
     {
       id: "gs-play-hd",
       name: "GS Play HD",
       category: "iptv",
-      badge: "3 Pantallas Â· Sin Interrupciones",
+      badge: "3 Pantallas · Sin Interrupciones",
       costPrice: 6400,
       margin: 40,
       price: calcSalePrice(6400, 40),
-      period: "30 dÃ­as Â· 3 pantallas",
+      period: "30 días · 3 pantallas",
       icon: "PlaySquare",
       gradient: "from-teal-600 to-emerald-700",
-      description: "DisfrutÃ¡ donde quieras y cuando quieras sin interrupciones. Grilla optimizada con canales premium, series y pelÃ­culas a demanda.",
+      description: "Disfrutá donde quieras y cuando quieras sin interrupciones. Grilla optimizada con canales premium, series y películas a demanda.",
       benefits: [
-        "â± Entrega estimada: 2 a 24 hs",
-        "3 pantallas simultÃ¡neas",
-        "Transmisiones fluidas con excelente compresiÃ³n",
+        "⏱ Entrega estimada: 2 a 24 hs",
+        "3 pantallas simultáneas",
+        "Transmisiones fluidas con excelente compresión",
         "Soporte post-venta garantizado"
       ]
     },
@@ -730,62 +714,62 @@ const CATALOG_CONFIG = {
       id: "tv-digital-especial-roku",
       name: "TV Digital Especial ROKU",
       category: "iptv",
-      badge: "3 Pantallas Â· Optimizado ROKU",
+      badge: "3 Pantallas · Optimizado ROKU",
       costPrice: 5120,
       margin: 40,
       price: calcSalePrice(5120, 40),
-      period: "30 dÃ­as Â· 3 pantallas",
+      period: "30 días · 3 pantallas",
       icon: "Tv",
       gradient: "from-violet-600 to-purple-800",
-      description: "Especialmente optimizado para televisores y dispositivos con sistema operativo Roku. ConfiguraciÃ³n guiada sin complicaciones.",
+      description: "Especialmente optimizado para televisores y dispositivos con sistema operativo Roku. Configuración guiada sin complicaciones.",
       benefits: [
-        "â± Entrega estimada: 1 a 24 hs",
-        "3 pantallas simultÃ¡neas",
+        "⏱ Entrega estimada: 1 a 24 hs",
+        "3 pantallas simultáneas",
         "100% compatible con Roku TV y Roku Express/Streaming Stick",
-        "Todos los canales deportivos y seÃ±ales en vivo"
+        "Todos los canales deportivos y señales en vivo"
       ]
     },
     {
       id: "tv-digital-argentv",
       name: "TV Digital ArgenTV",
       category: "iptv",
-      badge: "EstÃ¡ndar / Full",
+      badge: "Estándar / Full",
       hasPlanSelector: true,
-      planOptions: ["EstÃ¡ndar", "Full"],
+      planOptions: ["Estándar", "Full"],
       planPricing: {
-        "EstÃ¡ndar": { cost: 4800, margin: 40, price: calcSalePrice(4800, 40) },
+        "Estándar": { cost: 4800, margin: 40, price: calcSalePrice(4800, 40) },
         "Full": { cost: 7520, margin: 40, price: calcSalePrice(7520, 40) }
       },
       costPrice: 4800,
       margin: 40,
       price: calcSalePrice(4800, 40),
-      period: "30 dÃ­as Â· 3 pantallas",
+      period: "30 días · 3 pantallas",
       icon: "Tv",
       gradient: "from-sky-500 to-indigo-700",
-      description: "ElegÃ­ el plan que mejor se adapte a vos: EstÃ¡ndar econÃ³mico o Full con catÃ¡logo expandido y mÃ¡xima potencia.",
+      description: "Elegí el plan que mejor se adapte a vos: Estándar económico o Full con catálogo expandido y máxima potencia.",
       benefits: [
-        "â± Entrega estimada: 1 a 12 hs",
-        "Selector de plan: EstÃ¡ndar o Full con grilla completa",
-        "3 pantallas simultÃ¡neas",
-        "FÃºtbol argentino en directo y seÃ±ales premium"
+        "⏱ Entrega estimada: 1 a 12 hs",
+        "Selector de plan: Estándar o Full con grilla completa",
+        "3 pantallas simultáneas",
+        "Fútbol argentino en directo y señales premium"
       ]
     },
     {
       id: "tv-digital-argentum",
       name: "TV Digital Argentum",
       category: "iptv",
-      badge: "3 Pantallas Â· Calidad Superior",
+      badge: "3 Pantallas · Calidad Superior",
       costPrice: 8000,
       margin: 40,
       price: calcSalePrice(8000, 40),
-      period: "30 dÃ­as Â· 3 pantallas",
+      period: "30 días · 3 pantallas",
       icon: "Monitor",
       gradient: "from-amber-600 to-orange-700",
       description: "Servidor premium de alta tasa de bits (bitrate) para quienes buscan nitidez visual impecable y respuesta inmediata.",
       benefits: [
-        "â± Entrega estimada: 2 a 6 hs",
-        "3 pantallas simultÃ¡neas",
-        "MÃ¡xima fidelidad de video en eventos deportivos",
+        "⏱ Entrega estimada: 2 a 6 hs",
+        "3 pantallas simultáneas",
+        "Máxima fidelidad de video en eventos deportivos",
         "Biblioteca de contenidos a demanda actualizada semanalmente"
       ]
     },
@@ -793,17 +777,17 @@ const CATALOG_CONFIG = {
       id: "iptv-flujo-tv",
       name: "IPTV Flujo TV",
       category: "iptv",
-      badge: "3 Pantallas Â· Premium Ultra",
+      badge: "3 Pantallas · Premium Ultra",
       costPrice: 9120,
       margin: 40,
       price: calcSalePrice(9120, 40),
-      period: "30 dÃ­as Â· 3 pantallas",
+      period: "30 días · 3 pantallas",
       icon: "Zap",
       gradient: "from-rose-600 to-red-800",
-      description: "La plataforma IPTV mÃ¡s robusta del mercado. Infraestructura de streaming avanzada diseÃ±ada para transmisiones deportivas sin lag ni congelamientos.",
+      description: "La plataforma IPTV más robusta del mercado. Infraestructura de streaming avanzada diseñada para transmisiones deportivas sin lag ni congelamientos.",
       benefits: [
-        "â± Entrega estimada: 1 a 12 hs",
-        "3 pantallas simultÃ¡neas con rendimiento tope de gama",
+        "⏱ Entrega estimada: 1 a 12 hs",
+        "3 pantallas simultáneas con rendimiento tope de gama",
         "Eventos deportivos internacionales y locales",
         "Soporte prioritario"
       ]
@@ -812,25 +796,25 @@ const CATALOG_CONFIG = {
       id: "pack-tv-digital-4-pantallas",
       name: "Pack TV Digital por Internet (4 Pantallas)",
       category: "iptv",
-      badge: "4 Pantallas Â· Multi-Servidor",
+      badge: "4 Pantallas · Multi-Servidor",
       hasPlanSelector: true,
-      planOptions: ["BÃ¡sico", "Plus", "Premium"],
+      planOptions: ["Básico", "Plus", "Premium"],
       planPricing: {
-        "BÃ¡sico": { cost: 4000, margin: 40, price: calcSalePrice(4000, 40) },
+        "Básico": { cost: 4000, margin: 40, price: calcSalePrice(4000, 40) },
         "Plus": { cost: 5120, margin: 40, price: calcSalePrice(5120, 40) },
         "Premium": { cost: 5600, margin: 40, price: calcSalePrice(5600, 40) }
       },
       costPrice: 4000,
       margin: 40,
       price: calcSalePrice(4000, 40),
-      period: "30 dÃ­as Â· 4 pantallas",
+      period: "30 días · 4 pantallas",
       icon: "Layers",
       gradient: "from-cyan-600 to-teal-700",
-      description: "La alternativa mÃ¡s completa para 4 pantallas familiares. ElegÃ­ entre variante BÃ¡sico, Plus o Premium segÃºn tus necesidades.",
+      description: "La alternativa más completa para 4 pantallas familiares. Elegí entre variante Básico, Plus o Premium según tus necesidades.",
       benefits: [
-        "â± Entrega rÃ¡pida: 30 min a 2 hs",
-        "4 pantallas en simultÃ¡neo para disfrutar en familia",
-        "Variantes de servidor: BÃ¡sico, Plus y Premium",
+        "⏱ Entrega rápida: 30 min a 2 hs",
+        "4 pantallas en simultáneo para disfrutar en familia",
+        "Variantes de servidor: Básico, Plus y Premium",
         "Canales en vivo, cine y series"
       ]
     },
@@ -842,33 +826,33 @@ const CATALOG_CONFIG = {
       costPrice: 6400,
       margin: 40,
       price: calcSalePrice(6400, 40),
-      period: "30 dÃ­as",
+      period: "30 días",
       icon: "Tv",
       gradient: "from-blue-600 to-sky-800",
       description: "La plataforma oficial de DirecTV con canales en directo, transmisiones de DSPORTS exclusivas y contenido on demand.",
       benefits: [
         "Transmisiones exclusivas de DSPORTS y eventos oficiales",
-        "GuÃ­a de televisiÃ³n interactiva y retroceso de programaciÃ³n",
-        "Compatible con Smart TVs, Chromecast y dispositivos mÃ³viles",
-        "ActivaciÃ³n rÃ¡pida con cuenta garantizada"
+        "Guía de televisión interactiva y retroceso de programación",
+        "Compatible con Smart TVs, Chromecast y dispositivos móviles",
+        "Activación rápida con cuenta garantizada"
       ]
     },
     {
       id: "mio-tv",
       name: "Mio TV",
       category: "iptv",
-      badge: "SeÃ±ales Digitales",
+      badge: "Señales Digitales",
       costPrice: 4800,
       margin: 40,
       price: calcSalePrice(4800, 40),
-      period: "30 dÃ­as",
+      period: "30 días",
       icon: "Monitor",
       gradient: "from-indigo-600 to-violet-800",
-      description: "SeÃ±ales digitales con servidores balanceados, grilla variada de entretenimiento y canales deportivos para disfrutar en casa.",
+      description: "Señales digitales con servidores balanceados, grilla variada de entretenimiento y canales deportivos para disfrutar en casa.",
       benefits: [
         "Grilla variada de canales nacionales e internacionales",
-        "Excelente fluidez en conexiones de internet estÃ¡ndar",
-        "FÃ¡cil configuraciÃ³n en cualquier Smart TV o TV Box",
+        "Excelente fluidez en conexiones de internet estándar",
+        "Fácil configuración en cualquier Smart TV o TV Box",
         "Soporte continuo durante todo el mes"
       ]
     },
@@ -880,20 +864,20 @@ const CATALOG_CONFIG = {
       costPrice: 4800,
       margin: 40,
       price: calcSalePrice(4800, 40),
-      period: "30 dÃ­as",
+      period: "30 días",
       icon: "Clapperboard",
       gradient: "from-amber-500 to-yellow-700",
-      description: "Acceso a servidores privados con catÃ¡logos masivos de pelÃ­culas en 4K/1080p, sagas completas y series actualizadas dÃ­a a dÃ­a.",
+      description: "Acceso a servidores privados con catálogos masivos de películas en 4K/1080p, sagas completas y series actualizadas día a día.",
       benefits: [
-        "Biblioteca masiva de pelÃ­culas y series sin cortes",
-        "Calidad cinematogrÃ¡fica con audio en espaÃ±ol y subtÃ­tulos",
-        "Interfaz idÃ©ntica a Netflix / plataformas premium",
-        "ReproducciÃ³n fluida desde cualquier dispositivo"
+        "Biblioteca masiva de películas y series sin cortes",
+        "Calidad cinematográfica con audio en español y subtítulos",
+        "Interfaz idéntica a Netflix / plataformas premium",
+        "Reproducción fluida desde cualquier dispositivo"
       ]
     },
 
     // --------------------------------------------------------------------------
-    // PILAR 5: CRECIMIENTO EN REDES (SMM) â€” SERVICIO BASE INTEGRADO
+    // PILAR 5: CRECIMIENTO EN REDES (SMM) — SERVICIO BASE INTEGRADO
     // --------------------------------------------------------------------------
     {
       id: "paquete-redes-smm",
@@ -908,12 +892,12 @@ const CATALOG_CONFIG = {
       period: "Servicio por entrega",
       icon: "TrendingUp",
       gradient: "from-pink-500 via-purple-600 to-indigo-600",
-      description: "ImpulsÃ¡ tu presencia digital. Seguidores, likes, vistas y reproducciones para Instagram, Facebook, TikTok, YouTube y WhatsApp sin pedir contraseÃ±as.",
+      description: "Impulsá tu presencia digital. Seguidores, likes, vistas y reproducciones para Instagram, Facebook, TikTok, YouTube y WhatsApp sin pedir contraseñas.",
       benefits: [
-        "100% seguro: solo con tu enlace o @usuario pÃºblico (sin contraseÃ±as)",
+        "100% seguro: solo con tu enlace o @usuario público (sin contraseñas)",
         "Opciones segmentadas: Seguidores Latinos, Argentinos o Globales",
-        "Vistas para Reels y Videos, Likes e interacciÃ³n real garantizada",
-        "ActivaciÃ³n gradual para proteger la reputaciÃ³n de tu cuenta"
+        "Vistas para Reels y Videos, Likes e interacción real garantizada",
+        "Activación gradual para proteger la reputación de tu cuenta"
       ]
     },
 
@@ -922,7 +906,7 @@ const CATALOG_CONFIG = {
     // --------------------------------------------------------------------------
     {
       id: "membresia-inicial-agencia-redes",
-      name: "MembresÃ­a Inicial â€” Panel Mayorista Propio",
+      name: "Membresía Inicial — Panel Mayorista Propio",
       category: "emprendimiento",
       badge: "Acceso Mayorista",
       costPrice: 25000,
@@ -933,18 +917,18 @@ const CATALOG_CONFIG = {
       gradient: "from-blue-600 via-indigo-600 to-cyan-500",
       description: "Acceso directo a tu propio panel de proveedor mayorista para revender streaming, TV digital, cuentas IA, internet y redes sociales con tus propios precios y ganancias.",
       benefits: [
-        "ðŸ”‘ Panel mayorista propio sin intermediarios",
-        "ðŸ’° ComprÃ¡ a costo neto y fijÃ¡ tus propios precios de venta",
-        "âš¡ Ganancias 100% tuyas directo a tu cuenta",
-        "ðŸ“± Plataforma web accesible desde celular, tablet o PC",
-        "ðŸ›¡ï¸ ActivaciÃ³n personalizada y segura vÃ­a WhatsApp"
+        "🔑 Panel mayorista propio sin intermediarios",
+        "💰 Comprá a costo neto y fijá tus propios precios de venta",
+        "⚡ Ganancias 100% tuyas directo a tu cuenta",
+        "📱 Plataforma web accesible desde celular, tablet o PC",
+        "🛡️ Activación personalizada y segura vía WhatsApp"
       ]
     },
     {
       id: "membresia-acelerador-agencia-redes",
-      name: "MembresÃ­a Acelerador â€” Panel + FormaciÃ³n + Grupo VIP",
+      name: "Membresía Acelerador — Panel + Formación + Grupo VIP",
       category: "emprendimiento",
-      badge: "Recomendado Â· MÃ¡s Completo",
+      badge: "Recomendado · Más Completo",
       highlight: true,
       costPrice: 45000,
       margin: 18,
@@ -952,24 +936,24 @@ const CATALOG_CONFIG = {
       period: "Acceso Completo + Comunidad",
       icon: "Flame",
       gradient: "from-amber-500 via-orange-600 to-red-600",
-      description: "La soluciÃ³n completa para arrancar a facturar rÃ¡pido con acompaÃ±amiento. Incluye el panel mayorista, curso intensivo paso a paso y comunidad activa.",
+      description: "La solución completa para arrancar a facturar rápido con acompañamiento. Incluye el panel mayorista, curso intensivo paso a paso y comunidad activa.",
       benefits: [
-        "ðŸŒŸ Todo lo incluido en la MembresÃ­a Inicial (Panel Mayorista propio)",
-        "ðŸŽ“ Curso intensivo paso a paso: cÃ³mo vender y conseguir clientes",
-        "ðŸ‘¥ Acceso exclusivo al Grupo Privado de WhatsApp de la comunidad",
-        "ðŸš€ Estrategias de venta comprobadas y acompaÃ±amiento continuo",
-        "âš¡ ActivaciÃ³n rÃ¡pida y soporte para arrancar sin trabas"
+        "🌟 Todo lo incluido en la Membresía Inicial (Panel Mayorista propio)",
+        "🎓 Curso intensivo paso a paso: cómo vender y conseguir clientes",
+        "👥 Acceso exclusivo al Grupo Privado de WhatsApp de la comunidad",
+        "🚀 Estrategias de venta comprobadas y acompañamiento continuo",
+        "⚡ Activación rápida y soporte para arrancar sin trabas"
       ]
     },
     {
       id: "clarita-la-cuenta-software",
-      name: "Clarita la Cuenta â€” Software de GestiÃ³n y Control",
+      name: "Clarita la Cuenta — Software de Gestión y Control",
       category: "emprendimiento",
       badge: "App Exclusiva",
       hasPlanSelector: true,
-      planOptions: ["Anual (1 AÃ±o)", "Vitalicia (De por Vida)"],
+      planOptions: ["Anual (1 Año)", "Vitalicia (De por Vida)"],
       planPricing: {
-        "Anual (1 AÃ±o)": { cost: 35000, margin: 57, price: 54900 },
+        "Anual (1 Año)": { cost: 35000, margin: 57, price: 54900 },
         "Vitalicia (De por Vida)": { cost: 55000, margin: 54, price: 84900 }
       },
       costPrice: 35000,
@@ -979,39 +963,39 @@ const CATALOG_CONFIG = {
       icon: "Sliders",
       gradient: "from-purple-600 via-indigo-600 to-cyan-500",
       demoUrl: "https://clarita-la-cuenta.netlify.app/",
-      description: "El software definitivo para revendedores de cuentas. LlevÃ¡ el control de tus clientes, llaves de acceso, servicios contratados y fechas de cobro sin planillas complejas.",
+      description: "El software definitivo para revendedores de cuentas. Llevá el control de tus clientes, llaves de acceso, servicios contratados y fechas de cobro sin planillas complejas.",
       benefits: [
-        "ðŸ“‹ Base de datos ordenada de todos tus clientes y servicios",
-        "â° Control de fechas de vencimiento y alertas de cobro",
-        "ðŸ’¬ Registro de consultas y soporte por cliente",
-        "â˜ï¸ 100% web, liviana, rÃ¡pida y segura en cualquier dispositivo",
-        "ðŸ‘ï¸ Incluye acceso a Demo en vivo para probar antes de comprar"
+        "📋 Base de datos ordenada de todos tus clientes y servicios",
+        "⏰ Control de fechas de vencimiento y alertas de cobro",
+        "💬 Registro de consultas y soporte por cliente",
+        "☁️ 100% web, liviana, rápida y segura en cualquier dispositivo",
+        "👁️ Incluye acceso a Demo en vivo para probar antes de comprar"
       ]
     },
     {
       id: "pack-emprendedor-total",
       name: "Pack Emprendedor Total (Acelerador + Clarita la Cuenta)",
       category: "emprendimiento",
-      badge: "Mega Combo Â· Ahorro .900",
+      badge: "Mega Combo · Ahorro .900",
       highlight: true,
       costPrice: 70000,
       margin: 28,
       price: 89900,
-      period: "Panel + FormaciÃ³n + Software",
+      period: "Panel + Formación + Software",
       icon: "Sparkles",
       gradient: "from-cyan-500 via-purple-600 to-pink-500",
       description: "El paquete llave en mano definitivo para lanzar tu negocio digital: Panel mayorista + Curso + Grupo de WhatsApp + Software Clarita la Cuenta (Licencia Anual).",
       benefits: [
-        "ðŸš€ MembresÃ­a Acelerador completa (Panel + Curso + Grupo VIP)",
-        "ðŸ’» Clarita la Cuenta Software (Licencia Anual incluida)",
-        "ðŸ’° Ahorro de .900 comprando el combo conjunto",
-        "âš¡ Todo lo necesario para vender, cobrar y gestionar desde el dÃ­a 1",
-        "ðŸ›¡ï¸ Asesoramiento y activaciÃ³n guiada por WhatsApp"
+        "🚀 Membresía Acelerador completa (Panel + Curso + Grupo VIP)",
+        "💻 Clarita la Cuenta Software (Licencia Anual incluida)",
+        "💰 Ahorro de .900 comprando el combo conjunto",
+        "⚡ Todo lo necesario para vender, cobrar y gestionar desde el día 1",
+        "🛡️ Asesoramiento y activación guiada por WhatsApp"
       ]
     },
 
     // --------------------------------------------------------------------------
-    // PILAR 7: ZONA GAMER â€” PS4, PS5, PS3 & PC (BLOQUE A: PACKS Y EMULADORES)
+    // PILAR 7: ZONA GAMER — PS4, PS5, PS3 & PC (BLOQUE A: PACKS Y EMULADORES)
     // --------------------------------------------------------------------------
     {
       id: "combo-gamer-bronce",
@@ -1051,12 +1035,12 @@ const CATALOG_CONFIG = {
       period: "Cuenta Primaria Permanente",
       icon: "Gamepad2",
       gradient: "from-amber-700 via-orange-800 to-amber-950",
-      description: "ElegÃ­ 2 juegazos de la lista para jugar desde tu propio usuario de PlayStation. Trofeos, guardado y multijugador online intactos.",
+      description: "Elegí 2 juegazos de la lista para jugar desde tu propio usuario de PlayStation. Trofeos, guardado y multijugador online intactos.",
       benefits: [
-        "ðŸŽ® 2 Juegos a elecciÃ³n de una lista de 23 tÃ­tulos destacados",
-        "ðŸ”‘ Cuenta Primaria original: jugÃ¡s desde tu perfil personal",
-        "ðŸ† Trofeos oficiales y juego en lÃ­nea habilitado",
-        "ðŸ›¡ï¸ GarantÃ­a de activaciÃ³n y soporte permanente"
+        "🎮 2 Juegos a elección de una lista de 23 títulos destacados",
+        "🔑 Cuenta Primaria original: jugás desde tu perfil personal",
+        "🏆 Trofeos oficiales y juego en línea habilitado",
+        "🛡️ Garantía de activación y soporte permanente"
       ]
     },
     {
@@ -1102,19 +1086,19 @@ const CATALOG_CONFIG = {
       period: "Cuenta Primaria Permanente",
       icon: "Gamepad2",
       gradient: "from-slate-400 via-zinc-600 to-slate-800",
-      description: "AccedÃ© a 2 tÃ­tulos de primer nivel entre 28 juegos aclamados (Hogwarts Legacy, Mafia, Star Wars, Resident Evil y mÃ¡s).",
+      description: "Accedé a 2 títulos de primer nivel entre 28 juegos aclamados (Hogwarts Legacy, Mafia, Star Wars, Resident Evil y más).",
       benefits: [
-        "ðŸŽ® 2 Juegos a elecciÃ³n entre 28 tÃ­tulos de gran calibre",
-        "ðŸ”‘ Cuenta Primaria 100% original en tu consola",
-        "ðŸ† JugÃ¡s desde tu usuario propio con trofeos",
-        "âš¡ Entrega rÃ¡pida con instructivo paso a paso"
+        "🎮 2 Juegos a elección entre 28 títulos de gran calibre",
+        "🔑 Cuenta Primaria 100% original en tu consola",
+        "🏆 Jugás desde tu usuario propio con trofeos",
+        "⚡ Entrega rápida con instructivo paso a paso"
       ]
     },
     {
       id: "combo-gamer-oro",
       name: "Combo Gamer Oro (2 Juegos PS4/PS5)",
       category: "zona-gamer",
-      badge: "Promo Oro ðŸ”¥",
+      badge: "Promo Oro 🔥",
       highlight: true,
       costPrice: 25000,
       margin: 0,
@@ -1153,12 +1137,12 @@ const CATALOG_CONFIG = {
       period: "Cuenta Primaria Permanente",
       icon: "Gamepad2",
       gradient: "from-yellow-500 via-amber-600 to-yellow-800",
-      description: "El combo definitivo con los juegos mÃ¡s taquilleros: Spider-Man, God of War, Resident Evil, Dying Light 2, Tekken 7 y mÃ¡s.",
+      description: "El combo definitivo con los juegos más taquilleros: Spider-Man, God of War, Resident Evil, Dying Light 2, Tekken 7 y más.",
       benefits: [
-        "ðŸŽ® 2 Juegos top a elecciÃ³n entre 27 joyas de los videojuegos",
-        "ðŸ”‘ Cuenta Primaria permanente para tu PS4 o PS5",
-        "ðŸ† Guardado en la nube de tu perfil y trofeos personales",
-        "ðŸ›¡ï¸ GarantÃ­a total anti-bloqueos"
+        "🎮 2 Juegos top a elección entre 27 joyas de los videojuegos",
+        "🔑 Cuenta Primaria permanente para tu PS4 o PS5",
+        "🏆 Guardado en la nube de tu perfil y trofeos personales",
+        "🛡️ Garantía total anti-bloqueos"
       ]
     },
     {
@@ -1173,17 +1157,17 @@ const CATALOG_CONFIG = {
       period: "Acceso Permanente",
       icon: "Cpu",
       gradient: "from-cyan-600 to-blue-900",
-      description: "Sistema de descarga desde la nube para PC (descargÃ¡s solo el juego que querÃ©s jugar sin llenar el disco duro). Incluye multijugador online Netplay y guÃ­a paso a paso.",
+      description: "Sistema de descarga desde la nube para PC (descargás solo el juego que querés jugar sin llenar el disco duro). Incluye multijugador online Netplay y guía paso a paso.",
       benefits: [
-        "ðŸ•¹ï¸ Consolas: PS1, PS2, PS3, PS4, Xbox, Xbox 360, Xbox One, Neo Geo, Nintendo DS y mÃ¡s",
-        "ðŸŒ Modo multijugador online Netplay para jugar con amigos a distancia",
-        "â˜ï¸ Descarga bajo demanda: jugÃ¡s sin ocupar espacio innecesario en disco",
-        "ðŸ“¹ GuÃ­a escrita y video tutorial paso a paso incluido"
+        "🕹️ Consolas: PS1, PS2, PS3, PS4, Xbox, Xbox 360, Xbox One, Neo Geo, Nintendo DS y más",
+        "🌐 Modo multijugador online Netplay para jugar con amigos a distancia",
+        "☁️ Descarga bajo demanda: jugás sin ocupar espacio innecesario en disco",
+        "📹 Guía escrita y video tutorial paso a paso incluido"
       ]
     },
     {
       id: "pack-retro-ps3",
-      name: "Pack Retro PS3 â€” Promo 3 Juegos a ElecciÃ³n",
+      name: "Pack Retro PS3 — Promo 3 Juegos a Elección",
       category: "zona-gamer",
       badge: "+340 Juegos PS3",
       costPrice: 10000,
@@ -1194,17 +1178,17 @@ const CATALOG_CONFIG = {
       period: "Cuenta Primaria Permanente",
       icon: "Gamepad2",
       gradient: "from-indigo-600 to-purple-900",
-      description: "ElegÃ­ 3 juegos completos de PlayStation 3 entre mÃ¡s de 340 tÃ­tulos legendarios disponibles para descargar directamente.",
+      description: "Elegí 3 juegos completos de PlayStation 3 entre más de 340 títulos legendarios disponibles para descargar directamente.",
       benefits: [
-        "ðŸŽ® 3 juegos a elecciÃ³n de una biblioteca de +340 tÃ­tulos de PS3",
-        "ðŸ”‘ InstalaciÃ³n directa en tu consola (digital primaria)",
-        "ðŸ† Trofeos, guardado y juego desde tu perfil personal",
-        "ðŸ›¡ï¸ Soporte y asesoramiento para la descarga"
+        "🎮 3 juegos a elección de una biblioteca de +340 títulos de PS3",
+        "🔑 Instalación directa en tu consola (digital primaria)",
+        "🏆 Trofeos, guardado y juego desde tu perfil personal",
+        "🛡️ Soporte y asesoramiento para la descarga"
       ]
     },
     {
       id: "pack-futbol-android-offline",
-      name: "Pack FÃºtbol Android Offline + Dragon Ball Sparking! Zero MOD",
+      name: "Pack Fútbol Android Offline + Dragon Ball Sparking! Zero MOD",
       category: "zona-gamer",
       badge: "Juegos Celular Offline",
       costPrice: 0,
@@ -1213,31 +1197,31 @@ const CATALOG_CONFIG = {
       period: "Descarga Directa Vitalicia",
       icon: "Smartphone",
       gradient: "from-emerald-600 to-teal-900",
-      description: "Para jugar en tu celular Android sin conexiÃ³n a internet ni gastar datos. Incluye los mejores emuladores y MODs actualizados.",
+      description: "Para jugar en tu celular Android sin conexión a internet ni gastar datos. Incluye los mejores emuladores y MODs actualizados.",
       benefits: [
-        "ðŸ“± Emulador PPSSPP Gold configurado al mÃ¡ximo rendimiento",
-        "âš½ EA Sports FC 25 Offline y PES 2024 Season Update (CÃ¡mara PS5 HD)",
-        "ðŸ”¥ PES 2023, Football League 2024, FIFA Street 2 MOD y PES 2014",
-        "ðŸ’¥ Dragon Ball: Sparking! ZERO MOD en EspaÃ±ol con video tutorial"
+        "📱 Emulador PPSSPP Gold configurado al máximo rendimiento",
+        "⚽ EA Sports FC 25 Offline y PES 2024 Season Update (Cámara PS5 HD)",
+        "🔥 PES 2023, Football League 2024, FIFA Street 2 MOD y PES 2014",
+        "💥 Dragon Ball: Sparking! ZERO MOD en Español con video tutorial"
       ]
     },
     {
       id: "kit-liberacion-consolas",
-      name: "Kit LiberaciÃ³n Consolas (PS3 HEN / Xbox 360) + BÃ³veda +300 Juegos",
+      name: "Kit Liberación Consolas (PS3 HEN / Xbox 360) + Bóveda +300 Juegos",
       category: "zona-gamer",
-      badge: "GuÃ­a + BÃ³veda USB",
+      badge: "Guía + Bóveda USB",
       costPrice: 0,
       margin: 100,
       price: 8500,
-      period: "GuÃ­a + BÃ³veda Completa",
+      period: "Guía + Bóveda Completa",
       icon: "HardDrive",
       gradient: "from-purple-600 to-violet-950",
-      description: "Kit completo con video tutorial, firmware y herramientas para liberar tu PS3 o Xbox 360 por USB, mÃ¡s acceso a bibliotecas masivas.",
+      description: "Kit completo con video tutorial, firmware y herramientas para liberar tu PS3 o Xbox 360 por USB, más acceso a bibliotecas masivas.",
       benefits: [
-        "ðŸ”§ PS3 HEN 4.92 / Xbox 360 USB paso a paso con video explicativo",
-        "ðŸ“¦ BÃ³veda privada con +300 juegos de PS3 listos para descargar",
-        "ðŸ‘¾ ColecciÃ³n retro de regalo con mÃ¡s de 25.000 juegos clÃ¡sicos",
-        "ðŸ›¡ï¸ 100% seguro sin riesgo de baneo"
+        "🔧 PS3 HEN 4.92 / Xbox 360 USB paso a paso con video explicativo",
+        "📦 Bóveda privada con +300 juegos de PS3 listos para descargar",
+        "👾 Colección retro de regalo con más de 25.000 juegos clásicos",
+        "🛡️ 100% seguro sin riesgo de baneo"
       ]
     },
 
@@ -1246,9 +1230,9 @@ const CATALOG_CONFIG = {
     // --------------------------------------------------------------------------
     {
       id: "mega-pack-vip-boveda",
-      name: "Pase VIP BÃ³veda Total Sonri (+14 TB Todo Incluido)",
+      name: "Pase VIP Bóveda Total Sonri (+14 TB Todo Incluido)",
       category: "mega-packs",
-      badge: "OFERTA ESTRELLA ðŸ”¥",
+      badge: "OFERTA ESTRELLA 🔥",
       highlight: true,
       costPrice: 0,
       margin: 100,
@@ -1256,33 +1240,33 @@ const CATALOG_CONFIG = {
       period: "Acceso Vitalicio (+14 TB)",
       icon: "FolderArchive",
       gradient: "from-cyan-500 via-purple-600 to-pink-500",
-      description: "Acceso ilimitado y de por vida a la bÃ³veda mÃ¡s grande de la web: +14 Terabytes de formaciÃ³n, software, cursos, libros y recursos de todas las categorÃ­as.",
+      description: "Acceso ilimitado y de por vida a la bóveda más grande de la web: +14 Terabytes de formación, software, cursos, libros y recursos de todas las categorías.",
       benefits: [
-        "ColecciÃ³n completa de 81 Mega Packs temÃ¡ticos organizados",
-        "MÃ¡s de 300.000 cursos profesionales en video HD paso a paso",
-        "DiseÃ±o grÃ¡fico, ediciÃ³n de video, 3D, VFX y sublimaciÃ³n",
-        "ProgramaciÃ³n Full Stack, desarrollo de apps mÃ³viles, Python e IA",
-        "Academia de oficios tÃ©cnicos con salida laboral inmediata",
+        "Colección completa de 81 Mega Packs temáticos organizados",
+        "Más de 300.000 cursos profesionales en video HD paso a paso",
+        "Diseño gráfico, edición de video, 3D, VFX y sublimación",
+        "Programación Full Stack, desarrollo de apps móviles, Python e IA",
+        "Academia de oficios técnicos con salida laboral inmediata",
         "Negocios digitales, marketing de afiliados, e-commerce y trading",
-        "Idiomas polÃ­glota: InglÃ©s sin Barreras, AlemÃ¡n, Chino, Coreano y Ruso",
+        "Idiomas políglota: Inglés sin Barreras, Alemán, Chino, Coreano y Ruso",
         "Biblioteca universal: +15.000 libros PDF/EPUB y +1.800 audiolibros",
-        "Bonus: CÃ³mics Marvel/DC, historietas retro y +25.000 juegos clÃ¡sicos",
+        "Bonus: Cómics Marvel/DC, historietas retro y +25.000 juegos clásicos",
         "Canales VIP privados con soporte y actualizaciones permanentes"
       ],
       syllabus: [
-        "MÃ³dulo 1: BÃ³veda Central con la ColecciÃ³n de 81 Mega Packs TemÃ¡ticos",
-        "MÃ³dulo 2: Academia de ProgramaciÃ³n Full Stack, Python, Apps MÃ³viles, IA y Cloud",
-        "MÃ³dulo 3: BÃ³veda de DiseÃ±o GrÃ¡fico, EdiciÃ³n de Video (Premiere, After Effects, CapCut), VFX y SublimaciÃ³n",
-        "MÃ³dulo 4: Academia de Oficios TÃ©cnicos (Celulares, RefrigeraciÃ³n, Electricidad, MecÃ¡nica, Consolas)",
-        "MÃ³dulo 5: Negocios, E-commerce, Embudos de Venta, Marketing Digital y los 5 Cursos de Trading",
-        "MÃ³dulo 6: Idiomas PolÃ­glota (InglÃ©s sin Barreras, AlemÃ¡n, Chino MandarÃ­n, Coreano, Ruso)",
-        "MÃ³dulo 7: Biblioteca Digital Masiva (+15.000 Libros y +1.800 Audiolibros en EspaÃ±ol)",
-        "MÃ³dulo 8: MÃºsica, Guitarras, ProducciÃ³n Musical DJ, Cine Latino y CÃ³mics de Marvel/DC"
+        "Módulo 1: Bóveda Central con la Colección de 81 Mega Packs Temáticos",
+        "Módulo 2: Academia de Programación Full Stack, Python, Apps Móviles, IA y Cloud",
+        "Módulo 3: Bóveda de Diseño Gráfico, Edición de Video (Premiere, After Effects, CapCut), VFX y Sublimación",
+        "Módulo 4: Academia de Oficios Técnicos (Celulares, Refrigeración, Electricidad, Mecánica, Consolas)",
+        "Módulo 5: Negocios, E-commerce, Embudos de Venta, Marketing Digital y los 5 Cursos de Trading",
+        "Módulo 6: Idiomas Políglota (Inglés sin Barreras, Alemán, Chino Mandarín, Coreano, Ruso)",
+        "Módulo 7: Biblioteca Digital Masiva (+15.000 Libros y +1.800 Audiolibros en Español)",
+        "Módulo 8: Música, Guitarras, Producción Musical DJ, Cine Latino y Cómics de Marvel/DC"
       ]
     },
     {
       id: "mega-pack-diseno-grafico",
-      name: "Mega Pack DiseÃ±ador GrÃ¡fico, EdiciÃ³n & SublimaciÃ³n",
+      name: "Mega Pack Diseñador Gráfico, Edición & Sublimación",
       category: "mega-packs",
       badge: "+3 Terabytes",
       costPrice: 0,
@@ -1291,59 +1275,59 @@ const CATALOG_CONFIG = {
       period: "Descarga Vitalicia",
       icon: "Palette",
       gradient: "from-pink-500 via-purple-600 to-indigo-700",
-      description: "El arsenal definitivo para diseÃ±adores, editores y talleres de sublimaciÃ³n. Recursos premium listos para usar en tus proyectos o clientes.",
+      description: "El arsenal definitivo para diseñadores, editores y talleres de sublimación. Recursos premium listos para usar en tus proyectos o clientes.",
       benefits: [
-        "+25.000 fuentes tipogrÃ¡ficas premium para todo tipo de marcas",
+        "+25.000 fuentes tipográficas premium para todo tipo de marcas",
         "+1.000 flyers publicitarios 100% editables en Photoshop y Canva",
-        "Mockups hiperrealistas de indumentaria, cartelerÃ­a y papelerÃ­a",
-        "+25.000 estampas, vectores y diseÃ±os listos para tazas y remeras",
+        "Mockups hiperrealistas de indumentaria, cartelería y papelería",
+        "+25.000 estampas, vectores y diseños listos para tazas y remeras",
         "Plantillas y efectos para After Effects, Premiere Pro y CapCut PC",
         "Cursos completos desde cero de Canva Pro, Photoshop, Illustrator y Premiere"
       ],
       syllabus: [
-        "MÃ³dulo TipografÃ­as: +25.000 fuentes clasificadas (Serif, Sans, CaligrÃ¡ficas, Display)",
-        "MÃ³dulo Redes Sociales: +1.000 flyers y plantillas editables para Instagram y Facebook",
-        "MÃ³dulo SublimaciÃ³n & Estampado: +25.000 vectores listos para imprimir en remeras, tazas y gorras",
-        "MÃ³dulo Mockups: Presentaciones fotogrÃ¡ficas de alta gama para productos y marcas",
-        "MÃ³dulo Video & Motion Graphics: Transiciones, overlays y proyectos editables para After Effects y Premiere",
-        "MÃ³dulo Cursos: FormaciÃ³n en Photoshop, Illustrator, Premiere Pro y diseÃ±o en Canva"
+        "Módulo Tipografías: +25.000 fuentes clasificadas (Serif, Sans, Caligráficas, Display)",
+        "Módulo Redes Sociales: +1.000 flyers y plantillas editables para Instagram y Facebook",
+        "Módulo Sublimación & Estampado: +25.000 vectores listos para imprimir en remeras, tazas y gorras",
+        "Módulo Mockups: Presentaciones fotográficas de alta gama para productos y marcas",
+        "Módulo Video & Motion Graphics: Transiciones, overlays y proyectos editables para After Effects y Premiere",
+        "Módulo Cursos: Formación en Photoshop, Illustrator, Premiere Pro y diseño en Canva"
       ]
     },
     {
       id: "mega-pack-oficios-reparacion",
-      name: "Academia de Oficios con Salida Laboral, ReparaciÃ³n y GastronomÃ­a",
+      name: "Academia de Oficios con Salida Laboral, Reparación y Gastronomía",
       category: "mega-packs",
-      badge: "Salida Laboral RÃ¡pida",
+      badge: "Salida Laboral Rápida",
       costPrice: 0,
       margin: 100,
       price: 6900,
-      period: "FormaciÃ³n Vitalicia",
+      period: "Formación Vitalicia",
       icon: "Briefcase",
       gradient: "from-amber-500 via-orange-600 to-red-700",
-      description: "AprendÃ© oficios altamente demandados para generar ingresos inmediatos prestando servicios tÃ©cnicos o iniciando tu propio taller.",
+      description: "Aprendé oficios altamente demandados para generar ingresos inmediatos prestando servicios técnicos o iniciando tu propio taller.",
       benefits: [
-        "ReparaciÃ³n de celulares y tablets (hardware, pantallas, microsoldadura y software)",
-        "ReparaciÃ³n y mantenimiento de notebooks y computadoras de escritorio (PC)",
-        "Servicio tÃ©cnico de consolas (PlayStation 1, 2, 3, 4 y consolas Nintendo)",
-        "LÃ­nea blanca: ReparaciÃ³n de heladeras, aires acondicionados, lavarropas y microondas",
-        "Instalaciones elÃ©ctricas domiciliarias, energÃ­a solar y plomerÃ­a moderna",
-        "+200 planos detallados para construcciÃ³n de muebles en melamina y madera",
-        "Costura, crochet, resina epoxi, barberÃ­a profesional y gastronomÃ­a artesanal"
+        "Reparación de celulares y tablets (hardware, pantallas, microsoldadura y software)",
+        "Reparación y mantenimiento de notebooks y computadoras de escritorio (PC)",
+        "Servicio técnico de consolas (PlayStation 1, 2, 3, 4 y consolas Nintendo)",
+        "Línea blanca: Reparación de heladeras, aires acondicionados, lavarropas y microondas",
+        "Instalaciones eléctricas domiciliarias, energía solar y plomería moderna",
+        "+200 planos detallados para construcción de muebles en melamina y madera",
+        "Costura, crochet, resina epoxi, barbería profesional y gastronomía artesanal"
       ],
       syllabus: [
-        "Taller de TelefonÃ­a MÃ³vil: Desarme, cambio de mÃ³dulos, diagnÃ³stico con tester y software",
-        "Taller de InformÃ¡tica: Mantenimiento preventivo, armado de PC gamer y reparaciÃ³n de notebooks",
-        "Servicio TÃ©cnico de Consolas: Mantenimiento, reemplazo de lectores, pasta tÃ©rmica y chipeo",
-        "RefrigeraciÃ³n & ClimatizaciÃ³n: Carga de gas, diagnÃ³stico de compresores e instalaciÃ³n de Split",
-        "LÃ­nea Blanca del Hogar: ReparaciÃ³n de lavarropas automÃ¡ticos, microondas y hornos elÃ©ctricos",
-        "Electricidad Domiciliaria & Paneles Solares: Circuitos seguros y energÃ­as renovables",
-        "CarpinterÃ­a & Melamina: +200 planos con despiece para armar cocinas, placares y escritorios",
-        "Oficios Creativos & BarberÃ­a: Resina epoxi para mesas, barberÃ­a moderna y gastronomÃ­a"
+        "Taller de Telefonía Móvil: Desarme, cambio de módulos, diagnóstico con tester y software",
+        "Taller de Informática: Mantenimiento preventivo, armado de PC gamer y reparación de notebooks",
+        "Servicio Técnico de Consolas: Mantenimiento, reemplazo de lectores, pasta térmica y chipeo",
+        "Refrigeración & Climatización: Carga de gas, diagnóstico de compresores e instalación de Split",
+        "Línea Blanca del Hogar: Reparación de lavarropas automáticos, microondas y hornos eléctricos",
+        "Electricidad Domiciliaria & Paneles Solares: Circuitos seguros y energías renovables",
+        "Carpintería & Melamina: +200 planos con despiece para armar cocinas, placares y escritorios",
+        "Oficios Creativos & Barbería: Resina epoxi para mesas, barbería moderna y gastronomía"
       ]
     },
     {
       id: "mega-pack-programacion-ia",
-      name: "Mega Pack ProgramaciÃ³n, IA, Office y Arquitectura (AutoCAD/BIM)",
+      name: "Mega Pack Programación, IA, Office y Arquitectura (AutoCAD/BIM)",
       category: "mega-packs",
       badge: "Tech & Arquitectura",
       costPrice: 0,
@@ -1352,23 +1336,23 @@ const CATALOG_CONFIG = {
       period: "Acceso Completo",
       icon: "Cpu",
       gradient: "from-cyan-500 via-blue-600 to-indigo-800",
-      description: "FormaciÃ³n de nivel profesional en desarrollo de software, inteligencia artificial, herramientas corporativas y diseÃ±o arquitectÃ³nico.",
+      description: "Formación de nivel profesional en desarrollo de software, inteligencia artificial, herramientas corporativas y diseño arquitectónico.",
       benefits: [
-        "ProgramaciÃ³n Full Stack: Python desde cero, JavaScript, React, Node.js",
+        "Programación Full Stack: Python desde cero, JavaScript, React, Node.js",
         "Lenguajes de alta demanda: Java, C++, Linux avanzado, MySQL y PostgreSQL",
-        "Big Data, DevOps, Docker y selecciÃ³n de cursos premium de Platzi",
-        "CreaciÃ³n de aplicaciones para Android e Inteligencia Artificial con ChatGPT",
-        "OfimÃ¡tica Corporativa: Excel avanzado con macros, Word y PowerPoint",
-        "Arquitectura e IngenierÃ­a: Cursos e instalador de AutoCAD 2021, Archicad, Tekla e Infraworks"
+        "Big Data, DevOps, Docker y selección de cursos premium de Platzi",
+        "Creación de aplicaciones para Android e Inteligencia Artificial con ChatGPT",
+        "Ofimática Corporativa: Excel avanzado con macros, Word y PowerPoint",
+        "Arquitectura e Ingeniería: Cursos e instalador de AutoCAD 2021, Archicad, Tekla e Infraworks"
       ],
       syllabus: [
         "Ruta Full Stack: HTML5, CSS3, JavaScript moderno, React y desarrollo web responsivo",
-        "Ruta Backend & Python: Python de cero a avanzado, lÃ³gica de algoritmos, APIs y automatizaciÃ³n",
-        "Bases de Datos & Cloud: Modelado relacional en MySQL, administraciÃ³n de servidores Linux y Docker",
-        "Desarrollo MÃ³vil: CreaciÃ³n de apps para Android con interfaces modernas",
+        "Ruta Backend & Python: Python de cero a avanzado, lógica de algoritmos, APIs y automatización",
+        "Bases de Datos & Cloud: Modelado relacional en MySQL, administración de servidores Linux y Docker",
+        "Desarrollo Móvil: Creación de apps para Android con interfaces modernas",
         "Inteligencia Artificial: Prompt engineering con ChatGPT, Claude, Midjourney y automatizaciones",
-        "Master en Microsoft Office: Excel para finanzas, macros, tablas dinÃ¡micas y anÃ¡lisis de datos",
-        "Arquitectura e IngenierÃ­a CAD/BIM: Cursos e instaladores de AutoCAD, Archicad e Infraworks"
+        "Master en Microsoft Office: Excel para finanzas, macros, tablas dinámicas y análisis de datos",
+        "Arquitectura e Ingeniería CAD/BIM: Cursos e instaladores de AutoCAD, Archicad e Infraworks"
       ]
     },
     {
@@ -1382,27 +1366,27 @@ const CATALOG_CONFIG = {
       period: "Acceso Permanente",
       icon: "TrendingUp",
       gradient: "from-emerald-500 via-teal-600 to-blue-700",
-      description: "Todo el conocimiento estratÃ©gico para fundar tu negocio, vender por internet de forma rentable y dominar las inversiones en los mercados financieros.",
+      description: "Todo el conocimiento estratégico para fundar tu negocio, vender por internet de forma rentable y dominar las inversiones en los mercados financieros.",
       benefits: [
-        "Pack Emprender: GuÃ­as legales, estructura empresarial y modelos escalables",
+        "Pack Emprender: Guías legales, estructura empresarial y modelos escalables",
         "Biblioteca de +620 libros fundamentales para emprendedores y finanzas",
         "17 cursos completos de Marketing Digital y pauta publicitaria en Meta Ads",
-        "WhatsApp Marketing y automatizaciÃ³n de embudos de ventas (Funnels)",
+        "WhatsApp Marketing y automatización de embudos de ventas (Funnels)",
         "E-commerce profesional, tiendas online y modelos de Dropshipping",
-        "5 cursos completos de Trading: IntroducciÃ³n, Borjatube, DTA y Plan de Trading"
+        "5 cursos completos de Trading: Introducción, Borjatube, DTA y Plan de Trading"
       ],
       syllabus: [
-        "MÃ³dulo CreaciÃ³n de Negocios: ValidaciÃ³n de ideas, costos, margen y formalizaciÃ³n comercial",
-        "MÃ³dulo Biblioteca Emprendedora: +620 tÃ­tulos clave de ventas, persuasiÃ³n y finanzas",
-        "MÃ³dulo Marketing Digital: 17 cursos completos de Meta Ads, Instagram Ads y Google Ads",
-        "MÃ³dulo Embudos & WhatsApp: Mensajes de cierre de ventas, catÃ¡logos y automatizaciÃ³n",
-        "MÃ³dulo E-commerce: Tiendas virtuales, pasarelas de pago y logÃ­stica de entrega",
-        "MÃ³dulo Trading Profesional: Los 5 cursos completos de anÃ¡lisis tÃ©cnico y gestiÃ³n de riesgo"
+        "Módulo Creación de Negocios: Validación de ideas, costos, margen y formalización comercial",
+        "Módulo Biblioteca Emprendedora: +620 títulos clave de ventas, persuasión y finanzas",
+        "Módulo Marketing Digital: 17 cursos completos de Meta Ads, Instagram Ads y Google Ads",
+        "Módulo Embudos & WhatsApp: Mensajes de cierre de ventas, catálogos y automatización",
+        "Módulo E-commerce: Tiendas virtuales, pasarelas de pago y logística de entrega",
+        "Módulo Trading Profesional: Los 5 cursos completos de análisis técnico y gestión de riesgo"
       ]
     },
     {
       id: "mega-pack-idiomas-poliglota",
-      name: "Pack Idiomas PolÃ­glota (InglÃ©s, AlemÃ¡n, Coreano, Chino y Ruso)",
+      name: "Pack Idiomas Políglota (Inglés, Alemán, Coreano, Chino y Ruso)",
       category: "mega-packs",
       badge: "5 Idiomas Clave",
       costPrice: 0,
@@ -1411,22 +1395,22 @@ const CATALOG_CONFIG = {
       period: "Acceso Vitalicio",
       icon: "Sparkles",
       gradient: "from-sky-500 via-indigo-600 to-purple-700",
-      description: "DominÃ¡ los idiomas mÃ¡s hablados y demandados del mundo con mÃ©todos prÃ¡cticos, audio inmersivo y guÃ­as interactivas.",
+      description: "Dominá los idiomas más hablados y demandados del mundo con métodos prácticos, audio inmersivo y guías interactivas.",
       benefits: [
-        "InglÃ©s intensivo desde nivel bÃ¡sico hasta conversacional fluido",
-        "ColecciÃ³n oficial completa: Los 4 manuales interactivos de 'InglÃ©s sin Barreras'",
-        "GuÃ­as de gramÃ¡tica prÃ¡ctica, vocabulario cotidiano y diÃ¡logos de la vida real",
-        "Cursos completos de AlemÃ¡n desde cero con ejercicios auditivos",
-        "Curso de Coreano para principiantes y fanÃ¡ticos de los K-Dramas",
-        "GuÃ­a fonÃ©tica de Chino MandarÃ­n y manual de iniciaciÃ³n al Ruso"
+        "Inglés intensivo desde nivel básico hasta conversacional fluido",
+        "Colección oficial completa: Los 4 manuales interactivos de 'Inglés sin Barreras'",
+        "Guías de gramática práctica, vocabulario cotidiano y diálogos de la vida real",
+        "Cursos completos de Alemán desde cero con ejercicios auditivos",
+        "Curso de Coreano para principiantes y fanáticos de los K-Dramas",
+        "Guía fonética de Chino Mandarín y manual de iniciación al Ruso"
       ],
       syllabus: [
-        "InglÃ©s sin Barreras: Los 4 manuales interactivos con audio y cuadernos de trabajo",
-        "InglÃ©s Conversacional: Expresiones idiomÃ¡ticas, pronunciaciÃ³n nativa y entrevistas laborales",
-        "AlemÃ¡n A1 a B2: Vocabulario esencial, declinaciones y comprensiÃ³n auditiva",
-        "Coreano PrÃ¡ctico: Aprendizaje del alfabeto Hangul, gramÃ¡tica y frases de uso diario",
-        "Chino MandarÃ­n: Sistema Pinyin, tonos de pronunciaciÃ³n y caracteres bÃ¡sicos",
-        "Ruso Elemental: Alfabeto cirÃ­lico, fonÃ©tica y guÃ­a conversacional para viajeros"
+        "Inglés sin Barreras: Los 4 manuales interactivos con audio y cuadernos de trabajo",
+        "Inglés Conversacional: Expresiones idiomáticas, pronunciación nativa y entrevistas laborales",
+        "Alemán A1 a B2: Vocabulario esencial, declinaciones y comprensión auditiva",
+        "Coreano Práctico: Aprendizaje del alfabeto Hangul, gramática y frases de uso diario",
+        "Chino Mandarín: Sistema Pinyin, tonos de pronunciación y caracteres básicos",
+        "Ruso Elemental: Alfabeto cirílico, fonética y guía conversacional para viajeros"
       ]
     },
     {
@@ -1440,57 +1424,57 @@ const CATALOG_CONFIG = {
       period: "Acceso Vitalicio",
       icon: "BookOpen",
       gradient: "from-purple-600 via-pink-600 to-rose-700",
-      description: "La colecciÃ³n de lectura y audio mÃ¡s grande en espaÃ±ol. LlevÃ¡ en tu celular una universidad entera clasificada por temÃ¡ticas.",
+      description: "La colección de lectura y audio más grande en español. Llevá en tu celular una universidad entera clasificada por temáticas.",
       benefits: [
-        "+15.000 libros en formatos universales PDF y EPUB clasificados por gÃ©nero",
-        "+1.800 audiolibros narrados en espaÃ±ol con alta calidad de sonido",
-        "Bibliotecas universitarias: Medicina, Derecho, IngenierÃ­a, PsicologÃ­a y PsicoanÃ¡lisis",
-        "Salud mental, neurociencia, mindfulness, inteligencia emocional y hÃ¡bitos",
-        "Ciencia, divulgaciÃ³n cientÃ­fica (Carl Sagan), FÃ­sica y MatemÃ¡ticas",
+        "+15.000 libros en formatos universales PDF y EPUB clasificados por género",
+        "+1.800 audiolibros narrados en español con alta calidad de sonido",
+        "Bibliotecas universitarias: Medicina, Derecho, Ingeniería, Psicología y Psicoanálisis",
+        "Salud mental, neurociencia, mindfulness, inteligencia emocional y hábitos",
+        "Ciencia, divulgación científica (Carl Sagan), Física y Matemáticas",
         "Best-sellers: Las 48 leyes del poder, Rompe la barrera del NO, 12 reglas para la vida"
       ],
       syllabus: [
-        "Biblioteca de Audiolibros: +1.800 tÃ­tulos completos narrados en espaÃ±ol neutro",
+        "Biblioteca de Audiolibros: +1.800 títulos completos narrados en español neutro",
         "Desarrollo Personal & Liderazgo: Libros de Robert Greene, Jordan Peterson, Dale Carnegie",
-        "Ciencia, FilosofÃ­a & Pensamiento CrÃ­tico: ColecciÃ³n Carl Sagan, Stephen Hawking y clÃ¡sicos",
-        "PsicologÃ­a, PsiquiatrÃ­a & Salud Emocional: Tratados clÃ­nicos y textos de divulgaciÃ³n",
-        "Facultad Universitaria: Textos de referencia para Medicina, Leyes, EconomÃ­a e IngenierÃ­a",
-        "FicciÃ³n & Novela: Grandes obras de la literatura universal, ciencia ficciÃ³n y misterio"
+        "Ciencia, Filosofía & Pensamiento Crítico: Colección Carl Sagan, Stephen Hawking y clásicos",
+        "Psicología, Psiquiatría & Salud Emocional: Tratados clínicos y textos de divulgación",
+        "Facultad Universitaria: Textos de referencia para Medicina, Leyes, Economía e Ingeniería",
+        "Ficción & Novela: Grandes obras de la literatura universal, ciencia ficción y misterio"
       ]
     },
     {
       id: "mega-pack-musica-cine-comics",
-      name: "Pack MÃºsica, Instrumentos, ProducciÃ³n DJ & Playlists + Bonus Cine/CÃ³mics",
+      name: "Pack Música, Instrumentos, Producción DJ & Playlists + Bonus Cine/Cómics",
       category: "mega-packs",
-      badge: "MÃºsica & Entretenimiento",
+      badge: "Música & Entretenimiento",
       costPrice: 0,
       margin: 100,
       price: 4900,
       period: "Acceso Permanente",
       icon: "Music2",
       gradient: "from-red-500 via-rose-600 to-purple-800",
-      description: "AprendÃ© a tocar instrumentos, producir mÃºsica electrÃ³nica y disfrutÃ¡ de un bonus exclusivo de cine latino y cÃ³mics clÃ¡sicos.",
+      description: "Aprendé a tocar instrumentos, producir música electrónica y disfrutá de un bonus exclusivo de cine latino y cómics clásicos.",
       benefits: [
-        "Cursos completos de Guitarra acÃºstica y elÃ©ctrica desde principiante hasta solos",
-        "ProducciÃ³n Musical y DJ: TÃ©cnicas de mezcla, masterizaciÃ³n y software",
-        "TeorÃ­a musical, armonÃ­a, partituras y tÃ©cnica para teclado y piano",
-        "ColecciÃ³n de playlists exclusivas Lo-Fi, Chillhop y bases instrumentales",
-        "Bonus Cine: Acceso de regalo a carpetas con +100 PelÃ­culas HD en audio Latino",
-        "Bonus Coleccionista: Biblioteca digital con cÃ³mics de Marvel, DC Comics e Historietas Retro"
+        "Cursos completos de Guitarra acústica y eléctrica desde principiante hasta solos",
+        "Producción Musical y DJ: Técnicas de mezcla, masterización y software",
+        "Teoría musical, armonía, partituras y técnica para teclado y piano",
+        "Colección de playlists exclusivas Lo-Fi, Chillhop y bases instrumentales",
+        "Bonus Cine: Acceso de regalo a carpetas con +100 Películas HD en audio Latino",
+        "Bonus Coleccionista: Biblioteca digital con cómics de Marvel, DC Comics e Historietas Retro"
       ],
       syllabus: [
         "Curso Integral de Guitarra: Acordes, escalas, punteos, fingerpicking y repertorio",
-        "Curso de ProducciÃ³n DJ & Home Studio: FL Studio, Ableton Live, ecualizaciÃ³n y mezcla",
-        "Teclado & Piano Popular: Acordes mayores, menores, acompaÃ±amientos y lectura Ã¡gil",
-        "BÃ³veda Lo-Fi Beats: Cientos de pistas libres de copyright para concentrarse o monetizar",
-        "Bonus Sala de Cine Latino: +100 pelÃ­culas taquilleras en 1080p con audio latino",
-        "Bonus BÃ³veda CÃ³mic: Miles de historietas digitales de Marvel, DC y clÃ¡sicos del cÃ³mic"
+        "Curso de Producción DJ & Home Studio: FL Studio, Ableton Live, ecualización y mezcla",
+        "Teclado & Piano Popular: Acordes mayores, menores, acompañamientos y lectura ágil",
+        "Bóveda Lo-Fi Beats: Cientos de pistas libres de copyright para concentrarse o monetizar",
+        "Bonus Sala de Cine Latino: +100 películas taquilleras en 1080p con audio latino",
+        "Bonus Bóveda Cómic: Miles de historietas digitales de Marvel, DC y clásicos del cómic"
       ]
     }
   ],
 
   // ----------------------------------------------------------------------------
-  // 5. CATÃLOGO COMPLETO DE JUEGOS INDIVIDUALES PS4 & PS5 (277 TÃTULOS PRECARGADOS)
+  // 5. CATÁLOGO COMPLETO DE JUEGOS INDIVIDUALES PS4 & PS5 (277 TÍTULOS PRECARGADOS)
   // ----------------------------------------------------------------------------
   gamerIndividualGames: [
     {
