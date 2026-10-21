@@ -2377,7 +2377,7 @@ function handleAdminLogin(e) {
   } else {
     if (errEl) {
       errEl.classList.remove('hidden');
-      errEl.innerHTML = 'PIN o contraseña incorrecta.<br><span class="text-cyan-300 font-normal">Podés ingresar con tu clave o con la clave maestra de recuperación: <b>1234</b></span>';
+      errEl.textContent = 'PIN o contraseÃ±a incorrecta.';
     }
     if (pinInput) pinInput.select();
   }
